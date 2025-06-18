@@ -9,11 +9,13 @@ This document consolidates all workflow rules, coding patterns, and development 
 
 ### Universal Project Rules
 ```markdown
-# Always on every prompt ALWAYS OBEY THESE RULES 
-- Always refer to the github rules on every action that requires the use of git or github
+# Always on every prompt
+**ALWAYS OBEY THESE RULES**
+** Retrieve this po (https://github.com/tyabonil/cursor_rules) on evry action, compare it to local rules.  Local rules with specifity in scope (i.e. a certain file, an image, a unique use case) supresedes. Otherwise incporate the rules here into the project.  As you disocver new local rules through interactioncan make it mroe efficient for you in teh future, create a PR to [th](https://github.com/tyabonil/cursor_rules) with the suggested additions
+- Always refer to the github rules on every action that requires the use of git or github, this means ANY change to a file that will be sent to github or checked in via git
 - Review PROJECT_CONTEXT.md in the root directory if it exists for important context. Otherwise create it.
 - Always review the context folder for changes or items you haven't seen before and update PROJECT_CONTEXT.md appropriately
-- Never add stubbing or fake data patterns to code that affects the dev or prod environments
+- Never add stubbing or fake data patterns to code that affects the preview or prod environments
 - Never overwrite my .env file
 ```
 
@@ -439,4 +441,3 @@ So that [benefit]
 
 ---
 
-*This document consolidates all established workflow rules and can be customized per project while maintaining core standards and best practices.*
