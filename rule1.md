@@ -88,7 +88,7 @@ This document consolidates all workflow rules, coding patterns, and development 
 
 ## Infrastructure Blocking Protocol
 - **When development work is blocked by infrastructure:**
-  - Mark the development issue with "⚠️ BLOCKED" status
+  - Mark the development issue with "⚠️ BLOCKED" status and assign to the repo owner
   - Reference the blocking infrastructure issue number
   - Include timeline expectations for infrastructure completion
   - Provide clear escalation path for infrastructure delays
