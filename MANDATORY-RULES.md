@@ -25,7 +25,22 @@
 
 ## ⚡ LEVEL 2: WORKFLOW INTEGRITY (MANDATORY)
 
-### 🐙 **ALWAYS USE MCP GITHUB API TOOLS FOR REMOTE OPERATIONS**
+### 🔬 **MANDATORY LLM TOKEN EFFICIENCY OPTIMIZATION**
+```markdown
+# LLM TOKEN EFFICIENCY (LEVEL 2 - MANDATORY)
+- 🔍 BEFORE creating new rules: Analyze ALL existing files for redundancy
+- ❌ NEVER maintain multiple files with duplicate content (>25% overlap)
+- ❌ NEVER keep human-oriented summaries/meta-content in LLM-consumed files
+- ❌ NEVER include historical/process content that adds no actionable value
+- ✅ ALWAYS consolidate redundant content into single authoritative files
+- ✅ ALWAYS prioritize token efficiency: 1 comprehensive file > 5 partial files
+- ✅ ALWAYS delete legacy files completely superseded by newer comprehensive versions
+- ✅ ALWAYS maintain minimal README for human repository usage guidance only
+- 📊 TARGET: <40KB total repository size for optimal LLM consumption
+- 🚨 VIOLATION = Token waste, increased costs, slower LLM processing
+```
+
+### 🏗️ **ALWAYS USE MCP GITHUB API TOOLS FOR REMOTE OPERATIONS**
 ```markdown
 # GITHUB API RULES (LEVEL 2 - MANDATORY)
 - ✅ ALWAYS use mcp_github_* tools for ALL remote operations (GitHub API interactions)
@@ -58,7 +73,7 @@
 - 🚨 VIOLATION = Complete workflow integrity failure - document and prevent recurrence
 ```
 
-### 🐧 **ALWAYS PREFER LINUX/POSIX TERMINALS**
+### 🖥️ **ALWAYS PREFER LINUX/POSIX TERMINALS**
 ```markdown
 # TERMINAL PREFERENCE RULES (LEVEL 2 - MANDATORY)
 - ✅ ALWAYS prefer Linux/POSIX terminals (bash, zsh, WSL Ubuntu) over PowerShell
@@ -69,7 +84,7 @@
 - 🚨 FAILURE = PowerShell hanging, terminal automation failures
 ```
 
-### 🚧 **IMMEDIATELY ASSIGN BLOCKED ISSUES**
+### 🚨 **IMMEDIATELY ASSIGN BLOCKED ISSUES**
 ```markdown
 # BLOCKED ISSUE ASSIGNMENT (LEVEL 2 - MANDATORY)
 - 🚨 IMMEDIATELY assign blocked issues to repository owner
@@ -89,7 +104,7 @@
 - 🚨 VIOLATION = Work without proper tracking
 ```
 
-### 🔄 **POST-MERGE WORKFLOW ACTIONS** 
+### 🔄 **POST-MERGE WORKFLOW ACTIONS**
 ```markdown
 # POST-MERGE MANDATORY ACTIONS (LEVEL 2 - MANDATORY)
 - ✅ ALWAYS recheck related issues after successful PR merge to preview
@@ -122,7 +137,7 @@
 - 🚨 VIOLATION = No merge until coverage achieved
 ```
 
-### 👁️ **ALWAYS REQUEST COPILOT REVIEW**
+### 👁️‍🗨️ **ALWAYS REQUEST COPILOT REVIEW**
 ```markdown
 # COPILOT REVIEW REQUEST (LEVEL 3 - MANDATORY)
 - ✅ ALWAYS request Copilot review for every PR using mcp_github_request_copilot_review
@@ -131,7 +146,7 @@
 - 🚨 VIOLATION = PR created without Copilot review request
 ```
 
-### 👁️ **ALL COPILOT FEEDBACK MUST BE ADDRESSED**
+### 👁️‍🗨️ **ALL COPILOT FEEDBACK MUST BE ADDRESSED**
 ```markdown
 # COPILOT REVIEW RESPONSE (LEVEL 3 - MANDATORY)
 - ✅ ALL Copilot review comments MUST be addressed before merging
@@ -141,7 +156,7 @@
 - 🚨 VIOLATION = No merge until all feedback addressed
 ```
 
-### 📊 **ALWAYS UPDATE PROJECT_CONTEXT.md**
+### 📚 **ALWAYS UPDATE PROJECT_CONTEXT.md**
 ```markdown
 # DOCUMENTATION (LEVEL 3 - MANDATORY)
 - ✅ Update PROJECT_CONTEXT.md for ANY significant changes
@@ -155,7 +170,7 @@
 
 ## ⚡ LEVEL 4: DEVELOPMENT PATTERNS (STRONGLY RECOMMENDED)
 
-### 🏗️ **CODING STANDARDS**
+### 👨‍💻 **CODING STANDARDS**
 ```markdown  
 # CODE QUALITY (LEVEL 4 - STRONGLY RECOMMENDED)
 - ✅ Prefer simple solutions over complex ones
@@ -188,7 +203,7 @@
 
 ---
 
-## 🚀 ENFORCEMENT CHECKLIST
+## 🚨 ENFORCEMENT CHECKLIST
 
 ### **Before Every Action:**
 - [ ] Will this commit secrets? (LEVEL 1 - STOP if yes)
@@ -262,7 +277,7 @@ Research conducted on established AI development repositories (used for inspirat
 - **Kristories/awesome-guidelines** (10.1k⭐) - Industry coding standards compilation
 - **JuanCrg90/Clean-Code-Notes** (6k⭐) - Clean Code principles documentation
 - **grapeot/devin.cursorrules** (5.7k⭐) - AI-first development patterns
-- **kinopeee/cursorrules** (790⭐) - Agent autonomy and loop prevention patterns
+- **kinopee/cursorrules** (790⭐) - Agent autonomy and loop prevention patterns
 
 ### **Testing Methodologies**
 - **F.I.R.S.T Principles** - Fast, Independent, Repeatable, Self-Validating, Timely
