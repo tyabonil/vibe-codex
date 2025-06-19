@@ -102,9 +102,18 @@
 - 🚨 VIOLATION = No merge until coverage achieved
 ```
 
+### 👁️ **ALWAYS REQUEST COPILOT REVIEW**
+```markdown
+# COPILOT REVIEW REQUEST (LEVEL 3 - MANDATORY)
+- ✅ ALWAYS request Copilot review for every PR using mcp_github_request_copilot_review
+- ✅ Request review IMMEDIATELY after PR creation, before any merging
+- ✅ NO exceptions - every code change must get Copilot review
+- 🚨 VIOLATION = PR created without Copilot review request
+```
+
 ### 👁️ **ALL COPILOT FEEDBACK MUST BE ADDRESSED**
 ```markdown
-# CODE REVIEW (LEVEL 3 - MANDATORY)
+# COPILOT REVIEW RESPONSE (LEVEL 3 - MANDATORY)
 - ✅ ALL Copilot review comments MUST be addressed before merging
 - ✅ NO PR merges until feedback resolved
 - ✅ Address or explicitly justify ignoring each comment
@@ -170,6 +179,7 @@
 
 ### **Before Every Merge:**
 - [ ] Is test coverage 100% for new code? (LEVEL 3 - BLOCK if no)
+- [ ] Was Copilot review requested for this PR? (LEVEL 3 - REQUEST if no)
 - [ ] Is all Copilot feedback addressed? (LEVEL 3 - BLOCK if no)  
 - [ ] Is PROJECT_CONTEXT.md updated? (LEVEL 3 - UPDATE if no)
 
