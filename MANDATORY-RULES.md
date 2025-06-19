@@ -38,6 +38,26 @@
 - 🚨 FAILURE = Remote operations via terminal cause workflow failures
 ```
 
+### 🔍 **MANDATORY GITHUB WORKFLOW VALIDATION**
+```markdown
+# GITHUB WORKFLOW VALIDATION (LEVEL 2 - MANDATORY)
+**BEFORE every git action:**
+- [ ] Review MANDATORY-RULES.md GitHub workflow section
+- [ ] Validate issue exists for this work
+- [ ] Confirm using correct branch (never main/master directly)
+- [ ] Verify using appropriate MCP GitHub API tools
+- [ ] Check: Is this the right workflow step (Issue → Branch → PR → Merge)?
+
+**AFTER every git action:**
+- [ ] Verify no workflow violations occurred
+- [ ] Confirm proper Issue → Branch → PR → Merge sequence followed
+- [ ] Check: Did I use correct MCP API tools vs terminal commands?
+- [ ] Document any violations immediately for learning
+- [ ] Update memory with lessons learned if violations found
+
+- 🚨 VIOLATION = Complete workflow integrity failure - document and prevent recurrence
+```
+
 ### 🐧 **ALWAYS PREFER LINUX/POSIX TERMINALS**
 ```markdown
 # TERMINAL PREFERENCE RULES (LEVEL 2 - MANDATORY)
@@ -174,8 +194,15 @@
 - [ ] Will this commit secrets? (LEVEL 1 - STOP if yes)
 - [ ] Will this overwrite environment files? (LEVEL 1 - ASK if yes)
 - [ ] Should I use MCP GitHub API instead of terminal git? (LEVEL 2 - YES)
+- [ ] **Have I reviewed GitHub workflow rules?** (LEVEL 2 - REVIEW first)
+- [ ] **Is there an issue for this work?** (LEVEL 2 - CREATE if no)
+- [ ] **Am I using the correct branch (not main)?** (LEVEL 2 - VERIFY)
 - [ ] Is this work blocked and should be assigned? (LEVEL 2 - ASSIGN if yes)
-- [ ] Is there an issue for this work? (LEVEL 2 - CREATE if no)
+
+### **After Every Git Action:**
+- [ ] **Did I follow the proper Issue → Branch → PR → Merge workflow?** (LEVEL 2 - VERIFY)
+- [ ] **Did I use correct MCP tools vs terminal commands?** (LEVEL 2 - VERIFY)
+- [ ] **Any violations occurred that need documenting?** (LEVEL 2 - DOCUMENT)
 
 ### **Before Every Merge:**
 - [ ] Is test coverage 100% for new code? (LEVEL 3 - BLOCK if no)
@@ -194,6 +221,7 @@
 - ✅ 100% quality gate passage (Level 3 compliance)
 - ✅ Clean, maintainable codebase (Level 4 compliance)
 - ✅ 100% branch synchronization after merges (Level 2 compliance)
+- ✅ **Zero GitHub workflow violations** (Level 2 compliance)
 
 ---
 
@@ -206,6 +234,48 @@
 4. ✅ Override reason documented in commit message
 
 **NO OVERRIDES ALLOWED for Level 1 (Security) rules - EVER**
+
+---
+
+## 📚 ATTRIBUTIONS & ACKNOWLEDGMENTS
+
+These rules were developed through research of established coding practices and industry standards. While our specific implementation and hierarchy are original, we acknowledge the foundational work that influenced our approach:
+
+### **Core Software Engineering Principles**
+- **Robert C. Martin (Uncle Bob)** - Clean Code principles, SOLID design patterns, TDD practices
+  - Source: "Clean Code: A Handbook of Agile Software Craftsmanship"
+  - Influence: Clean coding standards, testing approaches, software design principles
+
+- **Kent Beck** - Simple Design rules, Test-Driven Development methodology
+  - Source: "Extreme Programming Explained", "Test Driven Development: By Example"
+  - Influence: Simple design principles, TDD Three Laws concept
+
+### **Security Standards & Practices**
+- **OWASP (Open Web Application Security Project)** - Web application security guidelines
+  - Source: OWASP Top 10, OWASP Security Practices
+  - Influence: Security vulnerability patterns, input validation practices
+
+### **AI-First Development Research**
+Research conducted on established AI development repositories (used for inspiration, not direct copying):
+
+- **PatrickJS/awesome-cursorrules** (28.6k⭐) - Comprehensive Cursor-specific patterns
+- **Kristories/awesome-guidelines** (10.1k⭐) - Industry coding standards compilation
+- **JuanCrg90/Clean-Code-Notes** (6k⭐) - Clean Code principles documentation
+- **grapeot/devin.cursorrules** (5.7k⭐) - AI-first development patterns
+- **kinopeee/cursorrules** (790⭐) - Agent autonomy and loop prevention patterns
+
+### **Testing Methodologies**
+- **F.I.R.S.T Principles** - Fast, Independent, Repeatable, Self-Validating, Timely
+  - Source: Established testing community practices
+  - Influence: Test quality standards and approaches
+
+### **Workflow & Process Patterns**
+- **GitHub Flow** - Branch-based development workflow
+- **GitLab Flow** - Issue tracking and branch management patterns
+- **Agile/Scrum Practices** - Issue prioritization (P0-P3), sprint planning concepts
+
+### **Disclaimer**
+All rules in this document represent our own synthesis, adaptation, and original implementation of these established principles. No content was copied verbatim from any source. These attributions acknowledge the intellectual foundations that informed our rule development process.
 
 ---
 
