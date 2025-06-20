@@ -40,7 +40,7 @@
 - 🚨 VIOLATION = Token waste, increased costs, slower LLM processing
 ```
 
-### 🏗️ **ALWAYS USE MCP GITHUB API TOOLS FOR REMOTE OPERATIONS**
+### 🏗️‍♂️ **ALWAYS USE MCP GITHUB API TOOLS FOR REMOTE OPERATIONS**
 ```markdown
 # GITHUB API RULES (LEVEL 2 - MANDATORY)
 - ✅ ALWAYS use mcp_github_* tools for ALL remote operations (GitHub API interactions)
@@ -73,7 +73,7 @@
 - 🚨 VIOLATION = Complete workflow integrity failure - document and prevent recurrence
 ```
 
-### 🖥️ **ALWAYS PREFER LINUX/POSIX TERMINALS**
+### 🖥️‍♂️ **ALWAYS PREFER LINUX/POSIX TERMINALS**
 ```markdown
 # TERMINAL PREFERENCE RULES (LEVEL 2 - MANDATORY)
 - ✅ ALWAYS prefer Linux/POSIX terminals (bash, zsh, WSL Ubuntu) over PowerShell
@@ -137,7 +137,7 @@
 - 🚨 VIOLATION = No merge until coverage achieved
 ```
 
-### 👁️‍🗨️ **ALWAYS REQUEST COPILOT REVIEW**
+### 👨‍💻‍👨‍💻 **ALWAYS REQUEST COPILOT REVIEW**
 ```markdown
 # COPILOT REVIEW REQUEST (LEVEL 3 - MANDATORY)
 - ✅ ALWAYS request Copilot review for every PR using mcp_github_request_copilot_review
@@ -146,13 +146,48 @@
 - 🚨 VIOLATION = PR created without Copilot review request
 ```
 
-### 👁️‍🗨️ **ALL COPILOT FEEDBACK MUST BE ADDRESSED**
+### 👨‍💻‍👨‍💻 **ALL COPILOT FEEDBACK MUST BE ADDRESSED**
 ```markdown
 # COPILOT REVIEW RESPONSE (LEVEL 3 - MANDATORY)
 - ✅ ALL Copilot review comments MUST be addressed before merging
 - ✅ NO PR merges until feedback resolved
 - ✅ Address or explicitly justify ignoring each comment
 - ✅ Document resolution approach in PR conversation
+- 🚨 VIOLATION = No merge until all feedback addressed
+```
+
+### 💬 **MANDATORY PR FEEDBACK RESPONSE - READ AND ADDRESS ALL COMMENTS**
+```markdown
+# PR FEEDBACK RESPONSE (LEVEL 3 - MANDATORY)
+- ✅ ALWAYS read ALL comments and feedback on PRs you create.
+- ✅ ALWAYS address ALL failures (CI/CD, tests, linting, build errors).
+- ✅ ALWAYS implement requested fixes or provide explicit justification for not implementing.
+- ✅ ALWAYS respond promptly to maintain development velocity.
+- ✅ ALWAYS document resolution approach when fixing issues.
+
+**COMPREHENSIVE SCOPE - Address ALL of:**
+  - ✅ Human reviewer comments and suggestions.
+  - ✅ Automated feedback (linters, formatters, security scans, code quality tools).
+  - ✅ CI/CD pipeline failures and build errors.
+  - ✅ Test failures and coverage issues.
+  - ✅ Security vulnerability alerts and performance warnings.
+  - ✅ Copilot review comments (extends existing Level 3 rule).
+  - ✅ Any bot or automated tool feedback.
+  - ✅ Documentation generation issues and deployment failures.
+
+**RESPONSE STANDARDS:**
+- ✅ Fix and update PR for all addressable technical issues.
+- ✅ Provide clear justification if not implementing a suggestion (with reasoning).
+- ✅ Document approach taken to resolve complex issues in PR conversation.
+- ✅ Maintain responsive communication to show engagement and professionalism.
+- ✅ Update PR description if scope or approach changes based on feedback.
+
+**COLLABORATION REQUIREMENTS:**
+- ✅ Acknowledge receipt of feedback promptly.
+- ✅ Show respect for reviewer time and expertise.
+- ✅ Ask clarifying questions if feedback is unclear.
+- ✅ Thank reviewers for their contributions.
+
 - 🚨 VIOLATION = No merge until all feedback addressed
 ```
 
@@ -201,7 +236,7 @@
 
 ## ⚡ LEVEL 4: DEVELOPMENT PATTERNS (STRONGLY RECOMMENDED)
 
-### 🧑‍💻 **CODING STANDARDS**
+### 👨‍💻‍🤝‍💻 **CODING STANDARDS**
 ```markdown  
 # CODE QUALITY (LEVEL 4 - STRONGLY RECOMMENDED)
 - ✅ Prefer simple solutions over complex ones
@@ -255,12 +290,27 @@
 - [ ] **Am I documenting my thought process on the issue?** (LEVEL 3 - DOCUMENT)
 - [ ] **Any external LLM consultations to capture?** (LEVEL 3 - DOCUMENT)
 
+### **After Creating Every PR:**
+- [ ] **Are ALL comments and feedback on PRs being read?** (LEVEL 3 - READ ALL)
+- [ ] **Are ALL failures being addressed?** (LEVEL 3 - FIX ALL)
+- [ ] **Are ALL requested fixes being implemented or justified?** (LEVEL 3 - IMPLEMENT)
+- [ ] **Am I responding promptly to feedback?** (LEVEL 3 - RESPOND FAST)
+- [ ] **Am I documenting resolution approaches?** (LEVEL 3 - DOCUMENT)
+
+### **When PR Receives Feedback:**
+- [ ] **Have I read ALL comments (human reviewers, bots, automated feedback)?** (LEVEL 3 - READ ALL)
+- [ ] **Have I addressed ALL failures (CI/CD, tests, linting, build errors)?** (LEVEL 3 - FIX ALL)
+- [ ] **Have I implemented fixes or provided justification for each suggestion?** (LEVEL 3 - IMPLEMENT/JUSTIFY)
+- [ ] **Have I maintained responsive communication?** (LEVEL 3 - COMMUNICATE)
+- [ ] **Have I updated PR description if scope changed?** (LEVEL 3 - UPDATE)
+
 ### **Before Every Merge:**
 - [ ] Is test coverage 100% for new code? (LEVEL 3 - BLOCK if no)
 - [ ] Was Copilot review requested for this PR? (LEVEL 3 - REQUEST if no)
 - [ ] Is all Copilot feedback addressed? (LEVEL 3 - BLOCK if no)  
 - [ ] Is PROJECT_CONTEXT.md updated? (LEVEL 3 - UPDATE if no)
 - [ ] **Are thought processes documented on the issue?** (LEVEL 3 - DOCUMENT)
+- [ ] **Is ALL PR feedback addressed comprehensively?** (LEVEL 3 - VERIFY)
 
 ### **After Every Successful Merge:**
 - [ ] Are related issues updated with completion status? (LEVEL 2 - COMMENT/CLOSE)
@@ -275,10 +325,11 @@
 - ✅ 100% branch synchronization after merges (Level 2 compliance)
 - ✅ **Zero GitHub workflow violations** (Level 2 compliance)
 - ✅ **Complete thought process transparency** (Level 3 compliance)
+- ✅ **100% feedback responsiveness** (Level 3 compliance)
 
 ---
 
-## 📋 EMERGENCY OVERRIDE PROTOCOL
+## 🚑 EMERGENCY OVERRIDE PROTOCOL
 
 **ONLY for production-down emergencies:**
 1. ✅ Explicit project owner approval required
@@ -315,7 +366,7 @@ Research conducted on established AI development repositories (used for inspirat
 - **Kristories/awesome-guidelines** (10.1k⭐) - Industry coding standards compilation
 - **JuanCrg90/Clean-Code-Notes** (6k⭐) - Clean Code principles documentation
 - **grapeot/devin.cursorrules** (5.7k⭐) - AI-first development patterns
-- **kinopee/cursorrules** (790⭐) - Agent autonomy and loop prevention patterns
+- **kinopeee/cursorrules** (790⭐) - Agent autonomy and loop prevention patterns
 
 ### **Testing Methodologies**
 - **F.I.R.S.T Principles** - Fast, Independent, Repeatable, Self-Validating, Timely
