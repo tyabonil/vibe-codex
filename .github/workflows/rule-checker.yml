@@ -1,0 +1,144 @@
+name: MANDATORY Rules Compliance Checker
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review]
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  rule-compliance:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      checks: write
+      issues: read
+      
+    steps:
+      - name: Checkout PR code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          
+      - name: Install dependencies
+        run: |
+          npm install @actions/core @actions/github
+          
+      - name: Run MANDATORY Rules Compliance Check
+        id: rule-check
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            
+            // Import rule checking modules
+            const RuleEngine = require('./scripts/rule-engine.js');
+            const GitHubClient = require('./scripts/github-client.js');
+            const Reporter = require('./scripts/reporter.js');
+            
+            console.log('🚀 Starting MANDATORY Rules Compliance Check...');
+            
+            try {
+              // Initialize components
+              const ruleEngine = new RuleEngine();
+              const githubClient = new GitHubClient(github, context);
+              const reporter = new Reporter();
+              
+              // Get PR and files data
+              const prData = await githubClient.getPRData();
+              const files = await githubClient.getPRFiles();
+              const commits = await githubClient.getPRCommits();
+              
+              console.log(`📋 Analyzing PR #${prData.number}: ${prData.title}`);
+              console.log(`📁 Files changed: ${files.length}`);
+              console.log(`📝 Commits: ${commits.length}`);
+              
+              // Run all rule checks
+              const violations = [];
+              
+              // Level 1: Security (BLOCKER)
+              console.log('🔐 Checking Level 1: Security & Safety...');
+              const level1Violations = await ruleEngine.checkLevel1Security(files, prData);
+              violations.push(...level1Violations);
+              
+              // Level 2: Workflow (MANDATORY)
+              console.log('🔄 Checking Level 2: Workflow Integrity...');
+              const level2Violations = await ruleEngine.checkLevel2Workflow(prData, files, commits, githubClient);
+              violations.push(...level2Violations);
+              
+              // Level 3: Quality (MANDATORY)
+              console.log('🎯 Checking Level 3: Quality Gates...');
+              const level3Violations = await ruleEngine.checkLevel3Quality(prData, files, githubClient);
+              violations.push(...level3Violations);
+              
+              // Level 4: Patterns (RECOMMENDED)
+              console.log('💡 Checking Level 4: Development Patterns...');
+              const level4Violations = await ruleEngine.checkLevel4Patterns(files, prData);
+              violations.push(...level4Violations);
+              
+              // Calculate compliance score and blocking status
+              const criticalViolations = violations.filter(v => v.level <= 3 && v.severity === 'BLOCKER');
+              const mandatoryViolations = violations.filter(v => v.level <= 3);
+              const isBlocking = criticalViolations.length > 0;
+              const score = Math.max(0, 10 - violations.length);
+              
+              console.log(`📊 Compliance Results:`);
+              console.log(`   Total violations: ${violations.length}`);
+              console.log(`   Critical (blocking): ${criticalViolations.length}`);
+              console.log(`   Mandatory: ${mandatoryViolations.length}`);
+              console.log(`   Score: ${score}/10`);
+              console.log(`   Status: ${isBlocking ? 'BLOCKED' : 'PASSED'}`);
+              
+              // Generate and post compliance report
+              const report = reporter.generateReport(violations, score, isBlocking, prData);
+              
+              if (violations.length > 0) {
+                await githubClient.postComplianceComment(report);
+                console.log('💬 Posted compliance report comment to PR');
+              } else {
+                await githubClient.postComplianceComment('## ✅ MANDATORY Rules Compliance - PASSED\\n\\nAll rules are compliant! Great work! 🎉');
+                console.log('✅ Posted success comment to PR');
+              }
+              
+              // Set status check
+              await githubClient.setStatusCheck(
+                isBlocking ? 'failure' : 'success',
+                `${score}/10 compliance score - ${isBlocking ? 'BLOCKED' : 'PASSED'}`,
+                violations.length
+              );
+              
+              console.log('🏁 MANDATORY Rules Compliance Check completed');
+              
+              // Set output for downstream jobs
+              core.setOutput('violations', violations.length);
+              core.setOutput('score', score);
+              core.setOutput('blocking', isBlocking);
+              
+              return {
+                violations: violations.length,
+                score: score,
+                blocking: isBlocking,
+                success: !isBlocking
+              };
+              
+            } catch (error) {
+              console.error('❌ Rule check failed:', error);
+              
+              // Post error comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: `## ❌ MANDATORY Rules Checker Error\\n\\n\`\`\`\\n${error.message}\\n\`\`\`\\n\\nPlease check the [workflow logs](${context.payload.repository.html_url}/actions) for details.`
+              });
+              
+              throw error;
+            }
