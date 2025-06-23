@@ -1,0 +1,190 @@
+{
+  "version": "1.0.0",
+  "description": "MANDATORY Rules Configuration - All rule validation settings",
+  "rules": {
+    "level1_security": {
+      "enabled": true,
+      "blocking": true,
+      "description": "Security & Safety (NON-NEGOTIABLE)",
+      "checks": {
+        "secrets_detection": {
+          "enabled": true,
+          "patterns": [
+            "api[_-]?key\\s*[=:]\\s*['\"]\\w+['\"]",
+            "password\\s*[=:]\\s*['\"]\\w+['\"]",
+            "token\\s*[=:]\\s*['\"]\\w+['\"]",
+            "secret\\s*[=:]\\s*['\"]\\w+['\"]",
+            "auth[_-]?token\\s*[=:]\\s*['\"]\\w+['\"]",
+            "access[_-]?key\\s*[=:]\\s*['\"]\\w+['\"]",
+            "private[_-]?key\\s*[=:]\\s*['\"]\\w+['\"]\""
+          ],
+          "severity": "BLOCKER"
+        },
+        "env_files_protection": {
+          "enabled": true,
+          "patterns": [
+            "\\.env$",
+            "\\.env\\.",
+            "environment"
+          ],
+          "allow_creation": true,
+          "block_modification": true,
+          "severity": "BLOCKER"
+        }
+      }
+    },
+    "level2_workflow": {
+      "enabled": true,
+      "blocking": true,
+      "description": "Workflow Integrity (MANDATORY)",
+      "checks": {
+        "issue_reference": {
+          "enabled": true,
+          "require_in_title_or_body": true,
+          "patterns": [
+            "#\\d+",
+            "issue\\s+\\d+",
+            "fixes?\\s+#?\\d+"
+          ],
+          "severity": "BLOCKER"
+        },
+        "branch_naming": {
+          "enabled": true,
+          "required_patterns": [
+            "^feature\\/issue-\\d+-[\\w-]+$",
+            "^bugfix\\/issue-\\d+-[\\w-]+$",
+            "^hotfix\\/issue-\\d+-[\\w-]+$"
+          ],
+          "severity": "MANDATORY"
+        },
+        "mcp_api_usage": {
+          "enabled": true,
+          "detect_terminal_git": true,
+          "terminal_git_patterns": [
+            "git push",
+            "git pull", 
+            "git checkout -b",
+            "git merge",
+            "git commit.*-m"
+          ],
+          "severity": "MANDATORY"
+        },
+        "project_context_updates": {
+          "enabled": true,
+          "require_for_significant_changes": true,
+          "significant_change_patterns": [
+            "\\.github\\/workflows\\/",
+            "package\\.json$",
+            "\\.cursorrules$",
+            "scripts\\/",
+            "src\\/",
+            "lib\\/"
+          ],
+          "min_lines_threshold": 50,
+          "severity": "MANDATORY"
+        },
+        "token_efficiency": {
+          "enabled": true,
+          "max_files_per_pr": 20,
+          "target_repo_size_kb": 40,
+          "severity": "MANDATORY"
+        }
+      }
+    },
+    "level3_quality": {
+      "enabled": true,
+      "blocking": true,
+      "description": "Quality Gates (MANDATORY)",
+      "checks": {
+        "test_coverage": {
+          "enabled": true,
+          "require_100_percent": true,
+          "code_file_extensions": [".js", ".ts", ".py", ".java", ".go"],
+          "test_file_patterns": ["test", "spec", ".test.", ".spec."],
+          "severity": "BLOCKER"
+        },
+        "copilot_review": {
+          "enabled": true,
+          "require_request": true,
+          "copilot_usernames": ["copilot", "github-copilot"],
+          "severity": "BLOCKER"
+        },
+        "pr_feedback_response": {
+          "enabled": true,
+          "require_all_addressed": true,
+          "check_bot_comments": true,
+          "check_review_comments": true,
+          "severity": "BLOCKER"
+        },
+        "thought_process_documentation": {
+          "enabled": true,
+          "require_on_linked_issues": true,
+          "required_keywords": [
+            "Thought Process",
+            "Analysis:",
+            "Decision:",
+            "External LLM",
+            "thought process"
+          ],
+          "severity": "MANDATORY"
+        }
+      }
+    },
+    "level4_patterns": {
+      "enabled": true,
+      "blocking": false,
+      "description": "Development Patterns (STRONGLY RECOMMENDED)",
+      "checks": {
+        "file_size_limits": {
+          "enabled": true,
+          "max_lines": 300,
+          "recommend_refactor_threshold": 200,
+          "severity": "RECOMMENDED"
+        },
+        "code_duplication": {
+          "enabled": true,
+          "similar_filename_threshold": 2,
+          "detect_patterns": true,
+          "severity": "RECOMMENDED"
+        },
+        "branch_targets": {
+          "enabled": true,
+          "disallow_main_merge": true,
+          "preferred_target": "preview",
+          "severity": "RECOMMENDED"
+        },
+        "simple_solutions": {
+          "enabled": true,
+          "prefer_simple_over_complex": true,
+          "detect_over_engineering": false,
+          "severity": "RECOMMENDED"
+        }
+      }
+    }
+  },
+  "reporting": {
+    "include_success_message": true,
+    "include_quick_reference": true,
+    "include_fix_instructions": true,
+    "group_by_severity": true,
+    "max_violations_displayed": 20
+  },
+  "integration": {
+    "post_comments": true,
+    "set_status_checks": true,
+    "block_merge_on_critical": true,
+    "status_check_context": "MANDATORY Rules Compliance",
+    "comment_update_mode": "replace"
+  },
+  "customization": {
+    "allow_local_overrides": true,
+    "local_override_file": ".cursorrules",
+    "repository_specific_rules": true,
+    "emergency_override_protocol": {
+      "enabled": true,
+      "require_owner_approval": true,
+      "require_technical_debt_issues": true,
+      "no_level1_overrides": true
+    }
+  }
+}
