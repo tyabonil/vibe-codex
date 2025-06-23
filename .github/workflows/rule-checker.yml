@@ -28,7 +28,6 @@ jobs:
           
       - name: Install dependencies
         run: |
-          npm init -y
           npm install @actions/core @actions/github
           
       - name: Run MANDATORY Rules Compliance Check
@@ -81,7 +80,7 @@ jobs:
               violations.push(...level3Violations);
               
               // Level 4: Patterns (RECOMMENDED)
-              console.log('📐 Checking Level 4: Development Patterns...');
+              console.log('💡 Checking Level 4: Development Patterns...');
               const level4Violations = await ruleEngine.checkLevel4Patterns(files, prData);
               violations.push(...level4Violations);
               
@@ -105,7 +104,7 @@ jobs:
                 await githubClient.postComplianceComment(report);
                 console.log('💬 Posted compliance report comment to PR');
               } else {
-                await githubClient.postComplianceComment('## ✅ MANDATORY Rules Compliance - PASSED\n\nAll rules are compliant! Great work! 🎉');
+                await githubClient.postComplianceComment('## ✅ MANDATORY Rules Compliance - PASSED\\n\\nAll rules are compliant! Great work! 🎉');
                 console.log('✅ Posted success comment to PR');
               }
               
@@ -138,7 +137,7 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.issue.number,
-                body: `## ❌ MANDATORY Rules Checker Error\n\n\`\`\`\n${error.message}\n\`\`\`\n\nPlease check the [workflow logs](${context.payload.repository.html_url}/actions) for details.`
+                body: `## ❌ MANDATORY Rules Checker Error\\n\\n\`\`\`\\n${error.message}\\n\`\`\`\\n\\nPlease check the [workflow logs](${context.payload.repository.html_url}/actions) for details.`
               });
               
               throw error;
