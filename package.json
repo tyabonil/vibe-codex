@@ -1,0 +1,86 @@
+{
+  "name": "mandatory-rules-checker",
+  "version": "1.0.0",
+  "description": "Automated compliance checker for MANDATORY-RULES.md validation",
+  "main": "scripts/rule-engine.js",
+  "scripts": {
+    "test": "jest --coverage --verbose",
+    "test:watch": "jest --watch",
+    "test:ci": "jest --coverage --ci --watchAll=false",
+    "lint": "eslint scripts/ tests/",
+    "lint:fix": "eslint scripts/ tests/ --fix",
+    "validate": "node scripts/validate-config.js",
+    "docs": "node scripts/generate-docs.js"
+  },
+  "keywords": [
+    "mandatory-rules",
+    "compliance",
+    "github-actions",
+    "pr-validation",
+    "security",
+    "workflow"
+  ],
+  "author": "tyabonil",
+  "license": "MIT",
+  "dependencies": {
+    "@actions/core": "^1.10.1",
+    "@actions/github": "^5.1.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "eslint": "^8.57.0",
+    "@jest/globals": "^29.7.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "collectCoverageFrom": [
+      "scripts/**/*.js",
+      "!scripts/validate-config.js",
+      "!scripts/generate-docs.js"
+    ],
+    "coverageReporters": [
+      "text",
+      "lcov",
+      "html"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 100,
+        "functions": 100,
+        "lines": 100,
+        "statements": 100
+      }
+    },
+    "testMatch": [
+      "**/tests/**/*.test.js"
+    ]
+  },
+  "eslintConfig": {
+    "env": {
+      "node": true,
+      "jest": true,
+      "es2021": true
+    },
+    "extends": [
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "ecmaVersion": "latest",
+      "sourceType": "module"
+    },
+    "rules": {
+      "no-unused-vars": "error",
+      "no-console": "off",
+      "prefer-const": "error",
+      "no-var": "error"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tyabonil/cursor_rules.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tyabonil/cursor_rules/issues"
+  },
+  "homepage": "https://github.com/tyabonil/cursor_rules#readme"
+}
