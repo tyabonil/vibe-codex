@@ -113,8 +113,13 @@
 - ✅ Before starting the new issue, ensure your `preview` branch is up-to-date with the remote.
 - ✅ Create a new feature branch from the `preview` branch for the new issue.
 - ✅ **Conflict Resolution Strategy:** When your previous PR is approved and merged, you MUST immediately update your current feature branch by rebasing it on the updated `preview` branch (`git rebase origin/preview`). This will prevent merge conflicts.
-<<<<<<< HEAD
-<<<<<<< HEAD
+### 💬 **MANDATORY ISSUE INTERACTION PROTOCOL**
+# ISSUE INTERACTION (LEVEL 2 - MANDATORY)
+- ✅ **Before starting work:** The first action MUST be to comment on the issue with a detailed plan of action.
+- ✅ **After creating a PR:** I MUST comment on the issue with a link to the PR.
+- ✅ **When a PR is blocked:** I MUST comment on the issue stating why it is blocked.
+- ✅ **After addressing PR feedback:** I MUST comment on the issue summarizing the fixes.
+- ✅ **Before closing an issue:** I MUST add a final comment summarizing the resolution and linking to the final PR.
 ### 🚨 **PR REMEDIATION PROTOCOL**
 # PR REMEDIATION (LEVEL 2 - MANDATORY)
 - ✅ If a PR has violations, you MUST address them in the same PR.
@@ -125,19 +130,6 @@
 - ✅ **Step 5: Re-request review.** Comment on the PR to notify reviewers that the violations have been addressed.
 - ❌ **DO NOT** close a PR with violations unless you are starting over.
 - ❌ **DO NOT** open a new PR for the same issue without closing the old one.
-=======
-=======
->>>>>>> 8a3b7cf (feat: Refine secret scanner and add 'Move On' rule)
-### 🚀 **MOVE ON TO THE NEXT ISSUE**
-# MOVE ON (LEVEL 2 - MANDATORY)
-- ✅ While waiting for a PR review or other blocker, you MUST move on to the next available issue.
-- ✅ Before starting the new issue, ensure your `preview` branch is up-to-date with the remote.
-- ✅ Create a new feature branch from the `preview` branch for the new issue.
-- ✅ **Conflict Resolution Strategy:** When your previous PR is approved and merged, you MUST immediately update your current feature branch by rebasing it on the updated `preview` branch (`git rebase origin/preview`). This will prevent merge conflicts.
-<<<<<<< HEAD
->>>>>>> 8a3b7cf (feat: Refine secret scanner and add 'Move On' rule)
-=======
->>>>>>> 8a3b7cf (feat: Refine secret scanner and add 'Move On' rule)
 - --
 ## LEVEL 3: QUALITY GATES (MANDATORY)
 ### 🧪 **100% TEST COVERAGE REQUIRED**
@@ -250,6 +242,7 @@
 ### **During Issue Work:**
 - [ ] **Am I documenting my thought process on the issue?** (LEVEL 3 - DOCUMENT)
 - [ ] **Any external LLM consultations to capture?** (LEVEL 3 - DOCUMENT)
+- [ ] Have I followed the MANDATORY ISSUE INTERACTION PROTOCOL? (LEVEL 2 - VERIFY)
 ### **After Creating Every PR:**
 - [ ] **Are ALL comments and feedback on PRs being read?** (LEVEL 3 - READ ALL)
 - [ ] **Are ALL failures being addressed?** (LEVEL 3 - FIX ALL)

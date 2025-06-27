@@ -161,6 +161,16 @@
 - ✅ **Conflict Resolution Strategy:** When your previous PR is approved and merged, you MUST immediately update your current feature branch by rebasing it on the updated `preview` branch (`git rebase origin/preview`). This will prevent merge conflicts.
 ```
 
+### 💬 **MANDATORY ISSUE INTERACTION PROTOCOL**
+```markdown
+# ISSUE INTERACTION (LEVEL 2 - MANDATORY)
+- ✅ **Before starting work:** The first action MUST be to comment on the issue with a detailed plan of action.
+- ✅ **After creating a PR:** I MUST comment on the issue with a link to the PR.
+- ✅ **When a PR is blocked:** I MUST comment on the issue stating why it is blocked.
+- ✅ **After addressing PR feedback:** I MUST comment on the issue summarizing the fixes.
+- ✅ **Before closing an issue:** I MUST add a final comment summarizing the resolution and linking to the final PR.
+```
+
 ### 🚨 **PR REMEDIATION PROTOCOL**
 ```markdown
 # PR REMEDIATION (LEVEL 2 - MANDATORY)
@@ -327,6 +337,7 @@
 ### **During Issue Work:**
 - [ ] **Am I documenting my thought process on the issue?** (LEVEL 3 - DOCUMENT)
 - [ ] **Any external LLM consultations to capture?** (LEVEL 3 - DOCUMENT)
+- [ ] Have I followed the MANDATORY ISSUE INTERACTION PROTOCOL? (LEVEL 2 - VERIFY)
 
 ### **After Creating Every PR:**
 - [ ] **Are ALL comments and feedback on PRs being read?** (LEVEL 3 - READ ALL)
