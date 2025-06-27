@@ -22,7 +22,7 @@
 - ✅ EVERY code change must start with a GitHub issue.
 - ✅ If an issue doesn't exist, CREATE ONE.
 - ✅ Issues must be small enough to be completed in ≤7 days.
-- ✅ Use P0-BLOCKER → P0-CRITICAL → P1-HIGH → P2-MEDIUM ��� P3-LOW prioritization.
+- ✅ Use P0-BLOCKER → P0-CRITICAL → P1-HIGH → P2-MEDIUM → P3-LOW prioritization.
 - 🚨 VIOLATION = Work without a tracked issue.
 ### SEQ-2: CREATE A BRANCH
 # STEP 2: BRANCH (MANDATORY)
@@ -113,6 +113,11 @@
 - ✅ Before starting the new issue, ensure your `preview` branch is up-to-date with the remote.
 - ✅ Create a new feature branch from the `preview` branch for the new issue.
 - ✅ **Conflict Resolution Strategy:** When your previous PR is approved and merged, you MUST immediately update your current feature branch by rebasing it on the updated `preview` branch (`git rebase origin/preview`). This will prevent merge conflicts.
+### 💓 **ANTI-STALLING PROTOCOL**
+# ANTI-STALLING (LEVEL 2 - MANDATORY)
+- ✅ If a PR is blocked or under review, you MUST immediately list all open issues and select the next one to work on.
+- ✅ If no other issues exist, you MUST create a new issue titled "Heartbeat: Check PR Status and Backlog".
+- ✅ The "Heartbeat" issue involves checking the status of all open PRs. If comments are not yet available, the issue is closed, and a new "Heartbeat" issue is immediately created to continue the loop, preventing a stalled state.
 - --
 ## LEVEL 3: QUALITY GATES (MANDATORY)
 ### 🧪 **100% TEST COVERAGE REQUIRED**
