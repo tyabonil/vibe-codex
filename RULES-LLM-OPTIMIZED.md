@@ -22,7 +22,7 @@
 - ✅ EVERY code change must start with a GitHub issue.
 - ✅ If an issue doesn't exist, CREATE ONE.
 - ✅ Issues must be small enough to be completed in ≤7 days.
-- ✅ Use P0-BLOCKER → P0-CRITICAL → P1-HIGH → P2-MEDIUM ��� P3-LOW prioritization.
+- ✅ Use P0-BLOCKER → P0-CRITICAL → P1-HIGH → P2-MEDIUM → P3-LOW prioritization.
 - 🚨 VIOLATION = Work without a tracked issue.
 ### SEQ-2: CREATE A BRANCH
 # STEP 2: BRANCH (MANDATORY)
@@ -113,6 +113,16 @@
 - ✅ Before starting the new issue, ensure your `preview` branch is up-to-date with the remote.
 - ✅ Create a new feature branch from the `preview` branch for the new issue.
 - ✅ **Conflict Resolution Strategy:** When your previous PR is approved and merged, you MUST immediately update your current feature branch by rebasing it on the updated `preview` branch (`git rebase origin/preview`). This will prevent merge conflicts.
+### 🚨 **PR REMEDIATION PROTOCOL**
+# PR REMEDIATION (LEVEL 2 - MANDATORY)
+- ✅ If a PR has violations, you MUST address them in the same PR.
+- ✅ **Step 1: Read the violations.** Understand what needs to be fixed.
+- ✅ **Step 2: Fix the violations.** Make the necessary code changes.
+- ✅ **Step 3: Commit the fixes.** Use a clear commit message (e.g., `fix: Address PR violations`).
+- ✅ **Step 4: Push the changes.** Push the new commit to the same feature branch.
+- ✅ **Step 5: Re-request review.** Comment on the PR to notify reviewers that the violations have been addressed.
+- ❌ **DO NOT** close a PR with violations unless you are starting over.
+- ❌ **DO NOT** open a new PR for the same issue without closing the old one.
 - --
 ## LEVEL 3: QUALITY GATES (MANDATORY)
 ### 🧪 **100% TEST COVERAGE REQUIRED**
