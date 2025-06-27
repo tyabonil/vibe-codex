@@ -47,7 +47,7 @@ function parseAndOptimize(markdown) {
             // Skip markdown blocks
         } else if (line.startsWith('```')) {
             // Skip code blocks
-        } else {
+        } else if (line.trim() !== '') {
             // Keep other lines
             optimized += `${line}\n`;
         }
