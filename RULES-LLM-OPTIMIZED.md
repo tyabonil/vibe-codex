@@ -113,7 +113,11 @@
 - ✅ Before starting the new issue, ensure your `preview` branch is up-to-date with the remote.
 - ✅ Create a new feature branch from the `preview` branch for the new issue.
 - ✅ **Conflict Resolution Strategy:** When your previous PR is approved and merged, you MUST immediately update your current feature branch by rebasing it on the updated `preview` branch (`git rebase origin/preview`). This will prevent merge conflicts.
-<<<<<<< HEAD
+### 💬 **GITHUB ISSUES AS SINGLE SOURCE OF TRUTH**
+# GITHUB ISSUES (LEVEL 2 - MANDATORY)
+- ✅ All issue tracking, updates, and planning MUST be done on the remote GitHub issues.
+- ✅ Use the `gh` CLI to interact with GitHub issues.
+- ❌ Local files must not be used as a substitute for GitHub issues.
 ### 🚨 **PR REMEDIATION PROTOCOL**
 # PR REMEDIATION (LEVEL 2 - MANDATORY)
 - ✅ If a PR has violations, you MUST address them in the same PR.
@@ -124,14 +128,6 @@
 - ✅ **Step 5: Re-request review.** Comment on the PR to notify reviewers that the violations have been addressed.
 - ❌ **DO NOT** close a PR with violations unless you are starting over.
 - ❌ **DO NOT** open a new PR for the same issue without closing the old one.
-=======
-### 🚀 **MOVE ON TO THE NEXT ISSUE**
-# MOVE ON (LEVEL 2 - MANDATORY)
-- ✅ While waiting for a PR review or other blocker, you MUST move on to the next available issue.
-- ✅ Before starting the new issue, ensure your `preview` branch is up-to-date with the remote.
-- ✅ Create a new feature branch from the `preview` branch for the new issue.
-- ✅ **Conflict Resolution Strategy:** When your previous PR is approved and merged, you MUST immediately update your current feature branch by rebasing it on the updated `preview` branch (`git rebase origin/preview`). This will prevent merge conflicts.
->>>>>>> 8a3b7cf (feat: Refine secret scanner and add 'Move On' rule)
 - --
 ## LEVEL 3: QUALITY GATES (MANDATORY)
 ### 🧪 **100% TEST COVERAGE REQUIRED**
@@ -241,6 +237,9 @@
 - [ ] Will this overwrite environment files? (LEVEL 1 - ASK if yes)
 - [ ] Am I following the SEQUENTIAL GITHUB WORKFLOW? (LEVEL 2 - FOLLOW STEPS)
 - [ ] Is this work blocked and should be assigned? (LEVEL 2 - ASSIGN if yes)
+### **During Issue Work:**
+- [ ] Have I tested my build locally before committing dependency changes? (LEVEL 2 - TEST if yes)
+- [ ] Am I using GitHub issues as the single source of truth? (LEVEL 2 - VERIFY)
 ### **During Issue Work:**
 - [ ] **Am I documenting my thought process on the issue?** (LEVEL 3 - DOCUMENT)
 - [ ] **Any external LLM consultations to capture?** (LEVEL 3 - DOCUMENT)

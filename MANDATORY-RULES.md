@@ -161,6 +161,14 @@
 - ✅ **Conflict Resolution Strategy:** When your previous PR is approved and merged, you MUST immediately update your current feature branch by rebasing it on the updated `preview` branch (`git rebase origin/preview`). This will prevent merge conflicts.
 ```
 
+### 💬 **GITHUB ISSUES AS SINGLE SOURCE OF TRUTH**
+```markdown
+# GITHUB ISSUES (LEVEL 2 - MANDATORY)
+- ✅ All issue tracking, updates, and planning MUST be done on the remote GitHub issues.
+- ✅ Use the `gh` CLI to interact with GitHub issues.
+- ❌ Local files must not be used as a substitute for GitHub issues.
+```
+
 ### 🚨 **PR REMEDIATION PROTOCOL**
 ```markdown
 # PR REMEDIATION (LEVEL 2 - MANDATORY)
@@ -325,8 +333,14 @@
 - [ ] Is this work blocked and should be assigned? (LEVEL 2 - ASSIGN if yes)
 
 ### **During Issue Work:**
+- [ ] Have I tested my build locally before committing dependency changes? (LEVEL 2 - TEST if yes)
+- [ ] Am I using GitHub issues as the single source of truth? (LEVEL 2 - VERIFY)
+```
+
+### **During Issue Work:**
 - [ ] **Am I documenting my thought process on the issue?** (LEVEL 3 - DOCUMENT)
 - [ ] **Any external LLM consultations to capture?** (LEVEL 3 - DOCUMENT)
+```
 
 ### **After Creating Every PR:**
 - [ ] **Are ALL comments and feedback on PRs being read?** (LEVEL 3 - READ ALL)
