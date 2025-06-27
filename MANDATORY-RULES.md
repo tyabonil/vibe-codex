@@ -152,6 +152,15 @@
 - ✅ This is a mandatory part of the workflow to ensure the rules are always improving.
 ```
 
+### 🚀 **MOVE ON TO THE NEXT ISSUE**
+```markdown
+# MOVE ON (LEVEL 2 - MANDATORY)
+- ✅ While waiting for a PR review or other blocker, you MUST move on to the next available issue.
+- ✅ Before starting the new issue, ensure your `preview` branch is up-to-date with the remote.
+- ✅ Create a new feature branch from the `preview` branch for the new issue.
+- ✅ **Conflict Resolution Strategy:** When your previous PR is approved and merged, you MUST immediately update your current feature branch by rebasing it on the updated `preview` branch (`git rebase origin/preview`). This will prevent merge conflicts.
+```
+
 ---
 
 ## ⚡ LEVEL 3: QUALITY GATES (MANDATORY)

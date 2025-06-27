@@ -33,7 +33,10 @@ class RuleEngine {
     
     for (const file of files) {
       // Check for secrets in file content
-      if (file.patch && this.containsSecrets(file.patch)) {
+      const isTestFile = file.filename.includes('test');
+      const patterns = isTestFile ? [/[A-Za-z0-9+/]{20,}={0,2}/g] : this.secretPatterns;
+      
+      if (file.patch && this.containsSecrets(file.patch, patterns)) {
         violations.push({
           level: 1,
           type: 'SECURITY',
