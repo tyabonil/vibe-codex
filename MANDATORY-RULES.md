@@ -398,7 +398,6 @@ These rules were developed through research of established coding practices and 
 
 ### **AI-First Development Research**
 Research conducted on established AI development repositories (used for inspiration, not direct copying):
-
 - **PatrickJS/awesome-cursorrules** (28.6k⭐) - Comprehensive Cursor-specific patterns
 - **Kristories/awesome-guidelines** (10.1k⭐) - Industry coding standards compilation
 - **JuanCrg90/Clean-Code-Notes** (6k⭐) - Clean Code principles documentation
