@@ -103,7 +103,7 @@ class RuleEngine {
 
     // SEQ-2: Check branch naming convention
     const branchName = prData.head.ref;
-    if (!this.isValidBranchName(branchName)) {
+    if (branchName !== 'preview' && !this.isValidBranchName(branchName)) {
       violations.push({
         level: 2,
         type: 'WORKFLOW',
@@ -117,7 +117,7 @@ class RuleEngine {
     }
     
     // SEQ-4: Check PR target branch
-    if (prData.base.ref === 'main' || prData.base.ref === 'master') {
+    if (prData.base.ref === 'main' && prData.head.ref !== 'preview') {
         violations.push({
           level: 2,
           type: 'WORKFLOW',
