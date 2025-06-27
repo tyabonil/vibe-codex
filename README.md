@@ -5,10 +5,10 @@
 This repository has been refactored to provide a single, authoritative source of truth for both humans and LLMs, ensuring consistency and efficiency.
 
 ### **For Humans: The Source of Truth**
-- **[MANDATORY-RULES.md](MANDATORY-RULES.md)**: This is the complete, human-readable guide to all rules, including context, reasoning, and examples. **All rule changes should be made here.**
+- **MANDATORY-RULES.md**: This is the complete, human-readable guide to all rules, including context, reasoning, and examples. **All rule changes should be made here.**
 
 ### **For LLMs: The Optimized Instruction Set**
-- **[RULES-LLM-OPTIMIZED.md](RULES-LLM-OPTIMIZED.md)**: This is the token-efficient, structured version of the rules, specifically designed for LLM consumption. **This file is auto-generated from `MANDATORY-RULES.md` and should not be edited directly.**
+- **RULES-LLM-OPTIMIZED.md**: This is the token-efficient, structured version of the rules, specifically designed for LLM consumption. **This file is auto-generated from `MANDATORY-RULES.md` and should not be edited directly.**
 
 ---
 
