@@ -10,7 +10,7 @@ describe('buildOptimizedRules', () => {
         // Create a dummy MANDATORY-RULES.md file
         const dummyMarkdown = `
 ## ⚡ LEVEL 1: SECURITY & SAFETY (NON-NEGOTIABLE)
-### 🔐 **NEVER COMMIT SECRETS**
+### 🔐 **NEVER COMMIT SENSITIVE INFO**
 - ❌ NEVER commit .env files
 - ✅ ALWAYS use environment variables
 

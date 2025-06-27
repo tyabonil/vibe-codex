@@ -6,14 +6,7 @@
 class RuleEngine {
   constructor() {
     this.secretPatterns = [
-      /api_key/gi,
-      /password/gi,
-      /token/gi,
-      /secret/gi,
-      /auth_token/gi,
-      /access_key/gi,
-      /private_key/gi,
-      /[A-Za-z0-9+/]{20,}={0,2}/g // Base64 patterns
+      /['"][A-Za-z0-9+/]{20,}={0,2}['"]/g // Base64 patterns
     ];
     
     this.envFilePatterns = [
