@@ -25,6 +25,62 @@
 
 ## ⚡ LEVEL 2: WORKFLOW INTEGRITY (MANDATORY)
 
+### SEQ-1: CREATE OR IDENTIFY AN ISSUE
+```markdown
+# STEP 1: ISSUE (MANDATORY)
+- ✅ EVERY code change must start with a GitHub issue.
+- ✅ If an issue doesn't exist, CREATE ONE.
+- ✅ Issues must be small enough to be completed in ≤7 days.
+- ✅ Use P0-BLOCKER → P0-CRITICAL → P1-HIGH → P2-MEDIUM → P3-LOW prioritization.
+- 🚨 VIOLATION = Work without a tracked issue.
+```
+
+### SEQ-2: CREATE A BRANCH
+```markdown
+# STEP 2: BRANCH (MANDATORY)
+- ✅ Create a branch from the `preview` branch.
+- ✅ Branch name must reference the issue: `feature/issue-{number}-{description}`.
+- ✅ Example: `feature/issue-123-add-login-page`.
+- 🚨 VIOLATION = Incorrect branch name or branching from `main`.
+```
+
+### SEQ-3: IMPLEMENT AND COMMIT
+```markdown
+# STEP 3: COMMIT (MANDATORY)
+- ✅ Make small, atomic commits.
+- ✅ Commit messages must be clear and descriptive.
+- ✅ Reference the issue in your commit messages (e.g., `feat: add login form, resolves #123`).
+- 🚨 VIOLATION = Vague or unrelated commits.
+```
+
+### SEQ-4: CREATE A PULL REQUEST
+```markdown
+# STEP 4: PULL REQUEST (MANDATORY)
+- ✅ Create a Pull Request (PR) as soon as you have made your first commit.
+- ✅ The PR title must reference the issue number.
+- ✅ The PR body must describe the changes and reference the issue.
+- ✅ The PR should target the `preview` branch, NOT `main`.
+- 🚨 VIOLATION = Late or incorrectly targeted PRs.
+```
+
+### SEQ-5: ADDRESS FEEDBACK AND MERGE
+```markdown
+# STEP 5: REVIEW & MERGE (MANDATORY)
+- ✅ Request a review from `@copilot` immediately after creating the PR.
+- ✅ Address ALL feedback from reviewers and automated checks.
+- ✅ Once approved, merge the PR into the `preview` branch.
+- 🚨 VIOLATION = Merging with unaddressed feedback.
+```
+
+### SEQ-6: CLEAN UP
+```markdown
+# STEP 6: CLEANUP (MANDATORY)
+- ✅ After merging, close the issue if it's fully resolved.
+- ✅ Comment on the issue with the resolution and PR link.
+- ✅ Delete the feature branch after the PR is merged.
+- 🚨 VIOLATION = Leaving stale branches or open issues.
+```
+
 ### 🔬 **MANDATORY LLM TOKEN EFFICIENCY OPTIMIZATION**
 ```markdown
 # LLM TOKEN EFFICIENCY (LEVEL 2 - MANDATORY)
@@ -40,37 +96,30 @@
 - 🚨 VIOLATION = Token waste, increased costs, slower LLM processing
 ```
 
-### 🏗️‍♂️ **ALWAYS USE MCP GITHUB API TOOLS FOR REMOTE OPERATIONS**
+### 🏗️‍♂️ **GIT REMOTE OPERATIONS HIERARCHY**
 ```markdown
-# GITHUB API RULES (LEVEL 2 - MANDATORY)
-- ✅ ALWAYS use mcp_github_* tools for ALL remote operations (GitHub API interactions)
-- ✅ Use mcp_github_create_branch instead of git checkout -b (remote branch creation)
-- ✅ Use mcp_github_push_files instead of git push (remote updates)
-- ✅ Use mcp_github_create_pull_request for all PRs (remote PR creation)
-- ✅ Use mcp_github_get_file_contents for remote file access
-- ✅ Use terminal git commands ONLY for local operations (checkout, status, local pulls)
-- ❌ NEVER use terminal for remote operations (push, remote branch creation, PR creation)
-- 🚨 FAILURE = Remote operations via terminal cause workflow failures
-```
+# GIT REMOTE OPERATIONS (LEVEL 2 - MANDATORY)
+- ✅ Use the following hierarchy to interact with git remotes. Try them in order, and if one fails, try the next.
 
-### 🔍 **MANDATORY GITHUB WORKFLOW VALIDATION**
-```markdown
-# GITHUB WORKFLOW VALIDATION (LEVEL 2 - MANDATORY)
-**BEFORE every git action:**
-- [ ] Review MANDATORY-RULES.md GitHub workflow section
-- [ ] Validate issue exists for this work
-- [ ] Confirm using correct branch (never main/master directly)
-- [ ] Verify using appropriate MCP GitHub API tools
-- [ ] Check: Is this the right workflow step (Issue → Branch → PR → Merge)?
+**1. Local `gh` CLI (Preferred)**
+- **Check for:** `gh --version`
+- **Use for:** `gh pr create`, `gh issue create`, etc.
+- **Benefit:** Fast, local, and integrates well with scripts.
 
-**AFTER every git action:**
-- [ ] Verify no workflow violations occurred
-- [ ] Confirm proper Issue → Branch → PR → Merge sequence followed
-- [ ] Check: Did I use correct MCP API tools vs terminal commands?
-- [ ] Document any violations immediately for learning
-- [ ] Update memory with lessons learned if violations found
+**2. MCP Tools**
+- **Check for:** Availability of `mcp_github_*` tools.
+- **Use for:** `mcp_github_create_pull_request`, `mcp_github_create_issue`, etc.
+- **Benefit:** Robust, reliable, and good for complex operations.
 
-- 🚨 VIOLATION = Complete workflow integrity failure - document and prevent recurrence
+**3. Command-line `git` with SSH**
+- **Check for:** `git remote -v` shows `git@github.com:...`
+- **Use for:** `git push`, `git pull`, etc.
+- **Benefit:** Secure and widely used.
+
+**4. Command-line `git` with HTTPS**
+- **Check for:** `git remote -v` shows `https://github.com/...`
+- **Use for:** `git push`, `git pull`, etc.
+- **Benefit:** Works everywhere, but may require authentication.
 ```
 
 ### 🖥️‍♂️ **ALWAYS PREFER LINUX/POSIX TERMINALS**
@@ -94,33 +143,13 @@
 - 🚨 VIOLATION = Wasted time on impossible tasks
 ```
 
-### 📝 **CREATE ISSUES FOR ALL WORK**
+### 🤖 **LLM RULE IMPROVEMENT PROCESS**
 ```markdown
-# ISSUE TRACKING (LEVEL 2 - MANDATORY)
-- ✅ EVERY code change must reference an issue
-- ✅ Create issues ≤7 days estimated completion
-- ✅ Break large issues into smaller, buildable increments
-- ✅ Use P0-BLOCKER → P0-CRITICAL → P1-HIGH → P2-MEDIUM → P3-LOW prioritization
-- 🚨 VIOLATION = Work without proper tracking
-```
-
-### 🔄 **POST-MERGE WORKFLOW ACTIONS**
-```markdown
-# POST-MERGE MANDATORY ACTIONS (LEVEL 2 - MANDATORY)
-- ✅ ALWAYS recheck related issues after successful PR merge to preview
-- ✅ ALWAYS comment on issues with completion status and close if fully resolved
-- ✅ ALWAYS ensure local main and preview branches are 100% aligned with remote
-- ✅ ALWAYS use MCP GitHub API for remote operations:
-  - Use mcp_github_get_file_contents to verify remote branch states
-  - Use mcp_github_list_commits to check synchronization status
-- ✅ ALWAYS use terminal for local operations:
-  - git checkout main (local branch switch)
-  - git checkout preview (local branch switch)
-  - git status (verify clean working directory)
-  - git pull origin main (local sync from remote)
-  - git pull origin preview (local sync from remote)
-- ❌ NEVER proceed to next work without branch synchronization
-- 🚨 VIOLATION = Branch drift, merge conflicts, and workflow failures
+# LLM RULE IMPROVEMENT (LEVEL 2 - MANDATORY)
+- ✅ If you encounter a rule that is unclear, contradictory, or difficult to follow, you MUST suggest an improvement.
+- ✅ To do so, open an issue in the `tyabonil/cursor_rules` repository.
+- ✅ The issue should clearly describe the problem and suggest a specific change to the rules.
+- ✅ This is a mandatory part of the workflow to ensure the rules are always improving.
 ```
 
 ---
@@ -137,15 +166,6 @@
 - 🚨 VIOLATION = No merge until coverage achieved
 ```
 
-### 👨‍💻‍👨‍💻 **ALWAYS REQUEST COPILOT REVIEW**
-```markdown
-# COPILOT REVIEW REQUEST (LEVEL 3 - MANDATORY)
-- ✅ ALWAYS request Copilot review for every PR using mcp_github_request_copilot_review
-- ✅ Request review IMMEDIATELY after PR creation, before any merging
-- ✅ NO exceptions - every code change must get Copilot review
-- 🚨 VIOLATION = PR created without Copilot review request
-```
-
 ### 👨‍💻‍👨‍💻 **ALL COPILOT FEEDBACK MUST BE ADDRESSED**
 ```markdown
 # COPILOT REVIEW RESPONSE (LEVEL 3 - MANDATORY)
@@ -154,6 +174,19 @@
 - ✅ Address or explicitly justify ignoring each comment
 - ✅ Document resolution approach in PR conversation
 - 🚨 VIOLATION = No merge until all feedback addressed
+```
+
+### 🤖 **MANDATORY LLM SELF-REVIEW**
+```markdown
+# LLM SELF-REVIEW (LEVEL 3 - MANDATORY)
+- ✅ After creating a PR, you MUST perform a self-review.
+- ✅ **Step 1: Re-read the Issue.** Does your PR fully address the problem?
+- ✅ **Step 2: Update the Issue.** Comment on the issue with your progress and a link to the PR.
+- ✅ **Step 3: Review the PR Files.** Read through your own changes with a fresh perspective.
+- ✅ **Step 4: Verify Rule Compliance.** Does the PR follow all rules in this document?
+- ✅ **Step 5: Comment on Violations.** If you find any violations or areas for improvement, you MUST comment on your own PR to document them.
+- ✅ **Step 6: Address All Comments.** You MUST read and address every comment on the PR and the issue, including your own.
+- 🚨 VIOLATION = Skipping the self-review process.
 ```
 
 ### 💬 **MANDATORY PR FEEDBACK RESPONSE - READ AND ADDRESS ALL COMMENTS**
@@ -246,15 +279,6 @@
 - ✅ Clean, organized codebase structure
 ```
 
-### 🌿 **BRANCH MANAGEMENT**
-```markdown
-# BRANCH WORKFLOW (LEVEL 4 - STRONGLY RECOMMENDED)  
-- ✅ Never merge into main/master - use preview branch
-- ✅ Create branch referencing issue: feature/issue-{number}-{description}
-- ✅ Clean branch transitions with proper file management
-- ✅ Document transitions in PROJECT_CONTEXT.md
-```
-
 ### 🤝 **LLM PLAN VERIFICATION**
 ```markdown
 # CROSS-LLM VALIDATION (LEVEL 4 - STRONGLY RECOMMENDED)
@@ -275,16 +299,8 @@
 ### **Before Every Action:**
 - [ ] Will this commit secrets? (LEVEL 1 - STOP if yes)
 - [ ] Will this overwrite environment files? (LEVEL 1 - ASK if yes)
-- [ ] Should I use MCP GitHub API instead of terminal git? (LEVEL 2 - YES)
-- [ ] **Have I reviewed GitHub workflow rules?** (LEVEL 2 - REVIEW first)
-- [ ] **Is there an issue for this work?** (LEVEL 2 - CREATE if no)
-- [ ] **Am I using the correct branch (not main)?** (LEVEL 2 - VERIFY)
+- [ ] Am I following the SEQUENTIAL GITHUB WORKFLOW? (LEVEL 2 - FOLLOW STEPS)
 - [ ] Is this work blocked and should be assigned? (LEVEL 2 - ASSIGN if yes)
-
-### **After Every Git Action:**
-- [ ] **Did I follow the proper Issue → Branch → PR → Merge workflow?** (LEVEL 2 - VERIFY)
-- [ ] **Did I use correct MCP tools vs terminal commands?** (LEVEL 2 - VERIFY)
-- [ ] **Any violations occurred that need documenting?** (LEVEL 2 - DOCUMENT)
 
 ### **During Issue Work:**
 - [ ] **Am I documenting my thought process on the issue?** (LEVEL 3 - DOCUMENT)
@@ -306,7 +322,6 @@
 
 ### **Before Every Merge:**
 - [ ] Is test coverage 100% for new code? (LEVEL 3 - BLOCK if no)
-- [ ] Was Copilot review requested for this PR? (LEVEL 3 - REQUEST if no)
 - [ ] Is all Copilot feedback addressed? (LEVEL 3 - BLOCK if no)  
 - [ ] Is PROJECT_CONTEXT.md updated? (LEVEL 3 - UPDATE if no)
 - [ ] **Are thought processes documented on the issue?** (LEVEL 3 - DOCUMENT)

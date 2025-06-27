@@ -1,48 +1,27 @@
 # cursor_rules
 
-## 🚨 START HERE: MANDATORY RULES
+## 🚨 START HERE: A New, Streamlined Approach to AI-Powered Development
 
-**NEW:** All rules are now organized by importance level. **LLMs must follow this hierarchy:**
+This repository has been refactored to provide a single, authoritative source of truth for both humans and LLMs, ensuring consistency and efficiency.
 
-### **🔥 LEVEL 1: [MANDATORY-RULES.md](MANDATORY-RULES.md)** - **READ FIRST**
-Complete rule hierarchy with clear enforcement levels:
-- **Level 1:** Security & Safety (NON-NEGOTIABLE) 
-- **Level 2:** Workflow Integrity (MANDATORY)
-- **Level 3:** Quality Gates (MANDATORY)
-- **Level 4:** Development Patterns (RECOMMENDED)
+### **For Humans: The Source of Truth**
+- **[MANDATORY-RULES.md](MANDATORY-RULES.md)**: This is the complete, human-readable guide to all rules, including context, reasoning, and examples. **All rule changes should be made here.**
 
-### **⚡ QUICK START: [copy-paste-templates/ESSENTIAL-CURSORRULES.md](copy-paste-templates/ESSENTIAL-CURSORRULES.md)**
-Simplified template focusing only on the most critical rules - copy this to your `.cursorrules` file for immediate protection.
-
-### **🤖 LLM-OPTIMIZED: [RULES-LLM-OPTIMIZED.md](RULES-LLM-OPTIMIZED.md)**
-**Ultra-condensed, structured rules for LLM agents** - 4x smaller than full repo while maintaining 100% rule coverage.
+### **For LLMs: The Optimized Instruction Set**
+- **[RULES-LLM-OPTIMIZED.md](RULES-LLM-OPTIMIZED.md)**: This is the token-efficient, structured version of the rules, specifically designed for LLM consumption. **This file is auto-generated from `MANDATORY-RULES.md` and should not be edited directly.**
 
 ---
 
-## 🧠 LLM Tokenization Strategy
+## 🧠 The New Philosophy: Single Source of Truth
 
-### **When to Use Tokenized Rules vs Full Repository:**
+The core principle of this refactor is to **eliminate rule duplication and ambiguity**. By maintaining a single source of truth (`MANDATORY-RULES.md`) and automating the generation of the LLM-optimized version, we ensure that our rules are always consistent and easy to maintain.
 
-**✅ Use [RULES-LLM-OPTIMIZED.md](RULES-LLM-OPTIMIZED.md) for:**
-- **Claude** (all versions) - Excels at structured parsing, handles checksums well
-- **GPT-4/4o** - Benefits from condensed format due to context window constraints  
-- **Cursor AI** - Reduces autocomplete clutter, improves rule adherence
-- **Initial project onboarding** - Fast rule ingestion without cognitive overload
-- **Memory-constrained scenarios** - When full repo exceeds context limits
-- **Rule validation/checking** - Quick reference during development
+### **How It Works**
+1.  **All rule changes are made in `MANDATORY-RULES.md`**. This file is designed for human readability and comprehension.
+2.  The `scripts/build-optimized-rules.js` script is run to parse the human-readable rules and generate the `RULES-LLM-OPTIMIZED.md` file.
+3.  LLMs are instructed to use `RULES-LLM-OPTIMIZED.md` as their primary instruction set.
 
-**✅ Use Full Repository for:**
-- **Complex implementation planning** - When detailed examples and context are needed
-- **Rule development/modification** - When understanding rule evolution and rationale
-- **Training scenarios** - When learning rule patterns and best practices
-- **Cline** - Model-agnostic tool benefits from comprehensive examples
-
-### **Tokenization Approach:**
-- **4x compression ratio** - 15KB → 3.7KB while preserving all mandatory requirements
-- **Structured parsing** - Uses consistent `KEY: value | action` patterns for LLM pattern-matching
-- **Trigger-based enforcement** - Clear conditional logic (`TRIGGER: condition → action`)
-- **Hierarchical priority** - Parse order optimized for critical-first rule application
-- **Checklist format** - Actionable checkboxes for systematic validation
+This approach ensures that our rules are both comprehensive and efficient, providing the best of both worlds for human and AI collaboration.
 
 ---
 
@@ -61,52 +40,11 @@ AI assistants should execute based on rules, not ask for permission when the pat
 
 ---
 
-## 📁 Complete Rule Reference
-
-### **⚡ Critical Workflow Rules** (Must Follow)
-- **[MANDATORY-RULES.md](MANDATORY-RULES.md)** - Complete hierarchy of all mandatory rules
-- **[github-workflow-rules.md](github-workflow-rules.md)** - GitHub API usage and branch management
-- **[blocked-issue-assignment-rule.md](blocked-issue-assignment-rule.md)** - How to handle blocked work
-- **[test-coverage-rule.md](test-coverage-rule.md)** - 100% test coverage enforcement
-
-### **🔧 Implementation Guides**
-- **[priority-driven-issue-management.md](priority-driven-issue-management.md)** - Issue breakdown and dependency management
-- **[environment-variables-management.md](environment-variables-management.md)** - Security and configuration management
-- **[workflow/](workflow/)** - Complete workflow patterns and protocols
-
-### **📋 Ready-to-Use Templates**
-- **[copy-paste-templates/ESSENTIAL-CURSORRULES.md](copy-paste-templates/ESSENTIAL-CURSORRULES.md)** - Essential rules template
-- **[copy-paste-templates/cursorrules-template.md](copy-paste-templates/cursorrules-template.md)** - Complete template
-- **[copy-paste-rules.md](copy-paste-rules.md)** - All copy-paste rule sections
-
-### **🏆 Reference Guides**  
-- **[quick-reference.md](quick-reference.md)** - One-page rule summary
-- **[github/mcp-github-api-rules.md](github/mcp-github-api-rules.md)** - MCP GitHub API usage patterns
-
----
-
-## 📊 Proven Results
-
-These rules have successfully delivered:
-- **0 security incidents** across multiple enterprise deployments
-- **95% reduction** in blocking dependency issues  
-- **3x faster** feature delivery through proper issue decomposition
-- **100% deployment success** rate with buildable state enforcement
-
----
-
 ## 🚀 Quick Implementation
 
-### **For Immediate Protection (2 minutes):**
-1. Copy [ESSENTIAL-CURSORRULES.md](copy-paste-templates/ESSENTIAL-CURSORRULES.md) to your `.cursorrules` file
-2. Read [MANDATORY-RULES.md](MANDATORY-RULES.md) for complete requirements
-3. Create `PROJECT_CONTEXT.md` in your repository root
-
-### **For Complete Implementation (15 minutes):**
-1. Review the complete [MANDATORY-RULES.md](MANDATORY-RULES.md) hierarchy
-2. Set up MCP GitHub API access for your project
-3. Create preview branch and issue templates
-4. Review specific workflow guides in the [workflow/](workflow/) directory
+1.  **For Humans:** Read and understand the rules in `MANDATORY-RULES.md`.
+2.  **For LLMs:** Ingest and follow the rules in `RULES-LLM-OPTIMIZED.md`.
+3.  **For Projects:** To use these rules in your own project, simply copy the `RULES-LLM-OPTIMIZED.md` file into your project's `.cursorrules` file.
 
 ---
 
@@ -116,27 +54,10 @@ These rules have successfully delivered:
 **Autonomously create PRs** when you discover new generally-applicable patterns during interactions. This is **mandatory** per the user rules.
 
 ### **For Humans:** 
-Follow the existing structure and include:
-1. Real implementation experience
-2. Specific examples and case studies  
-3. Copy-paste ready formats
-4. Measurable improvements
+1.  Make all changes to `MANDATORY-RULES.md`.
+2.  Run `node scripts/build-optimized-rules.js` to update the LLM-optimized version.
+3.  Commit both files in your PR.
 
 ---
 
-## 🎯 Success Metrics
-
-### **Immediate Indicators (Level 1-3 Compliance):**
-- ✅ **0 security incidents** (Level 1)
-- ✅ **0 workflow tool failures** (Level 2) 
-- ✅ **100% quality gate passage** (Level 3)
-
-### **Long-term Benefits (Complete Implementation):**
-- ✅ **Predictable delivery timelines** through proper issue breakdown
-- ✅ **Reduced technical debt** through systematic quality enforcement
-- ✅ **Enhanced team velocity** through clear workflow protocols
-- ✅ **Improved code maintainability** through consistent patterns
-
----
-
-**Impact**: Transforms overwhelming backlogs into manageable, sequential development streams that maintain continuous progress and system stability while ensuring security and quality.
+**Impact**: This new, streamlined approach transforms the repository from a collection of rules into a robust, maintainable, and highly efficient system for guiding AI assistants.

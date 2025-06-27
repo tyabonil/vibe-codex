@@ -77,69 +77,9 @@ class RuleEngine {
     
     console.log('🔄 Checking workflow integrity...');
     
-    // Check for issue reference in PR
-    const hasIssueReference = this.hasIssueReference(prData.title, prData.body);
-    if (!hasIssueReference) {
-      violations.push({
-        level: 2,
-        type: 'WORKFLOW',
-        severity: 'BLOCKER',
-        rule: 'CREATE ISSUES FOR ALL WORK',
-        message: '📝 MANDATORY: No issue reference found in PR',
-        details: 'Every code change must reference an issue number.',
-        action: 'Add issue number to PR title or description (e.g., "Fixes #123")',
-        fix: 'Reference the issue number in PR title or description'
-      });
-    }
-    
-    // Check branch naming convention
-    const branchName = prData.head.ref;
-    if (!this.isValidBranchName(branchName)) {
-      violations.push({
-        level: 2,
-        type: 'WORKFLOW',
-        severity: 'MANDATORY',
-        rule: 'BRANCH NAMING CONVENTION',
-        message: `🌿 Branch naming violation: ${branchName}`,
-        details: 'Branch should follow pattern: feature/issue-{number}-{description}',
-        action: 'Rename branch to follow naming convention',
-        fix: 'Use: feature/issue-{number}-{short-description} or bugfix/issue-{number}-{description}'
-      });
-    }
-    
-    // Check if PROJECT_CONTEXT.md updated for significant changes
-    const hasSignificantChanges = this.hasSignificantChanges(files);
-    const projectContextUpdated = files.some(f => f.filename === 'PROJECT_CONTEXT.md');
-    
-    if (hasSignificantChanges && !projectContextUpdated) {
-      violations.push({
-        level: 2,
-        type: 'WORKFLOW',
-        severity: 'MANDATORY',
-        rule: 'UPDATE PROJECT_CONTEXT.md',
-        message: '📚 PROJECT_CONTEXT.md not updated for significant changes',
-        details: 'Significant changes detected but PROJECT_CONTEXT.md not updated.',
-        action: 'Update PROJECT_CONTEXT.md with implementation approach and reasoning',
-        fix: 'Add documentation of changes to PROJECT_CONTEXT.md'
-      });
-    }
-    
-    // Check for MCP GitHub API usage vs terminal git
-    const terminalGitUsage = this.detectTerminalGitUsage(commits);
-    if (terminalGitUsage.length > 0) {
-      violations.push({
-        level: 2,
-        type: 'WORKFLOW',
-        severity: 'MANDATORY',
-        rule: 'ALWAYS USE MCP GITHUB API',
-        message: '🔧 Terminal git usage detected instead of MCP GitHub API',
-        details: 'Found evidence of terminal git commands in commit messages.',
-        action: 'Use mcp_github_* tools for all remote operations',
-        fix: 'Replace terminal git commands with MCP GitHub API tools',
-        evidence: terminalGitUsage
-      });
-    }
-    
+    const sequentialWorkflowViolations = await this.checkSequentialWorkflow(prData, files, commits, githubClient);
+    violations.push(...sequentialWorkflowViolations);
+
     // Check for proper token efficiency (file count and duplication)
     const tokenEfficiencyViolations = this.checkTokenEfficiency(files);
     violations.push(...tokenEfficiencyViolations);
@@ -147,6 +87,59 @@ class RuleEngine {
     console.log(`🔄 Level 2 Workflow: ${violations.length} violations found`);
     return violations;
   }
+
+  /**
+   * New function to check the sequential workflow
+   */
+  async checkSequentialWorkflow(prData, files, commits, githubClient) {
+    const violations = [];
+
+    // SEQ-1: Check for issue reference
+    if (!this.hasIssueReference(prData.title, prData.body)) {
+      violations.push({
+        level: 2,
+        type: 'WORKFLOW',
+        severity: 'BLOCKER',
+        rule: 'SEQ-1: CREATE OR IDENTIFY AN ISSUE',
+        message: '📝 MANDATORY: No issue reference found in PR',
+        details: 'Every code change must start with a GitHub issue.',
+        action: 'Add issue number to PR title or description (e.g., "Fixes #123")',
+        fix: 'Reference the issue number in PR title or description'
+      });
+    }
+
+    // SEQ-2: Check branch naming convention
+    const branchName = prData.head.ref;
+    if (!this.isValidBranchName(branchName)) {
+      violations.push({
+        level: 2,
+        type: 'WORKFLOW',
+        severity: 'MANDATORY',
+        rule: 'SEQ-2: CREATE A BRANCH',
+        message: `🌿 Branch naming violation: ${branchName}`,
+        details: 'Branch should follow pattern: feature/issue-{number}-{description}',
+        action: 'Rename branch to follow naming convention',
+        fix: 'Use: feature/issue-{number}-{short-description} or bugfix/issue-{number}-{description}'
+      });
+    }
+    
+    // SEQ-4: Check PR target branch
+    if (prData.base.ref === 'main' || prData.base.ref === 'master') {
+        violations.push({
+          level: 2,
+          type: 'WORKFLOW',
+          severity: 'BLOCKER',
+          rule: 'SEQ-4: CREATE A PULL REQUEST',
+          message: 'PR targets main/master branch directly',
+          details: 'PRs should target the preview branch, not main.',
+          action: 'Change the base branch of the PR to `preview`',
+          fix: 'Update the PR to target the `preview` branch.'
+        });
+    }
+
+    return violations;
+  }
+
 
   /**
    * Level 3: Quality Gates (MANDATORY)
@@ -206,20 +199,6 @@ class RuleEngine {
           fix: 'Break large files into smaller, single-responsibility modules'
         });
       }
-    }
-    
-    // Check for merge to main/master
-    if (prData.base.ref === 'main' || prData.base.ref === 'master') {
-      violations.push({
-        level: 4,
-        type: 'PATTERN',
-        severity: 'RECOMMENDED',
-        rule: 'NEVER MERGE TO MAIN',
-        message: '🌿 PR targets main/master branch directly',
-        details: 'Should merge to preview branch first.',
-        action: 'Change target branch to preview',
-        fix: 'Update PR to target preview branch instead of main'
-      });
     }
     
     // Check for code duplication patterns
