@@ -138,6 +138,16 @@
 - ✅ All issue tracking, updates, and planning MUST be done on the remote GitHub issues.
 - ✅ Use the `gh` CLI to interact with GitHub issues.
 - ❌ Local files must not be used as a substitute for GitHub issues.
+### 💓 **ANTI-STALLING PROTOCOL**
+# ANTI-STALLING (LEVEL 2 - MANDATORY)
+- ✅ If a PR is blocked or under review, you MUST immediately list all open issues and select the next one to work on.
+- ✅ If no other issues exist, you MUST create a new issue titled "Heartbeat: Check PR Status and Backlog".
+- ✅ The "Heartbeat" issue involves checking the status of all open PRs. If comments are not yet available, the issue is closed, and a new "Heartbeat" issue is immediately created to continue the loop, preventing a stalled state.
+### 💓 **ANTI-STALLING PROTOCOL**
+# ANTI-STALLING (LEVEL 2 - MANDATORY)
+- ✅ If a PR is blocked or under review, you MUST immediately list all open issues and select the next one to work on.
+- ✅ If no other issues exist, you MUST create a new issue titled "Heartbeat: Check PR Status and Backlog".
+- ✅ The "Heartbeat" issue involves checking the status of all open PRs. If comments are not yet available, the issue is closed, and a new "Heartbeat" issue is immediately created to continue the loop, preventing a stalled state.
 ### 🚨 **PR REMEDIATION PROTOCOL**
 # PR REMEDIATION (LEVEL 2 - MANDATORY)
 - ✅ If a PR has violations, you MUST address them in the same PR.
