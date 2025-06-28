@@ -161,6 +161,15 @@
 - ✅ **Conflict Resolution Strategy:** When your previous PR is approved and merged, you MUST immediately update your current feature branch by rebasing it on the updated `preview` branch (`git rebase origin/preview`). This will prevent merge conflicts.
 ```
 
+### 💡 **AVOIDABLE INEFFICIENCY ISSUE CREATION**
+```markdown
+# AVOIDABLE INEFFICIENCY (LEVEL 2 - P0-BLOCKER)
+- ✅ If you identify an inefficiency that could be prevented by a new rule, you MUST create an issue.
+- ✅ The issue should be titled "Optimization: [Description of optimization]".
+- ✅ The issue body should detail the inefficient action and the proposed optimization.
+- ✅ Your only responsibility is to CREATE THE ISSUE, NOT WORK ON IT.
+```
+
 ### 🚨 **PR REMEDIATION PROTOCOL**
 ```markdown
 # PR REMEDIATION (LEVEL 2 - MANDATORY)
@@ -323,6 +332,7 @@
 - [ ] Will this overwrite environment files? (LEVEL 1 - ASK if yes)
 - [ ] Am I following the SEQUENTIAL GITHUB WORKFLOW? (LEVEL 2 - FOLLOW STEPS)
 - [ ] Is this work blocked and should be assigned? (LEVEL 2 - ASSIGN if yes)
+- [ ] Have I identified any avoidable inefficiencies? (LEVEL 2 - CREATE ISSUE if yes)
 
 ### **During Issue Work:**
 - [ ] **Am I documenting my thought process on the issue?** (LEVEL 3 - DOCUMENT)
