@@ -133,6 +133,11 @@
 - ✅ NEVER commit dependency changes without successful local build
 - ✅ DELETE node_modules & package-lock.json for clean testing when conflicts arise
 - 🚫 VIOLATION = Dependency commits without build verification
+### 💬 **GITHUB ISSUES AS SINGLE SOURCE OF TRUTH**
+# GITHUB ISSUES (LEVEL 2 - MANDATORY)
+- ✅ All issue tracking, updates, and planning MUST be done on the remote GitHub issues.
+- ✅ Use the `gh` CLI to interact with GitHub issues.
+- ❌ Local files must not be used as a substitute for GitHub issues.
 ### 🚨 **PR REMEDIATION PROTOCOL**
 # PR REMEDIATION (LEVEL 2 - MANDATORY)
 - ✅ If a PR has violations, you MUST address them in the same PR.
@@ -257,6 +262,7 @@
 ### **During Issue Work:**
 - [ ] **Am I documenting my thought process on the issue?** (LEVEL 3 - DOCUMENT)
 - [ ] **Any external LLM consultations to capture?** (LEVEL 3 - DOCUMENT)
+- [ ] Am I using GitHub issues as the single source of truth? (LEVEL 2 - VERIFY)
 - [ ] Have I tested my build locally before committing dependency changes? (LEVEL 2 - TEST if yes)
 ### **After Creating Every PR:**
 - [ ] **Are ALL comments and feedback on PRs being read?** (LEVEL 3 - READ ALL)

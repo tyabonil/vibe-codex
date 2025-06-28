@@ -190,6 +190,14 @@
 - 🚫 VIOLATION = Dependency commits without build verification
 ```
 
+### 💬 **GITHUB ISSUES AS SINGLE SOURCE OF TRUTH**
+```markdown
+# GITHUB ISSUES (LEVEL 2 - MANDATORY)
+- ✅ All issue tracking, updates, and planning MUST be done on the remote GitHub issues.
+- ✅ Use the `gh` CLI to interact with GitHub issues.
+- ❌ Local files must not be used as a substitute for GitHub issues.
+```
+
 ### 🚨 **PR REMEDIATION PROTOCOL**
 ```markdown
 # PR REMEDIATION (LEVEL 2 - MANDATORY)
@@ -358,6 +366,7 @@
 ### **During Issue Work:**
 - [ ] **Am I documenting my thought process on the issue?** (LEVEL 3 - DOCUMENT)
 - [ ] **Any external LLM consultations to capture?** (LEVEL 3 - DOCUMENT)
+- [ ] Am I using GitHub issues as the single source of truth? (LEVEL 2 - VERIFY)
 - [ ] Have I tested my build locally before committing dependency changes? (LEVEL 2 - TEST if yes)
 
 ### **After Creating Every PR:**
