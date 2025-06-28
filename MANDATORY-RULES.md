@@ -198,6 +198,22 @@
 - ❌ Local files must not be used as a substitute for GitHub issues.
 ```
 
+### 💓 **ANTI-STALLING PROTOCOL**
+```markdown
+# ANTI-STALLING (LEVEL 2 - MANDATORY)
+- ✅ If a PR is blocked or under review, you MUST immediately list all open issues and select the next one to work on.
+- ✅ If no other issues exist, you MUST create a new issue titled "Heartbeat: Check PR Status and Backlog".
+- ✅ The "Heartbeat" issue involves checking the status of all open PRs. If comments are not yet available, the issue is closed, and a new "Heartbeat" issue is immediately created to continue the loop, preventing a stalled state.
+```
+
+### 💓 **ANTI-STALLING PROTOCOL**
+```markdown
+# ANTI-STALLING (LEVEL 2 - MANDATORY)
+- ✅ If a PR is blocked or under review, you MUST immediately list all open issues and select the next one to work on.
+- ✅ If no other issues exist, you MUST create a new issue titled "Heartbeat: Check PR Status and Backlog".
+- ✅ The "Heartbeat" issue involves checking the status of all open PRs. If comments are not yet available, the issue is closed, and a new "Heartbeat" issue is immediately created to continue the loop, preventing a stalled state.
+```
+
 ### 🚨 **PR REMEDIATION PROTOCOL**
 ```markdown
 # PR REMEDIATION (LEVEL 2 - MANDATORY)
