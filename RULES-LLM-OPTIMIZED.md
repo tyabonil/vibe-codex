@@ -119,6 +119,13 @@
 - ✅ The issue should be titled "Optimization: [Description of optimization]".
 - ✅ The issue body should detail the inefficient action and the proposed optimization.
 - ✅ Your only responsibility is to CREATE THE ISSUE, NOT WORK ON IT.
+### 🔍 **ALWAYS TEST BUILDS BEFORE DEPENDENCY COMMITS**
+# DEPENDENCY COMMITS (LEVEL 2 - MANDATORY)
+- ✅ ALWAYS run `npm install` after package.json changes
+- ✅ ALWAYS run build commands locally before committing
+- ✅ NEVER commit dependency changes without successful local build
+- ✅ DELETE node_modules & package-lock.json for clean testing when conflicts arise
+- 🚫 VIOLATION = Dependency commits without build verification
 ### 🚨 **PR REMEDIATION PROTOCOL**
 # PR REMEDIATION (LEVEL 2 - MANDATORY)
 - ✅ If a PR has violations, you MUST address them in the same PR.
@@ -239,6 +246,7 @@
 - [ ] Am I following the SEQUENTIAL GITHUB WORKFLOW? (LEVEL 2 - FOLLOW STEPS)
 - [ ] Is this work blocked and should be assigned? (LEVEL 2 - ASSIGN if yes)
 - [ ] Have I identified any avoidable inefficiencies? (LEVEL 2 - CREATE ISSUE if yes)
+- [ ] Have I tested my build locally before committing dependency changes? (LEVEL 2 - TEST if yes)
 ### **During Issue Work:**
 - [ ] **Am I documenting my thought process on the issue?** (LEVEL 3 - DOCUMENT)
 - [ ] **Any external LLM consultations to capture?** (LEVEL 3 - DOCUMENT)
