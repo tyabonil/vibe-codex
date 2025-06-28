@@ -13,7 +13,7 @@ jobs:
       contents: read
       pull-requests: write
       checks: write
-      issues: read
+      issues: write
       
     steps:
       - name: Checkout PR code
