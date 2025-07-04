@@ -1,66 +1,39 @@
-# cursor_rules
+# MANDATORY Rules
 
-## 🚨 START HERE: A New, Streamlined Approach to AI-Powered Development
+This repository contains a set of rules for AI-powered development that are designed to be both comprehensive and efficient. The rules are divided into two main parts:
 
-This repository has been refactored to provide a single, authoritative source of truth for both humans and LLMs, ensuring consistency and efficiency.
+-   **`MANDATORY-RULES.md`**: This is the complete, human-readable guide to all rules, including context, reasoning, and examples.
+-   **`RULES-LLM-OPTIMIZED.md`**: This is the token-efficient, structured version of the rules, specifically designed for LLM consumption.
 
-### **For Humans: The Source of Truth**
-- **MANDATORY-RULES.md**: This is the complete, human-readable guide to all rules, including context, reasoning, and examples. **All rule changes should be made here.**
-- **config/rules.json**: This file contains the configurable aspects of the rules, such as secret detection patterns and file count limits.
+## Installation
 
-### **For LLMs: The Optimized Instruction Set**
-- **RULES-LLM-OPTIMIZED.md**: This is the token-efficient, structured version of the rules, specifically designed for LLM consumption. **This file is auto-generated from `MANDATORY-RULES.md` and should not be edited directly.**
+To install the rules, simply run the following command:
 
----
+```bash
+bash hooks/install-rule-checker.sh
+```
 
-## 🧠 The New Philosophy: Single Source of Truth & Flexible Configuration
+This will install the necessary git hooks to enforce the rules locally.
 
-The core principle of this refactor is to **eliminate rule duplication and ambiguity**. By maintaining a single source of truth (`MANDATORY-RULES.md`) and providing a flexible configuration file (`config/rules.json`), we ensure that our rules are always consistent and easy to maintain.
+## Usage
 
-### **How It Works**
-1.  **All rule changes are made in `MANDATORY-RULES.md`**. This file is designed for human readability and comprehension.
-2.  The `scripts/build-optimized-rules.js` script is run to parse the human-readable rules and generate the `RULES-LLM-OPTIMIZED.md` file.
-3.  LLMs are instructed to use `RULES-LLM-OPTIMIZED.md` as their primary instruction set.
-4.  The `config/rules.json` file is used to configure the behavior of the rules, such as the secret detection patterns and the maximum number of files per pull request.
+Once the hooks are installed, they will run automatically before each commit and when you edit a commit message.
 
-This approach ensures that our rules are both comprehensive and efficient, providing the best of both worlds for human and AI collaboration.
+### **`pre-commit` Hook**
 
----
+This hook runs before you type a commit message. It performs the following checks:
 
-## 🎯 Rule Philosophy - **≤7 Day Increments**
+-   **PR Health Check**: Checks for stale pull requests and compliance violations.
+-   **Security Pre-Commit**: Scans for secrets in your staged files.
 
-Break all work into manageable chunks that can be completed and deployed within a week.
+If any of these checks fail, the commit will be aborted.
 
-### **Always Buildable States**
-Every commit must result in working, deployable code.
+### **`commit-msg` Hook**
 
-### **Security First** 
-Never commit secrets. Always use environment variables and secure deployment practices.
+This hook runs after you have entered a commit message. It validates that your commit message follows the Conventional Commits specification.
 
-### **Autonomous Execution**
-AI assistants should execute based on rules, not ask for permission when the path is clear.
+If your commit message is not valid, the commit will be aborted.
 
----
+## Contributing
 
-## 🚀 Quick Implementation
-
-1.  **For Humans:** Read and understand the rules in `MANDATORY-RULES.md`.
-2.  **For LLMs:** Ingest and follow the rules in `RULES-LLM-OPTIMIZED.md`.
-3.  **For Projects:** To use these rules in your own project, simply copy the `RULES-LLM-OPTIMIZED.md` file into your project's `.cursorrules` file.
-4.  **For Local Development:** Install the git hooks located in the `hooks` directory to enforce the rules locally.
-
----
-
-## 💡 Rule Updates & Contributions
-
-### **For AI Assistants:** 
-**Autonomously create PRs** when you discover new generally-applicable patterns during interactions. This is **mandatory** per the user rules.
-
-### **For Humans:** 
-1.  Make all changes to `MANDATORY-RULES.md`.
-2.  Run `node scripts/build-optimized-rules.js` to update the LLM-optimized version.
-3.  Commit both files in your PR.
-
----
-
-**Impact**: This new, streamlined approach transforms the repository from a collection of rules into a robust, maintainable, and highly efficient system for guiding AI assistants.
+Contributions are welcome! Please see the [contribution guidelines](./PULL_REQUEST.md) for more information.
