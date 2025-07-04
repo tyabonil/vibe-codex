@@ -85,7 +85,7 @@
         },
         "token_efficiency": {
           "enabled": true,
-          "max_files_per_pr": 20,
+          "max_files_per_pr": 50,
           "target_repo_size_kb": 40,
           "severity": "MANDATORY"
         }
