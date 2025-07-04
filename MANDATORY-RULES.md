@@ -35,6 +35,17 @@
 - 🚨 VIOLATION = Work without a tracked issue.
 ```
 
+### 💬 **MANDATORY ISSUE INTERACTION PROTOCOL**
+```markdown
+# ISSUE INTERACTION (LEVEL 2 - MANDATORY)
+- ✅ **PLAN:** Before starting work, your first action MUST be to comment on the issue with a detailed plan of action.
+- ✅ **PR CREATED:** After creating a PR, you MUST comment on the issue with a link to the PR.
+- ✅ **BLOCKED:** When a PR is blocked, you MUST comment on the issue stating why it is blocked.
+- ✅ **FEEDBACK ADDRESSED:** After addressing PR feedback, you MUST comment on the issue summarizing the fixes.
+- ✅ **CLOSING:** Before closing an issue, you MUST add a final comment summarizing the resolution and linking to the final PR.
+- 🚨 VIOLATION = Poor communication, lack of transparency, and workflow violations.
+```
+
 ### SEQ-2: CREATE A BRANCH
 ```markdown
 # STEP 2: BRANCH (MANDATORY)
