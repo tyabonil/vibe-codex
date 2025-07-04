@@ -32,8 +32,18 @@ function parseAndOptimize(markdown) {
     const lines = markdown.split('\n');
     let optimized = '# LLM-OPTIMIZED RULES (TOKENIZED)\n\n';
     let currentSection = '';
+    let inCodeBlock = false;
 
     for (const line of lines) {
+        if (line.startsWith('```')) {
+            inCodeBlock = !inCodeBlock;
+            continue;
+        }
+
+        if (inCodeBlock) {
+            continue;
+        }
+
         if (line.startsWith('## ⚡')) {
             currentSection = line.replace('## ⚡', '').trim();
             optimized += `## ${currentSection}\n`;
@@ -42,14 +52,15 @@ function parseAndOptimize(markdown) {
             optimized += `### ${subsection}\n`;
         } else if (line.startsWith('-')) {
             const rule = line.replace('-', '').trim();
-            optimized += `- ${rule}\n`;
-        } else if (line.startsWith('```markdown')) {
-            // Skip markdown blocks
-        } else if (line.startsWith('```')) {
-            // Skip code blocks
-        } else if (line.trim() !== '') {
-            // Keep other lines
-            optimized += `${line}\n`;
+            const [trigger, action] = rule.split('→').map(s => s.trim());
+            if (action) {
+                optimized += `TRIGGER: ${trigger} → ACTION: ${action}\n`;
+            } else {
+                optimized += `RULE: ${rule}\n`;
+            }
+        } else if (line.startsWith('[')) {
+            const checklistItem = line.replace(/[\[ \]]/, '').trim();
+            optimized += `CHECK: ${checklistItem}\n`;
         }
     }
 
