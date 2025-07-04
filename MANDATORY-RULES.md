@@ -92,7 +92,7 @@
 # STEP 6: CLEANUP (MANDATORY)
 - ✅ After merging, close the issue if it's fully resolved.
 - ✅ Comment on the issue with the resolution and PR link.
-- ✅ Delete the feature branch after the PR is merged.
+- ✅ **DELETE THE FEATURE BRANCH** after the PR is merged.
 - 🚨 VIOLATION = Leaving stale branches or open issues.
 ```
 
