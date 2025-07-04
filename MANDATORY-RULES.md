@@ -349,6 +349,16 @@
 - ✅ Clean, organized codebase structure
 ```
 
+### 🐛 **HOLISTIC ERROR CORRECTION**
+```markdown
+# ERROR CORRECTION (LEVEL 4 - STRONGLY RECOMMENDED)
+- ✅ **IDENTIFY ROOT CAUSE:** When an error is encountered during expensive operations (build, lint, test), identify the root cause and pattern.
+- ✅ **REVIEW ALL FILES:** Review all salient files for similar issues.
+- ✅ **FIX ALL INSTANCES:** Fix all instances of the pattern before re-running expensive operations.
+- ✅ **APPLY HOLISTICALLY:** Apply corrections holistically across the codebase.
+- 🚨 VIOLATION = Wasted time and computational resources, frustrating iterative fixes.
+```
+
 ### 🤝 **LLM PLAN VERIFICATION**
 ```markdown
 # CROSS-LLM VALIDATION (LEVEL 4 - STRONGLY RECOMMENDED)
