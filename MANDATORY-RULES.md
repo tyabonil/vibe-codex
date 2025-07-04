@@ -53,6 +53,7 @@
 ### SEQ-2: CREATE A BRANCH
 ```markdown
 # STEP 2: BRANCH (MANDATORY)
+- ✅ **PREVIEW-FIRST:** All development work should be based on the `preview` branch, not `main`.
 - ✅ Create a branch from the `preview` branch.
 - ✅ Branch name must reference the issue: `feature/issue-{number}-{description}`.
 - ✅ Example: `feature/issue-123-add-login-page`.
@@ -74,7 +75,7 @@
 - ✅ Create a Pull Request (PR) as soon as you have made your first commit.
 - ✅ The PR title must reference the issue number.
 - ✅ The PR body must describe the changes and reference the issue.
-- ✅ The PR should target the `preview` branch, NOT `main`.
+- ✅ **TARGET PREVIEW:** The PR should target the `preview` branch, NOT `main`.
 - 🚨 VIOLATION = Late or incorrectly targeted PRs.
 ```
 
@@ -83,8 +84,9 @@
 # STEP 5: REVIEW & MERGE (MANDATORY)
 - ✅ Request a review from `@copilot` immediately after creating the PR.
 - ✅ Address ALL feedback from reviewers and automated checks.
-- ✅ Once approved, merge the PR into the `preview` branch.
-- 🚨 VIOLATION = Merging with unaddressed feedback.
+- ✅ **MERGE TO PREVIEW:** Once approved, merge the PR into the `preview` branch.
+- ✅ **MAIN MERGE:** The `main` branch should only receive PRs from `preview`.
+- 🚨 VIOLATION = Merging with unaddressed feedback or directly to `main`.
 ```
 
 ### SEQ-6: CLEAN UP
