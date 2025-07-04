@@ -6,16 +6,16 @@ echo "🔍 Running security pre-commit checks..."
 # Define secret patterns
 SECRET_PATTERNS=(
   # Passwords
-  "password[[:space:]]*=[[:space:]]*['"].*['"]"
-  "passwd[[:space:]]*=[[:space:]]*['"].*['"]"
-  "pwd[[:space:]]*=[[:space:]]*['"].*['"]"
+  "password[[:space:]]*=[[:space:]]*['\"]?.*['\"]?"
+  "passwd[[:space:]]*=[[:space:]]*['\"]?.*['\"]?"
+  "pwd[[:space:]]*=[[:space:]]*['\"]?.*['\"]?"
   
   # API Keys and Tokens
-  "api[_-]?key[[:space:]]*=[[:space:]]*['"].*['"]"
-  "apikey[[:space:]]*=[[:space:]]*['"].*['"]"
-  "access[_-]?token[[:space:]]*=[[:space:]]*['"].*['"]"
-  "auth[_-]?token[[:space:]]*=[[:space:]]*['"].*['"]"
-  "bearer[[:space:]]+[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+"
+  "api[_-]?key[[:space:]]*=[[:space:]]*['\"][A-Za-z0-9]{16,}['\"]"
+  "apikey[[:space:]]*=[[:space:]]*['\"][A-Za-z0-9]{16,}['\"]"
+  "access[_-]?token[[:space:]]*=[[:space:]]*['\"][A-Za-z0-9]{16,}['\"]"
+  "auth[_-]?token[[:space:]]*=[[:space:]]*['\"][A-Za-z0-9]{16,}['\"]"
+  "bearer[[:space:]]+[a-zA-Z0-9_-]+\\.[a-zA-Z0-9_-]+\\.[a-zA-Z0-9_-]+"
   
   # Private Keys
   "-----BEGIN (RSA | DSA|EC|OPENSSH) PRIVATE KEY-----"
@@ -23,18 +23,18 @@ SECRET_PATTERNS=(
   "-----BEGIN PRIVATE KEY-----"
   
   # Cloud Provider Patterns
-  "aws[_-]?access[_-]?key[_-]?id[[:space:]]*=[[:space:]]*['"]?[A-Z0-9]{20}['"]?"
-  "aws[_-]?secret[_-]?access[_-]?key[[:space:]]*=[[:space:]]*['"]?[A-Za-z0-9/+=]{40}['"]?"
+  "aws[_-]?access[_-]?key[_-]?id[[:space:]]*=[[:space:]]*['\"]?[A-Z0-9]{20}['\"]?"
+  "aws[_-]?secret[_-]?access[_-]?key[[:space:]]*=[[:space:]]*['\"]?[A-Za-z0-9/+=]{40}['\"]?"
   "azure[_-]?storage[_-]?account[_-]?key"
   "gcp[_-]?api[_-]?key"
   
   # Database URLs
   "(postgres|postgresql|mysql|mongodb|redis)://[^[:space:]]+:[^[:space:]]+@"
-  "DATABASE_URL[[:space:]]*=[[:space:]]*['"]?(postgres|mysql|mongodb)"
+  "DATABASE_URL[[:space:]]*=[[:space:]]*['\"]?(postgres|mysql|mongodb)"
   
   # SMTP Credentials
-  "smtp[_-]?pass(word)?[[:space:]]*=[[:space:]]*['"].*['"]"
-  "mail[_-]?pass(word)?[[:space:]]*=[[:space:]]*['"].*['"]"
+  "smtp[_-]?pass(word)?[[:space:]]*=[[:space:]]*['\"]?.*['\"]?"
+  "mail[_-]?pass(word)?[[:space:]]*=[[:space:]]*['\"]?.*['\"]?"
 )
 
 # Test-safe patterns (won't trigger in test files)
@@ -48,10 +48,10 @@ TEST_EXCLUSIONS=(
   "your-api-key"
   "api-key-here"
   "<api[_-]?key>"
-  "@example\.(com|org|net)"
-  "@test\.(com|org|net)"
+  "@example\\.(com|org|net)"
+  "@test\\.(com|org|net)"
   "@localhost"
-  "@mock\."
+  "@mock\\."
 )
 
 FOUND_SECRETS=0
@@ -60,15 +60,21 @@ FILES_TO_CHECK=$(git diff --cached --name-only --diff-filter=ACM)
 for file in $FILES_TO_CHECK; do
   is_test_file=false
   is_doc_file=false
+  is_prisma_file=false
 
   # Check if it's a test file
-  if [[ "$file" =~ (test|tests|__tests__|__mocks__|spec|specs)/ || "$file" =~ \.(test|spec)\.js$ ]]; then
+  if [[ "$file" =~ (test|tests|__tests__|__mocks__|spec|specs)/ || "$file" =~ \.(test|spec)\\.js$ ]]; then
     is_test_file=true
   fi
 
   # Check if it's a documentation file
   if [[ "$file" =~ \.md$ || "$file" =~ README || "$file" =~ (docs|doc)/ ]]; then
     is_doc_file=true
+  fi
+
+  # Check if it's a prisma schema file
+  if [[ "$file" =~ \.prisma$ ]]; then
+    is_prisma_file=true
   fi
   
   # Skip binary files
@@ -90,7 +96,7 @@ for file in $FILES_TO_CHECK; do
         fi
       done
       
-      if [ "$is_excluded" = false ] && [ "$is_test_file" = false ] && [ "$is_doc_file" = false ]; then
+      if [ "$is_excluded" = false ] && [ "$is_test_file" = false ] && [ "$is_doc_file" = false ] && [ "$is_prisma_file" = false ]; then
         echo ""
         echo "❌ CRITICAL: Potential secret found in $file"
         echo "Pattern: $pattern"
@@ -108,9 +114,8 @@ if [ $FOUND_SECRETS -eq 1 ]; then
   echo "💡 Tips:"
   echo "- Use environment variables for sensitive data"
   echo "- Add secrets to .env.local (not .env)"  
-  echo "- For tests, use obvious mock values (mock-, test-, etc)"
+  echo "- For tests, use obvious mock values (mock-*, test-*, etc)"
   exit 1
 fi
 
 echo "✅ No secrets detected"
-

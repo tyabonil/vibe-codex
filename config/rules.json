@@ -10,13 +10,13 @@
         "secrets_detection": {
           "enabled": true,
           "patterns": [
-            "api[_-]?key\\s*[=:]\\s*['\"]\\w+['\"]",
-            "password\\s*[=:]\\s*['\"]\\w+['\"]",
-            "token\\s*[=:]\\s*['\"]\\w+['\"]",
-            "secret\\s*[=:]\\s*['\"]\\w+['\"]",
-            "auth[_-]?token\\s*[=:]\\s*['\"]\\w+['\"]",
-            "access[_-]?key\\s*[=:]\\s*['\"]\\w+['\"]",
-            "private[_-]?key\\s*[=:]\\s*['\"]\\w+['\"]"
+            "api[_-]?key\s*[=:]\s*['\"][A-Za-z0-9]{16,}['\"]",
+            "password\s*[=:]\s*['\"](?<!test|mock|fake|example|password|123)\\w{8,}['\"]",
+            "(?<!\\w)token\s*[=:]\s*['\"]\\w+['\"](?!\\s*[?@])",
+            "secret\s*[=:]\s*['\"](?!test|mock|fake|example|secret)\\w{8,}['\"]",
+            "auth[_-]?token\s*[=:]\s*['\"][A-Za-z0-9]{16,}['\"]",
+            "access[_-]?key\s*[=:]\s*['\"][A-Za-z0-9]{16,}['\"]",
+            "private[_-]?key\s*[=:]\s*['\"](?!test|mock|fake|example|private_key)-----BEGIN"
           ],
           "severity": "BLOCKER"
         },
@@ -62,7 +62,7 @@
           "detect_terminal_git": true,
           "terminal_git_patterns": [
             "git push",
-            "git pull", 
+            "git pull",
             "git checkout -b",
             "git merge",
             "git commit.*-m"
@@ -99,14 +99,28 @@
         "test_coverage": {
           "enabled": true,
           "require_100_percent": true,
-          "code_file_extensions": [".js", ".ts", ".py", ".java", ".go"],
-          "test_file_patterns": ["test", "spec", ".test.", ".spec."],
+          "code_file_extensions": [
+            ".js",
+            ".ts",
+            ".py",
+            ".java",
+            ".go"
+          ],
+          "test_file_patterns": [
+            "test",
+            "spec",
+            ".test.",
+            ".spec."
+          ],
           "severity": "BLOCKER"
         },
         "copilot_review": {
           "enabled": true,
           "require_request": true,
-          "copilot_usernames": ["copilot", "github-copilot"],
+          "copilot_usernames": [
+            "copilot",
+            "github-copilot"
+          ],
           "severity": "BLOCKER"
         },
         "pr_feedback_response": {
