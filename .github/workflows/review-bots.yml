@@ -32,7 +32,13 @@ jobs:
       run: |
         cd review-bots
         npm install
+        chmod +x bin/*.js
         npm link
+        
+        # Verify installation
+        which hater-bot || echo "hater-bot not found in PATH"
+        which white-knight-bot || echo "white-knight-bot not found in PATH"
+        which balance-bot || echo "balance-bot not found in PATH"
     
     - name: Get Changed Files
       id: changed-files
@@ -59,9 +65,14 @@ jobs:
           echo "Files to review: $REVIEWABLE_FILES"
           
           # Run all three bots and save outputs
-          hater-bot $REVIEWABLE_FILES --output hater-report.md --no-color || true
-          white-knight-bot $REVIEWABLE_FILES --output knight-report.md --no-color || true
-          balance-bot $REVIEWABLE_FILES --output balance-report.md --no-color || true
+          echo "Running hater-bot..."
+          hater-bot $REVIEWABLE_FILES --output hater-report.md --no-color || echo "Hater bot failed"
+          
+          echo "Running white-knight-bot..."
+          white-knight-bot $REVIEWABLE_FILES --output knight-report.md --no-color || echo "White knight bot failed"
+          
+          echo "Running balance-bot..."
+          balance-bot $REVIEWABLE_FILES --output balance-report.md --no-color || echo "Balance bot failed"
           
           # Combine reports
           echo "# 🤖 Review Bots Analysis" > combined-report.md
@@ -110,7 +121,6 @@ jobs:
       if: always()
       uses: actions/github-script@v7
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
           const fs = require('fs');
           const reportPath = '/tmp/review-report.md';
@@ -161,7 +171,6 @@ jobs:
       if: always()
       uses: actions/github-script@v7
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
           // Read the balance bot report to determine status
           const fs = require('fs');
