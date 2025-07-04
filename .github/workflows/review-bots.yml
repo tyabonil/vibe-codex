@@ -1,0 +1,193 @@
+name: Review Bots Analysis
+
+on:
+  pull_request:
+    branches: [main, preview]
+    types: [opened, synchronize, reopened]
+  pull_request_review_comment:
+    types: [created]
+
+jobs:
+  review-bots:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: review-bots/package-lock.json
+    
+    - name: Install Review Bots
+      run: |
+        cd review-bots
+        npm ci
+        npm link
+    
+    - name: Get Changed Files
+      id: changed-files
+      uses: tj-actions/changed-files@v41
+      with:
+        separator: ','
+        quotepath: false
+    
+    - name: Run Review Bots on Changed Files
+      if: steps.changed-files.outputs.all_changed_files != ''
+      run: |
+        # Convert comma-separated list to space-separated for the CLI
+        IFS=',' read -ra FILES <<< "${{ steps.changed-files.outputs.all_changed_files }}"
+        
+        # Filter out deleted files and non-reviewable files
+        REVIEWABLE_FILES=""
+        for file in "${FILES[@]}"; do
+          if [[ -f "$file" ]] && [[ "$file" =~ \.(js|ts|jsx|tsx|md|json|sh)$ ]]; then
+            REVIEWABLE_FILES="$REVIEWABLE_FILES $file"
+          fi
+        done
+        
+        if [[ -n "$REVIEWABLE_FILES" ]]; then
+          echo "Files to review: $REVIEWABLE_FILES"
+          
+          # Run all three bots and save outputs
+          hater-bot $REVIEWABLE_FILES --output hater-report.md --no-color || true
+          white-knight-bot $REVIEWABLE_FILES --output knight-report.md --no-color || true
+          balance-bot $REVIEWABLE_FILES --output balance-report.md --no-color || true
+          
+          # Combine reports
+          echo "# 🤖 Review Bots Analysis" > combined-report.md
+          echo "" >> combined-report.md
+          echo "Automated code review by three different perspectives:" >> combined-report.md
+          echo "" >> combined-report.md
+          
+          if [[ -f "hater-report.md" ]]; then
+            echo "## 😤 Hater Bot Says:" >> combined-report.md
+            echo "<details>" >> combined-report.md
+            echo "<summary>Click to see all criticisms</summary>" >> combined-report.md
+            echo "" >> combined-report.md
+            tail -n +2 hater-report.md >> combined-report.md
+            echo "" >> combined-report.md
+            echo "</details>" >> combined-report.md
+            echo "" >> combined-report.md
+          fi
+          
+          if [[ -f "knight-report.md" ]]; then
+            echo "## 🛡️ White Knight Bot Says:" >> combined-report.md
+            echo "<details>" >> combined-report.md
+            echo "<summary>Click to see all defenses</summary>" >> combined-report.md
+            echo "" >> combined-report.md
+            tail -n +2 knight-report.md >> combined-report.md
+            echo "" >> combined-report.md
+            echo "</details>" >> combined-report.md
+            echo "" >> combined-report.md
+          fi
+          
+          if [[ -f "balance-report.md" ]]; then
+            echo "## ⚖️ Balance Bot Says (RECOMMENDED):" >> combined-report.md
+            echo "" >> combined-report.md
+            tail -n +2 balance-report.md >> combined-report.md
+          fi
+          
+          # Save report for next step
+          cp combined-report.md /tmp/review-report.md
+        else
+          echo "No reviewable files found in changes"
+          echo "# 🤖 Review Bots Analysis" > /tmp/review-report.md
+          echo "" >> /tmp/review-report.md
+          echo "No reviewable code files were found in this PR." >> /tmp/review-report.md
+        fi
+    
+    - name: Post Review Comment
+      if: always()
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const fs = require('fs');
+          const reportPath = '/tmp/review-report.md';
+          
+          let comment = '# 🤖 Review Bots Analysis\n\nUnable to generate review report.';
+          
+          if (fs.existsSync(reportPath)) {
+            comment = fs.readFileSync(reportPath, 'utf8');
+            
+            // Truncate if too long for GitHub comment
+            const maxLength = 65000;
+            if (comment.length > maxLength) {
+              comment = comment.substring(0, maxLength) + '\n\n... (truncated due to length)';
+            }
+          }
+          
+          // Check if we already commented
+          const { data: comments } = await github.rest.issues.listComments({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number,
+          });
+          
+          const botComment = comments.find(comment => 
+            comment.user.type === 'Bot' && 
+            comment.body.includes('🤖 Review Bots Analysis')
+          );
+          
+          if (botComment) {
+            // Update existing comment
+            await github.rest.issues.updateComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: botComment.id,
+              body: comment
+            });
+          } else {
+            // Create new comment
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: comment
+            });
+          }
+    
+    - name: Set Status Check
+      if: always()
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          // Read the balance bot report to determine status
+          const fs = require('fs');
+          let status = 'success';
+          let description = 'All bots have reviewed the code';
+          
+          const balanceReport = '/tmp/balance-report.md';
+          if (fs.existsSync(balanceReport)) {
+            const content = fs.readFileSync(balanceReport, 'utf8');
+            
+            // Check for critical issues in balance bot report
+            if (content.includes('CRITICAL - Fix Immediately')) {
+              status = 'failure';
+              description = 'Critical issues found - see review comments';
+            } else if (content.includes('HIGH - Fix This Week')) {
+              status = 'failure';
+              description = 'High priority issues found - see review comments';
+            }
+          }
+          
+          // Set the status
+          await github.rest.repos.createCommitStatus({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            sha: context.payload.pull_request.head.sha,
+            state: status,
+            description: description,
+            context: 'Review Bots Analysis'
+          });
