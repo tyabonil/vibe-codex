@@ -13,7 +13,7 @@
 ```
 
 ### 🔒 **NEVER OVERWRITE ENVIRONMENT FILES**
-```markdown  
+```markdown
 # ENVIRONMENT PROTECTION (LEVEL 1 - NON-NEGOTIABLE)
 - ❌ NEVER overwrite .env files
 - ❌ NEVER modify existing environment configurations without explicit permission
@@ -37,13 +37,17 @@
 
 ### 💬 **MANDATORY ISSUE INTERACTION PROTOCOL**
 ```markdown
-# ISSUE INTERACTION (LEVEL 2 - MANDATORY)
+# ISSUE MANAGEMENT (LEVEL 2 - MANDATORY)
+- ✅ **SINGLE SOURCE OF TRUTH:** GITHUB ISSUES are the single source of truth for all work.
+- ❌ **NO LOCAL FILES:** DO NOT use local markdown files, notes, or any other method for issue tracking.
+- ✅ **REMOTE UPDATES:** ALL updates, planning, and discussions must happen on the remote GitHub issue.
+- ✅ **USE `gh` CLI:** Use the `gh` CLI to interact with issues whenever possible.
 - ✅ **PLAN:** Before starting work, your first action MUST be to comment on the issue with a detailed plan of action.
 - ✅ **PR CREATED:** After creating a PR, you MUST comment on the issue with a link to the PR.
 - ✅ **BLOCKED:** When a PR is blocked, you MUST comment on the issue stating why it is blocked.
 - ✅ **FEEDBACK ADDRESSED:** After addressing PR feedback, you MUST comment on the issue summarizing the fixes.
 - ✅ **CLOSING:** Before closing an issue, you MUST add a final comment summarizing the resolution and linking to the final PR.
-- 🚨 VIOLATION = Poor communication, lack of transparency, and workflow violations.
+- 🚨 VIOLATION = Fragmented information, loss of context, poor communication, and workflow violations.
 ```
 
 ### SEQ-2: CREATE A BRANCH
@@ -90,6 +94,16 @@
 - ✅ Comment on the issue with the resolution and PR link.
 - ✅ Delete the feature branch after the PR is merged.
 - 🚨 VIOLATION = Leaving stale branches or open issues.
+```
+
+### 🔍 **ALWAYS TEST BUILDS BEFORE DEPENDENCY COMMITS**
+```markdown
+# DEPENDENCY CHANGE VERIFICATION (LEVEL 2 - MANDATORY)
+- ✅ ALWAYS run `npm install` after package.json changes.
+- ✅ ALWAYS run build commands locally before committing.
+- ✅ NEVER commit dependency changes without a successful local build.
+- ✅ DELETE node_modules & package-lock.json for clean testing when conflicts arise.
+- 🚫 VIOLATION = Dependency commits without build verification.
 ```
 
 ### 🔬 **MANDATORY LLM TOKEN EFFICIENCY OPTIMIZATION**
@@ -184,6 +198,15 @@
 - ✅ Before starting the new issue, ensure your `preview` branch is up-to-date with the remote.
 - ✅ Create a new feature branch from the `preview` branch for the new issue.
 - ✅ **Conflict Resolution Strategy:** When your previous PR is approved and merged, you MUST immediately update your current feature branch by rebasing it on the updated `preview` branch (`git rebase origin/preview`). This will prevent merge conflicts.
+```
+
+### 💓 **ANTI-STALLING PROTOCOL**
+```markdown
+# ANTI-STALLING (LEVEL 2 - MANDATORY)
+- ✅ If a PR is blocked or under review, immediately list all open issues and select the next one to work on.
+- ✅ If no other issues exist, create a new issue titled "Heartbeat: Check PR Status and Backlog".
+- ✅ The "Heartbeat" issue involves checking the status of all open PRs. If comments are not yet available, the issue is closed, and a new "Heartbeat" issue is immediately created to continue the loop, preventing a stalled state.
+- 🚨 VIOLATION = Stalled work, loss of momentum.
 ```
 
 ### 🚨 **PR REMEDIATION PROTOCOL**
@@ -317,7 +340,7 @@
 ## ⚡ LEVEL 4: DEVELOPMENT PATTERNS (STRONGLY RECOMMENDED)
 
 ### 👨‍💻‍🤝‍💻 **CODING STANDARDS**
-```markdown  
+```markdown
 # CODE QUALITY (LEVEL 4 - STRONGLY RECOMMENDED)
 - ✅ Prefer simple solutions over complex ones
 - ✅ Avoid code duplication - check for existing similar functionality
@@ -347,6 +370,7 @@
 - [ ] Will this commit secrets? (LEVEL 1 - STOP if yes)
 - [ ] Will this overwrite environment files? (LEVEL 1 - ASK if yes)
 - [ ] Am I following the SEQUENTIAL GITHUB WORKFLOW? (LEVEL 2 - FOLLOW STEPS)
+- [ ] **Have I tested dependency changes locally before committing?** (LEVEL 2 - TEST FIRST)
 - [ ] Is this work blocked and should be assigned? (LEVEL 2 - ASSIGN if yes)
 
 ### **During Issue Work:**
@@ -370,7 +394,7 @@
 
 ### **Before Every Merge:**
 - [ ] Is test coverage 100% for new code? (LEVEL 3 - BLOCK if no)
-- [ ] Is all Copilot feedback addressed? (LEVEL 3 - BLOCK if no)  
+- [ ] Is all Copilot feedback addressed? (LEVEL 3 - BLOCK if no)
 - [ ] Is PROJECT_CONTEXT.md updated? (LEVEL 3 - UPDATE if no)
 - [ ] **Are thought processes documented on the issue?** (LEVEL 3 - DOCUMENT)
 - [ ] **Is ALL PR feedback addressed comprehensively?** (LEVEL 3 - VERIFY)
@@ -397,7 +421,7 @@
 
 **ONLY for production-down emergencies:**
 1. ✅ Explicit project owner approval required
-2. ✅ Technical debt issues MUST be created immediately  
+2. ✅ Technical debt issues MUST be created immediately
 3. ✅ Quality fixes scheduled within 24 hours
 4. ✅ Override reason documented in commit message
 
