@@ -35,6 +35,16 @@
 - 🚨 VIOLATION = Work without a tracked issue.
 ```
 
+### 📢 **GITHUB ISSUES AS SINGLE SOURCE OF TRUTH**
+```markdown
+# ISSUE MANAGEMENT (LEVEL 2 - MANDATORY)
+- ✅ GITHUB ISSUES are the single source of truth for all work.
+- ❌ DO NOT use local markdown files, notes, or any other method for issue tracking.
+- ✅ ALL updates, planning, and discussions must happen on the remote GitHub issue.
+- ✅ Use the `gh` CLI to interact with issues whenever possible.
+- 🚨 VIOLATION = Fragmented information, loss of context, and workflow violations.
+```
+
 ### SEQ-2: CREATE A BRANCH
 ```markdown
 # STEP 2: BRANCH (MANDATORY)
