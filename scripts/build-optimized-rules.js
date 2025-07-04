@@ -10,6 +10,9 @@
 
 const fs = require('fs');
 const path = require('path');
+const {
+    marked
+} = require('marked');
 
 function buildOptimizedRules() {
     console.log('🚀 Building LLM-optimized rules...');
@@ -29,40 +32,18 @@ function buildOptimizedRules() {
 }
 
 function parseAndOptimize(markdown) {
-    const lines = markdown.split('\n');
+    const tokens = marked.lexer(markdown);
     let optimized = '# LLM-OPTIMIZED RULES (TOKENIZED)\n\n';
-    let currentSection = '';
-    let inCodeBlock = false;
 
-    for (const line of lines) {
-        if (line.startsWith('```')) {
-            inCodeBlock = !inCodeBlock;
-            continue;
+    tokens.forEach(token => {
+        if (token.type === 'heading') {
+            optimized += `${'#'.repeat(token.depth)} ${token.text}\n`;
+        } else if (token.type === 'list') {
+            token.items.forEach(item => {
+                optimized += `- ${item.text}\n`;
+            });
         }
-
-        if (inCodeBlock) {
-            continue;
-        }
-
-        if (line.startsWith('## ⚡')) {
-            currentSection = line.replace('## ⚡', '').trim();
-            optimized += `## ${currentSection}\n`;
-        } else if (line.startsWith('###')) {
-            const subsection = line.replace('###', '').trim();
-            optimized += `### ${subsection}\n`;
-        } else if (line.startsWith('-')) {
-            const rule = line.replace('-', '').trim();
-            const [trigger, action] = rule.split('→').map(s => s.trim());
-            if (action) {
-                optimized += `TRIGGER: ${trigger} → ACTION: ${action}\n`;
-            } else {
-                optimized += `RULE: ${rule}\n`;
-            }
-        } else if (line.startsWith('[')) {
-            const checklistItem = line.replace(/[\[ \]]/, '').trim();
-            optimized += `CHECK: ${checklistItem}\n`;
-        }
-    }
+    });
 
     return optimized;
 }
@@ -71,4 +52,6 @@ if (require.main === module) {
     buildOptimizedRules();
 }
 
-module.exports = { buildOptimizedRules };
+module.exports = {
+    buildOptimizedRules
+};
