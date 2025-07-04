@@ -81,6 +81,16 @@
 - 🚨 VIOLATION = Leaving stale branches or open issues.
 ```
 
+### 🔍 **ALWAYS TEST BUILDS BEFORE DEPENDENCY COMMITS**
+```markdown
+# DEPENDENCY CHANGE VERIFICATION (LEVEL 2 - MANDATORY)
+- ✅ ALWAYS run `npm install` after package.json changes.
+- ✅ ALWAYS run build commands locally before committing.
+- ✅ NEVER commit dependency changes without a successful local build.
+- ✅ DELETE node_modules & package-lock.json for clean testing when conflicts arise.
+- 🚫 VIOLATION = Dependency commits without build verification.
+```
+
 ### 🔬 **MANDATORY LLM TOKEN EFFICIENCY OPTIMIZATION**
 ```markdown
 # LLM TOKEN EFFICIENCY (LEVEL 2 - MANDATORY)
@@ -336,6 +346,7 @@
 - [ ] Will this commit secrets? (LEVEL 1 - STOP if yes)
 - [ ] Will this overwrite environment files? (LEVEL 1 - ASK if yes)
 - [ ] Am I following the SEQUENTIAL GITHUB WORKFLOW? (LEVEL 2 - FOLLOW STEPS)
+- [ ] **Have I tested dependency changes locally before committing?** (LEVEL 2 - TEST FIRST)
 - [ ] Is this work blocked and should be assigned? (LEVEL 2 - ASSIGN if yes)
 
 ### **During Issue Work:**
