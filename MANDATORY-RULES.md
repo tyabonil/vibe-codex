@@ -104,6 +104,20 @@
 - 🚨 VIOLATION = Work without proper tracking
 ```
 
+### 🧠 **P0-BLOCKER: CREATE ISSUES FOR AVOIDABLE INEFFICIENCIES**
+```markdown
+# META-LEARNING & CONTINUOUS IMPROVEMENT (LEVEL 2 - MANDATORY)
+- 🧠 IDENTIFY any instance where an optimization could have prevented unnecessary thinking, wasted tokens, or inefficient workflow steps.
+- 📝 IMMEDIATELY CREATE a new issue in the `cursor_rules` repository documenting this finding.
+- 📋 THE ISSUE MUST DETAIL:
+  - The inefficient action taken.
+  - The proposed optimization or new rule that would have prevented it.
+  - The potential impact (e.g., saved tokens, faster execution, fewer steps).
+- 🤖 RESPONSIBILITY: The LLM's only responsibility is to CREATE THE ISSUE, NOT WORK ON IT.
+- 🧑‍💻 ASSIGNMENT: The issue should be assigned to the repository owner for prioritization and implementation.
+- 🚨 VIOLATION = Lost learning opportunities, repeated inefficiencies.
+```
+
 ### 🔄 **POST-MERGE WORKFLOW ACTIONS**
 ```markdown
 # POST-MERGE MANDATORY ACTIONS (LEVEL 2 - MANDATORY)
@@ -289,6 +303,7 @@
 ### **During Issue Work:**
 - [ ] **Am I documenting my thought process on the issue?** (LEVEL 3 - DOCUMENT)
 - [ ] **Any external LLM consultations to capture?** (LEVEL 3 - DOCUMENT)
+- [ ] **Have I identified any avoidable inefficiencies to create an issue for?** (LEVEL 2 - CREATE ISSUE)
 
 ### **After Creating Every PR:**
 - [ ] **Are ALL comments and feedback on PRs being read?** (LEVEL 3 - READ ALL)
@@ -326,6 +341,7 @@
 - ✅ **Zero GitHub workflow violations** (Level 2 compliance)
 - ✅ **Complete thought process transparency** (Level 3 compliance)
 - ✅ **100% feedback responsiveness** (Level 3 compliance)
+- ✅ **Continuous improvement through avoidable inefficiency issue creation** (Level 2 compliance)
 
 ---
 
