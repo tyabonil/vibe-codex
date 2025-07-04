@@ -71,11 +71,14 @@
 ### SEQ-4: CREATE A PULL REQUEST
 ```markdown
 # STEP 4: PULL REQUEST (MANDATORY)
+- ✅ **REVIEW OPEN PRS FIRST:** Before creating any new pull request, you MUST review ALL open PRs in the repository.
+- ✅ **CLOSE STALE PRS:** For each open PR, if it is stale (>7 days old) or no longer needed, close it and delete the branch.
+- ✅ **DOCUMENT STATUS:** If an open PR is still relevant, leave it open but document its status.
 - ✅ Create a Pull Request (PR) as soon as you have made your first commit.
 - ✅ The PR title must reference the issue number.
 - ✅ The PR body must describe the changes and reference the issue.
-- ✅ The PR should target the `preview` branch, NOT `main`.
-- 🚨 VIOLATION = Late or incorrectly targeted PRs.
+- ✅ **TARGET PREVIEW:** The PR should target the `preview` branch, NOT `main`.
+- 🚨 VIOLATION = Late or incorrectly targeted PRs, or creating new PRs without reviewing open ones.
 ```
 
 ### SEQ-5: ADDRESS FEEDBACK AND MERGE
