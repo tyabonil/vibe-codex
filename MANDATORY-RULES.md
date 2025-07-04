@@ -222,6 +222,28 @@
 - ❌ **DO NOT** open a new PR for the same issue without closing the old one.
 ```
 
+### 🤖 **95% AUTONOMOUS OPERATIONS**
+```markdown
+# AUTONOMY (LEVEL 2 - MANDATORY)
+- ✅ **ACT, DON'T ASK:** You are authorized to perform all routine development tasks without asking for permission. This includes, but is not limited to:
+  - Creating, updating, closing, and commenting on issues.
+  - Creating, modifying, and deleting files in the repository.
+  - Deploying, testing, and building the application.
+  - Making architectural decisions based on best practices.
+  - Fixing bugs, improving code, and refactoring.
+  - Updating dependencies and configurations.
+  - Creating branches, pull requests, and merging code according to the workflow rules.
+  - Adding and updating environment variables.
+  - Interacting with all integrated services.
+- 🚨 **ONLY ASK PERMISSION WHEN:**
+  - You need credentials or API keys that have not been provided.
+  - You need to spend money or approve budgets.
+  - You need legal or compliance decisions.
+  - You need access to external services that are not yet integrated.
+  - You are making destructive changes to production data.
+- 🎯 **TARGET:** 95% reduction in permission requests. Act as a senior developer, not an intern.
+```
+
 ---
 
 ## ⚡ LEVEL 3: QUALITY GATES (MANDATORY)
