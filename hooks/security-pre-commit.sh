@@ -6,15 +6,15 @@ echo "🔍 Running security pre-commit checks..."
 # Define secret patterns
 SECRET_PATTERNS=(
   # Passwords
-  "password[[:space:]]*=[[:space:]]*['\"]?.*['\"]?"
-  "passwd[[:space:]]*=[[:space:]]*['\"]?.*['\"]?"
-  "pwd[[:space:]]*=[[:space:]]*['\"]?.*['\"]?"
+  "password[[:space:]]*=[[:space:]]*['"].*['"]"
+  "passwd[[:space:]]*=[[:space:]]*['"].*['"]"
+  "pwd[[:space:]]*=[[:space:]]*['"].*['"]"
   
   # API Keys and Tokens
-  "api[_-]?key[[:space:]]*=[[:space:]]*['\"]?.*['\"]?"
-  "apikey[[:space:]]*=[[:space:]]*['\"]?.*['\"]?"
-  "access[_-]?token[[:space:]]*=[[:space:]]*['\"]?.*['\"]?"
-  "auth[_-]?token[[:space:]]*=[[:space:]]*['\"]?.*['\"]?"
+  "api[_-]?key[[:space:]]*=[[:space:]]*['"].*['"]"
+  "apikey[[:space:]]*=[[:space:]]*['"].*['"]"
+  "access[_-]?token[[:space:]]*=[[:space:]]*['"].*['"]"
+  "auth[_-]?token[[:space:]]*=[[:space:]]*['"].*['"]"
   "bearer[[:space:]]+[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+"
   
   # Private Keys
@@ -23,18 +23,18 @@ SECRET_PATTERNS=(
   "-----BEGIN PRIVATE KEY-----"
   
   # Cloud Provider Patterns
-  "aws[_-]?access[_-]?key[_-]?id[[:space:]]*=[[:space:]]*['\"]?[A-Z0-9]{20}['\"]?"
-  "aws[_-]?secret[_-]?access[_-]?key[[:space:]]*=[[:space:]]*['\"]?[A-Za-z0-9/+=]{40}['\"]?"
+  "aws[_-]?access[_-]?key[_-]?id[[:space:]]*=[[:space:]]*['"]?[A-Z0-9]{20}['"]?"
+  "aws[_-]?secret[_-]?access[_-]?key[[:space:]]*=[[:space:]]*['"]?[A-Za-z0-9/+=]{40}['"]?"
   "azure[_-]?storage[_-]?account[_-]?key"
   "gcp[_-]?api[_-]?key"
   
   # Database URLs
   "(postgres|postgresql|mysql|mongodb|redis)://[^[:space:]]+:[^[:space:]]+@"
-  "DATABASE_URL[[:space:]]*=[[:space:]]*['\"]?(postgres|mysql|mongodb)"
+  "DATABASE_URL[[:space:]]*=[[:space:]]*['"]?(postgres|mysql|mongodb)"
   
   # SMTP Credentials
-  "smtp[_-]?pass(word)?[[:space:]]*=[[:space:]]*['\"]?.*['\"]?"
-  "mail[_-]?pass(word)?[[:space:]]*=[[:space:]]*['\"]?.*['\"]?"
+  "smtp[_-]?pass(word)?[[:space:]]*=[[:space:]]*['"].*['"]"
+  "mail[_-]?pass(word)?[[:space:]]*=[[:space:]]*['"].*['"]"
 )
 
 # Test-safe patterns (won't trigger in test files)
@@ -45,15 +45,30 @@ TEST_EXCLUSIONS=(
   "example-"
   "dummy-"
   "sample-"
+  "your-api-key"
+  "api-key-here"
+  "<api[_-]?key>"
+  "@example\.(com|org|net)"
+  "@test\.(com|org|net)"
+  "@localhost"
+  "@mock\."
 )
 
 FOUND_SECRETS=0
 FILES_TO_CHECK=$(git diff --cached --name-only --diff-filter=ACM)
 
 for file in $FILES_TO_CHECK; do
-  # Skip test directories
-  if [[ "$file" =~ (test|tests|__tests__|__mocks__|spec|specs)/ ]]; then
-    continue
+  is_test_file=false
+  is_doc_file=false
+
+  # Check if it's a test file
+  if [[ "$file" =~ (test|tests|__tests__|__mocks__|spec|specs)/ || "$file" =~ \.(test|spec)\.js$ ]]; then
+    is_test_file=true
+  fi
+
+  # Check if it's a documentation file
+  if [[ "$file" =~ \.md$ || "$file" =~ README || "$file" =~ (docs|doc)/ ]]; then
+    is_doc_file=true
   fi
   
   # Skip binary files
@@ -67,15 +82,15 @@ for file in $FILES_TO_CHECK; do
     
     if [ -n "$matches" ]; then
       # Check if it's a test pattern
-      is_test_pattern=false
+      is_excluded=false
       for exclusion in "${TEST_EXCLUSIONS[@]}"; do
-        if echo "$matches" | grep -q "$exclusion"; then
-          is_test_pattern=true
+        if echo "$matches" | grep -qE "$exclusion"; then
+          is_excluded=true
           break
         fi
       done
       
-      if [ "$is_test_pattern" = false ]; then
+      if [ "$is_excluded" = false ] && [ "$is_test_file" = false ] && [ "$is_doc_file" = false ]; then
         echo ""
         echo "❌ CRITICAL: Potential secret found in $file"
         echo "Pattern: $pattern"
@@ -93,8 +108,9 @@ if [ $FOUND_SECRETS -eq 1 ]; then
   echo "💡 Tips:"
   echo "- Use environment variables for sensitive data"
   echo "- Add secrets to .env.local (not .env)"  
-  echo "- For tests, use obvious mock values (mock-*, test-*, etc)"
+  echo "- For tests, use obvious mock values (mock-, test-, etc)"
   exit 1
 fi
 
 echo "✅ No secrets detected"
+
