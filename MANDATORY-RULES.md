@@ -195,6 +195,15 @@
 - ✅ **Conflict Resolution Strategy:** When your previous PR is approved and merged, you MUST immediately update your current feature branch by rebasing it on the updated `preview` branch (`git rebase origin/preview`). This will prevent merge conflicts.
 ```
 
+### 💓 **ANTI-STALLING PROTOCOL**
+```markdown
+# ANTI-STALLING (LEVEL 2 - MANDATORY)
+- ✅ If a PR is blocked or under review, immediately list all open issues and select the next one to work on.
+- ✅ If no other issues exist, create a new issue titled "Heartbeat: Check PR Status and Backlog".
+- ✅ The "Heartbeat" issue involves checking the status of all open PRs. If comments are not yet available, the issue is closed, and a new "Heartbeat" issue is immediately created to continue the loop, preventing a stalled state.
+- 🚨 VIOLATION = Stalled work, loss of momentum.
+```
+
 ### 🚨 **PR REMEDIATION PROTOCOL**
 ```markdown
 # PR REMEDIATION (LEVEL 2 - MANDATORY)
