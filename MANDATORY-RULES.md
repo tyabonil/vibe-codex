@@ -53,6 +53,7 @@
 ### SEQ-2: CREATE A BRANCH
 ```markdown
 # STEP 2: BRANCH (MANDATORY)
+- ✅ **PREVIEW-FIRST:** All development work should be based on the `preview` branch, not `main`.
 - ✅ Create a branch from the `preview` branch.
 - ✅ Branch name must reference the issue: `feature/issue-{number}-{description}`.
 - ✅ Example: `feature/issue-123-add-login-page`.
@@ -86,8 +87,9 @@
 # STEP 5: REVIEW & MERGE (MANDATORY)
 - ✅ Request a review from `@copilot` immediately after creating the PR.
 - ✅ Address ALL feedback from reviewers and automated checks.
-- ✅ Once approved, merge the PR into the `preview` branch.
-- 🚨 VIOLATION = Merging with unaddressed feedback.
+- ✅ **MERGE TO PREVIEW:** Once approved, merge the PR into the `preview` branch.
+- ✅ **MAIN MERGE:** The `main` branch should only receive PRs from `preview`.
+- 🚨 VIOLATION = Merging with unaddressed feedback or directly to `main`.
 ```
 
 ### SEQ-6: CLEAN UP
@@ -95,7 +97,7 @@
 # STEP 6: CLEANUP (MANDATORY)
 - ✅ After merging, close the issue if it's fully resolved.
 - ✅ Comment on the issue with the resolution and PR link.
-- ✅ Delete the feature branch after the PR is merged.
+- ✅ **DELETE THE FEATURE BRANCH** after the PR is merged.
 - 🚨 VIOLATION = Leaving stale branches or open issues.
 ```
 
@@ -225,6 +227,28 @@
 - ❌ **DO NOT** open a new PR for the same issue without closing the old one.
 ```
 
+### 🤖 **95% AUTONOMOUS OPERATIONS**
+```markdown
+# AUTONOMY (LEVEL 2 - MANDATORY)
+- ✅ **ACT, DON'T ASK:** You are authorized to perform all routine development tasks without asking for permission. This includes, but is not limited to:
+  - Creating, updating, closing, and commenting on issues.
+  - Creating, modifying, and deleting files in the repository.
+  - Deploying, testing, and building the application.
+  - Making architectural decisions based on best practices.
+  - Fixing bugs, improving code, and refactoring.
+  - Updating dependencies and configurations.
+  - Creating branches, pull requests, and merging code according to the workflow rules.
+  - Adding and updating environment variables.
+  - Interacting with all integrated services.
+- 🚨 **ONLY ASK PERMISSION WHEN:**
+  - You need credentials or API keys that have not been provided.
+  - You need to spend money or approve budgets.
+  - You need legal or compliance decisions.
+  - You need access to external services that are not yet integrated.
+  - You are making destructive changes to production data.
+- 🎯 **TARGET:** 95% reduction in permission requests. Act as a senior developer, not an intern.
+```
+
 ---
 
 ## ⚡ LEVEL 3: QUALITY GATES (MANDATORY)
@@ -350,6 +374,16 @@
 - ✅ Environment-aware code (dev/test/prod considerations)
 - ✅ Files ≤200-300 lines (refactor when larger)
 - ✅ Clean, organized codebase structure
+```
+
+### 🐛 **HOLISTIC ERROR CORRECTION**
+```markdown
+# ERROR CORRECTION (LEVEL 4 - STRONGLY RECOMMENDED)
+- ✅ **IDENTIFY ROOT CAUSE:** When an error is encountered during expensive operations (build, lint, test), identify the root cause and pattern.
+- ✅ **REVIEW ALL FILES:** Review all salient files for similar issues.
+- ✅ **FIX ALL INSTANCES:** Fix all instances of the pattern before re-running expensive operations.
+- ✅ **APPLY HOLISTICALLY:** Apply corrections holistically across the codebase.
+- 🚨 VIOLATION = Wasted time and computational resources, frustrating iterative fixes.
 ```
 
 ### 🤝 **LLM PLAN VERIFICATION**
