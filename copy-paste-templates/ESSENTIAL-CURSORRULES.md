@@ -10,7 +10,7 @@
 - 🚨 STOP IMMEDIATELY if about to violate - ask user first
 
 # 🚨 LEVEL 2: WORKFLOW (MANDATORY)  
-- ✅ ALWAYS use mcp_github_* tools instead of terminal git commands
+- ✅ ALWAYS run the local hooks before committing.
 - ✅ IMMEDIATELY assign blocked issues to repository owner
 - ✅ CREATE issues for all work (≤7 days each)
 - ✅ NEVER attempt infrastructure/DevOps work - assign to user
@@ -36,7 +36,7 @@
 
 1. **Copy the above rules** to your `.cursorrules` file
 2. **Create PROJECT_CONTEXT.md** in your repository root
-3. **Verify MCP GitHub API access** is working
+3. **Install the local hooks** by running `bash hooks/install-rule-checker.sh`
 4. **Create preview branch** if it doesn't exist
 5. **Review MANDATORY-RULES.md** for complete details
 
@@ -45,7 +45,7 @@
 **Before ANY action, verify:**
 - [ ] Not committing secrets? (STOP if yes)
 - [ ] Not overwriting .env? (ASK if yes)  
-- [ ] Using MCP GitHub API? (REQUIRED)
+- [ ] Are the local hooks installed? (REQUIRED)
 - [ ] Is work blocked? (ASSIGN if yes)
 - [ ] Issue exists? (CREATE if no)
 - [ ] Tests written? (REQUIRED)

@@ -63,6 +63,7 @@ Regardless of which LLM you're using, ALWAYS follow these safety protocols:
 - **ALWAYS** verify function/API existence before using
 - **ALWAYS** check for logical correctness, not just syntactic correctness
 - **ALWAYS** review for project architectural compliance
+- **ALWAYS** run the local hooks before committing.
 
 ### 🟢 Level 3: Best Practices
 - **Document** which LLM generated which code for debugging

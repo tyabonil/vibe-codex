@@ -136,17 +136,12 @@
 - **Use for:** `gh pr create`, `gh issue create`, etc.
 - **Benefit:** Fast, local, and integrates well with scripts.
 
-**2. MCP Tools**
-- **Check for:** Availability of `mcp_github_*` tools.
-- **Use for:** `mcp_github_create_pull_request`, `mcp_github_create_issue`, etc.
-- **Benefit:** Robust, reliable, and good for complex operations.
-
-**3. Command-line `git` with SSH**
+**2. Command-line `git` with SSH**
 - **Check for:** `git remote -v` shows `git@github.com:...`
 - **Use for:** `git push`, `git pull`, etc.
 - **Benefit:** Secure and widely used.
 
-**4. Command-line `git` with HTTPS**
+**3. Command-line `git` with HTTPS**
 - **Check for:** `git remote -v` shows `https://github.com/...`
 - **Use for:** `git push`, `git pull`, etc.
 - **Benefit:** Works everywhere, but may require authentication.
@@ -397,6 +392,20 @@
 - ✅ Remember: Copilot will review code later - this is for plan validation
 - ✅ ALWAYS document external LLM feedback on the relevant issue (Level 3 requirement)
 - 📝 RECOMMENDED for complex implementations and architectural decisions
+```
+
+---
+
+## ⚡ LEVEL 5: LOCAL DEVELOPMENT (MANDATORY)
+
+### 훅 **GIT HOOKS**
+```markdown
+# GIT HOOKS (LEVEL 5 - MANDATORY)
+- ✅ All commits MUST pass the pre-commit and commit-msg hooks.
+- ✅ The `pre-commit` hook will run security checks and PR health checks.
+- ✅ The `commit-msg` hook will validate your commit message format.
+- ✅ To install the hooks, run `bash hooks/install-rule-checker.sh`.
+- 🚨 VIOLATION = Commit will be aborted.
 ```
 
 ---

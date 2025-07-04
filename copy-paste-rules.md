@@ -17,7 +17,7 @@
 - Write code that takes into account different environments: dev, test, and prod
 - Keep the codebase very clean and organized
 - Avoid having files over 200-300 lines of code. Refactor at that point.
-- **ALWAYS use MCP GitHub API tools (mcp_github_*) instead of terminal git commands**
+- **ALWAYS run the local hooks before committing.**
 - **ALWAYS create appropriate issues for both development work AND infrastructure setup tasks**
 - **ALWAYS treat GitHub main branch as canonical source of truth**
 - **ALWAYS sync with main branch before creating new branches or making changes**
@@ -58,30 +58,6 @@
 - When blocked, create blocking issues and move to next sequential work
 - No exceptions to 100% test coverage for new code
 - Use P0-BLOCKER → P0-CRITICAL → P1-HIGH → P2-MEDIUM → P3-LOW prioritization
-```
-
-## For CONTRIBUTING.md:
-
-```markdown
-# Contributing Guidelines
-
-## Development Workflow
-1. Create issue for new features/bugs
-2. Create branch referencing issue number
-3. Implement changes following coding standards
-4. Write/update tests (100% coverage required)
-5. Update PROJECT_CONTEXT.md if applicable
-6. Submit PR with Copilot review
-7. Address review feedback
-8. Merge to preview branch first
-9. Deploy to production after validation
-
-## Code Standards
-- Files must be under 200-300 lines
-- No duplicate code across codebase
-- Environment-aware implementations
-- Security-first approach
-- Performance optimization required
 ```
 
 ## For GitHub Issue Templates:

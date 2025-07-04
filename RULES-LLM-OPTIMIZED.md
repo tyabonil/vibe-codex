@@ -6,11 +6,13 @@
 RULE: --
 ## LEVEL 2: WORKFLOW INTEGRITY (MANDATORY)
 ### SEQ-1: CREATE OR IDENTIFY AN ISSUE
+### 💬 **MANDATORY ISSUE INTERACTION PROTOCOL**
 ### SEQ-2: CREATE A BRANCH
 ### SEQ-3: IMPLEMENT AND COMMIT
 ### SEQ-4: CREATE A PULL REQUEST
 ### SEQ-5: ADDRESS FEEDBACK AND MERGE
 ### SEQ-6: CLEAN UP
+### 🔍 **ALWAYS TEST BUILDS BEFORE DEPENDENCY COMMITS**
 ### 🔬 **MANDATORY LLM TOKEN EFFICIENCY OPTIMIZATION**
 ### 🏗️‍♂️ **GIT REMOTE OPERATIONS HIERARCHY**
 ### 🖥️‍♂️ **ALWAYS PREFER LINUX/POSIX TERMINALS**
@@ -18,7 +20,9 @@ RULE: --
 ### 🤖 **LLM RULE IMPROVEMENT PROCESS**
 ### 🧠 **P0-BLOCKER: CREATE ISSUES FOR AVOIDABLE INEFFICIENCIES**
 ### 🚀 **MOVE ON TO THE NEXT ISSUE**
+### 💓 **ANTI-STALLING PROTOCOL**
 ### 🚨 **PR REMEDIATION PROTOCOL**
+### 🤖 **95% AUTONOMOUS OPERATIONS**
 RULE: --
 ## LEVEL 3: QUALITY GATES (MANDATORY)
 ### 🧪 **100% TEST COVERAGE REQUIRED**
@@ -34,12 +38,14 @@ RULE: --
 RULE: --
 ## LEVEL 4: DEVELOPMENT PATTERNS (STRONGLY RECOMMENDED)
 ### 👨‍💻‍🤝‍💻 **CODING STANDARDS**
+### 🐛 **HOLISTIC ERROR CORRECTION**
 ### 🤝 **LLM PLAN VERIFICATION**
 RULE: --
 ### **Before Every Action:**
 RULE: [ ] Will this commit secrets? (LEVEL 1 - STOP if yes)
 RULE: [ ] Will this overwrite environment files? (LEVEL 1 - ASK if yes)
 RULE: [ ] Am I following the SEQUENTIAL GITHUB WORKFLOW? (LEVEL 2 - FOLLOW STEPS)
+RULE: [ ] **Have I tested dependency changes locally before committing?** (LEVEL 2 - TEST FIRST)
 RULE: [ ] Is this work blocked and should be assigned? (LEVEL 2 - ASSIGN if yes)
 ### **During Issue Work:**
 RULE: [ ] **Am I documenting my thought process on the issue?** (LEVEL 3 - DOCUMENT)

@@ -11,6 +11,7 @@
 - Review PROJECT_CONTEXT.md if it exists for important context. Otherwise create it.
 - Never add stubbing or fake data patterns to code affecting dev or prod environments
 - Never overwrite .env files
+- **ALWAYS run the local hooks before committing.**
 ```
 
 ## Coding Pattern Preferences

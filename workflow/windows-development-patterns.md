@@ -84,77 +84,26 @@ curl --max-time 10               # Prevent infinite waits
 
 ---
 
-## MCP GitHub API Tool Integration
+## Local Git Hook Integration
 
-### Problem: Terminal Git Command Failures
-Terminal git commands often fail in AI assistant environments, causing workflow disruptions.
+### Problem: Manual Rule Enforcement
+Manually enforcing rules is error-prone and time-consuming.
 
-### Solution: MCP GitHub API Tool Mapping
-**Use MCP GitHub API tools instead of terminal git commands for ALL repository operations**
+### Solution: Local Git Hooks
+**Use local git hooks to automate rule enforcement.**
 
-### Complete Tool Mapping
-| Git Command | MCP GitHub API Tool |
-|-------------|-------------------|
-| `git pull` | `mcp_github_get_file_contents` |
-| `git push` | `mcp_github_create_or_update_file` or `mcp_github_push_files` |
-| `git checkout -b` | `mcp_github_create_branch` |
-| `git add . && git commit` | `mcp_github_push_files` |
-| `git merge` | `mcp_github_merge_pull_request` |
-| `git status` | `mcp_github_list_branches` + file analysis |
+### Available Hooks
+- **`pre-commit`**: Runs before you type a commit message.
+  - **`pr-health-check.sh`**: Checks for stale pull requests and compliance violations.
+  - **`security-pre-commit.sh`**: Scans for secrets in your staged files.
+- **`commit-msg`**: Runs after you have entered a commit message.
+  - **`commit-msg-validator.sh`**: Validates that your commit message follows the Conventional Commits specification.
 
-### Branch Reference Validation
-**Critical**: Always check remote branch existence before creating PRs
-
+### Installation
 ```bash
-# 1. Check if remote branch exists
-mcp_github_list_branches -owner {owner} -repo {repo}
-
-# 2. Create remote branch if missing  
-mcp_github_create_branch -branch {branch-name} -from_branch {base-branch}
-
-# 3. Then create PR safely
-mcp_github_create_pull_request -head {branch-name} -base {target-branch}
+# Run the installation script
+bash hooks/install-rule-checker.sh
 ```
-
-### Error Prevention Workflow
-1. **Verify remote branch exists** before any PR operations
-2. **Create missing remote branches** using MCP tools
-3. **Use MCP tools exclusively** for git operations
-4. **Validate references** before proceeding with workflow
-
----
-
-## Bulletproof PR Creation Rules
-
-### Mandatory Workflow Rule
-**"AFTER EVERY SINGLE COMMIT, IMMEDIATELY CREATE THE PULL REQUEST. NO EXCEPTIONS. EVER."**
-
-### Implementation Sequence
-```bash
-# 1. CREATE/IDENTIFY ISSUE
-mcp_github_create_issue -title "Clear issue title" -body "User story format"
-
-# 2. COMMENT ON ISSUE  
-mcp_github_add_issue_comment -issue_number {number} -body "🚧 IN PROGRESS"
-
-# 3. CREATE REMOTE BRANCH
-mcp_github_create_branch -branch "feature/issue-{number}-description" -from_branch "preview"
-
-# 4. IMPLEMENT CHANGES
-mcp_github_create_or_update_file -path "file.js" -content "code" -message "feat: description\n\nResolves #{number}" -branch "feature/issue-{number}-description"
-
-# 5. CREATE PR (MANDATORY - DO NOT SKIP!)
-mcp_github_create_pull_request -title "Issue title" -body "Resolves #{number}" -head "feature/issue-{number}-description" -base "preview"
-
-# 6. REQUEST REVIEW
-mcp_github_request_copilot_review -pullNumber {pr-number}
-```
-
-### Violation Prevention
-- **Check PR exists** immediately after commits
-- **Never skip PR creation** even for small changes  
-- **Verify workflow completion** before proceeding
-- **Document PR link** in issue comments
 
 ---
 
@@ -209,16 +158,12 @@ fi
 - [ ] **Check Windows environment** - Detect OS and WSL availability
 - [ ] **Configure WSL Ubuntu preference** - Set up terminal selection logic
 - [ ] **Implement non-interactive patterns** - Add `| cat`, `--yes`, `--quiet` flags
-- [ ] **Set up MCP GitHub API tools** - Replace all git terminal commands
-- [ ] **Enable branch validation** - Check remote existence before PR creation
-- [ ] **Enforce bulletproof PR rules** - Mandatory PR creation after commits
+- [ ] **Install local git hooks** - Run the installation script.
 
 ### Validation Tests
 - [ ] **Terminal hanging prevention** - Test with `git log`, `git diff`
 - [ ] **WSL Ubuntu functionality** - Verify path translation and command execution
-- [ ] **MCP tool reliability** - Test all git command replacements
-- [ ] **PR creation workflow** - Validate branch references and PR generation
-- [ ] **Error recovery** - Test fallback scenarios and error handling
+- [ ] **Local git hook reliability** - Test all hooks to ensure they are working correctly.
 
 ---
 
@@ -226,15 +171,13 @@ fi
 
 ### Development Workflow Improvements
 - ✅ **Eliminates PowerShell hanging issues** - No more blocked development sessions
-- ✅ **Prevents MCP GitHub API failures** - Proper branch reference validation
 - ✅ **Ensures workflow compliance** - Mandatory PR creation enforcement
 - ✅ **Improves AI assistant reliability** - Tested patterns reduce failures
 - ✅ **Enables production deployment** - Reliable automation for CI/CD
 
 ### Measurable Impact
 - **0% terminal hanging** with WSL Ubuntu preference
-- **99%+ MCP API success rate** with branch validation
-- **100% workflow compliance** with bulletproof PR rules
+- **100% workflow compliance** with local git hooks
 - **50%+ faster development cycles** with reliable automation
 
 ---
