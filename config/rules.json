@@ -43,6 +43,40 @@
         }
       }
     },
+    "enhanced_validation": {
+      "enabled": true,
+      "fail_fast": true,
+      "parallel": false,
+      "timeout": 300,
+      "allow_override": false,
+      "security": {
+        "enabled": true,
+        "timeout": 60,
+        "patterns": "inherit"
+      },
+      "build": {
+        "enabled": true,
+        "timeout": 120,
+        "command": "",
+        "auto_detect": true
+      },
+      "tests": {
+        "enabled": true,
+        "timeout": 180,
+        "strategy": "affected",
+        "command": "",
+        "coverage_threshold": 80,
+        "auto_detect": true
+      },
+      "quality": {
+        "enabled": true,
+        "timeout": 60,
+        "lint": true,
+        "format": true,
+        "auto_detect": true,
+        "blocking": false
+      }
+    },
     "issue_reminders": {
       "enabled": true,
       "reminder_frequency": "daily",
