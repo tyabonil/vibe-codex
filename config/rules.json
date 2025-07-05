@@ -76,6 +76,23 @@
         "auto_detect": true,
         "blocking": false
       }
+    },
+    "issue_reminders": {
+      "enabled": true,
+      "reminder_frequency": "daily",
+      "check_recent_activity": true,
+      "activity_threshold_hours": 24,
+      "non_blocking": true,
+      "hooks": {
+        "pre_commit": true,
+        "post_commit": true,
+        "pre_push": true
+      },
+      "github_actions": {
+        "enabled": true,
+        "auto_remind": true,
+        "remove_resolved_reminders": true
+      }
     }
   }
 }

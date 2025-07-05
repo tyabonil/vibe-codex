@@ -167,6 +167,119 @@ class RuleEngine {
     
     return violations;
   }
+
+  /**
+   * Level 3: Quality Gates (MANDATORY)
+   */
+  async checkLevel3Quality(prData, files, githubClient) {
+    const violations = [];
+    
+    console.log('🎯 Checking quality gates...');
+    
+    // Check for test coverage requirements
+    const hasTests = files.some(file => 
+      file.filename.includes('test') || 
+      file.filename.includes('spec') || 
+      file.filename.includes('.test.') || 
+      file.filename.includes('.spec.')
+    );
+    
+    const hasCodeChanges = files.some(file => 
+      !file.filename.includes('test') && 
+      !file.filename.includes('spec') && 
+      !file.filename.includes('.md') && 
+      !file.filename.includes('.json') && 
+      !file.filename.includes('.yml') && 
+      !file.filename.includes('.yaml')
+    );
+    
+    if (hasCodeChanges && !hasTests) {
+      violations.push({
+        level: 3,
+        type: 'QUALITY',
+        severity: 'MANDATORY',
+        rule: '100% TEST COVERAGE FOR NEW CODE',
+        message: '🧪 Missing tests for code changes',
+        details: 'All new code requires appropriate test coverage.',
+        action: 'Add tests for the new functionality',
+        fix: 'Create test files using appropriate framework (Jest, RTL, Cypress)'
+      });
+    }
+    
+    // Check for self-review requirement
+    const prAuthor = prData.user.login;
+    if (prData.comments === 0) {
+      violations.push({
+        level: 3,
+        type: 'QUALITY',
+        severity: 'MANDATORY',
+        rule: 'SELF-REVIEW REQUIREMENT',
+        message: '👀 PR requires self-review',
+        details: 'After creating a PR, you MUST perform a self-review.',
+        action: 'Add a self-review comment to the PR',
+        fix: 'Comment on your own PR documenting your review process'
+      });
+    }
+    
+    console.log(`🎯 Level 3 Quality: ${violations.length} violations found`);
+    return violations;
+  }
+
+  /**
+   * Level 4: Development Patterns (RECOMMENDED)
+   */
+  async checkLevel4Patterns(files, prData) {
+    const violations = [];
+    
+    console.log('📐 Checking development patterns...');
+    
+    // Check for large file violations
+    const largeFiles = files.filter(file => {
+      if (file.additions && file.deletions) {
+        return (file.additions + file.deletions) > 300;
+      }
+      return false;
+    });
+    
+    for (const file of largeFiles) {
+      violations.push({
+        level: 4,
+        type: 'PATTERN',
+        severity: 'RECOMMENDED',
+        rule: 'FILES ≤200-300 LINES',
+        message: `📄 Large file detected: ${file.filename}`,
+        details: 'Consider refactoring large files into smaller, focused modules.',
+        action: 'Consider breaking down the file into smaller modules',
+        fix: 'Refactor into multiple smaller files with single responsibilities'
+      });
+    }
+    
+    // Check for commit message quality
+    if (prData.title && !this.isDescriptiveCommitMessage(prData.title)) {
+      violations.push({
+        level: 4,
+        type: 'PATTERN',
+        severity: 'RECOMMENDED',
+        rule: 'CLEAR, DESCRIPTIVE COMMIT MESSAGES',
+        message: '💬 PR title could be more descriptive',
+        details: 'Commit messages should clearly describe what and why.',
+        action: 'Update PR title to be more descriptive',
+        fix: 'Use format: "type: description of what and why"'
+      });
+    }
+    
+    console.log(`📐 Level 4 Patterns: ${violations.length} violations found`);
+    return violations;
+  }
+
+  isDescriptiveCommitMessage(message) {
+    // Check if message has at least 10 characters and contains descriptive words
+    if (message.length < 10) return false;
+    
+    // Should start with a type prefix (feat:, fix:, docs:, etc.)
+    const typePattern = /^(feat|fix|docs|style|refactor|test|chore|perf|ci|build):/;
+    return typePattern.test(message);
+  }
 }
 
 module.exports = RuleEngine;
