@@ -30,7 +30,6 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          const { context, github } = require('@actions/github');
           
           // Helper function to extract issue number from branch name
           function extractIssueNumber(branchName) {
@@ -203,7 +202,6 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          const { context } = require('@actions/github');
           
           // This is a non-blocking check - we always pass
           // The validation above provides reminders but doesn't block
