@@ -7,13 +7,12 @@ This repository contains a set of rules for AI-powered development that are desi
 
 ## Installation
 
-To install the rules, simply run the following command:
+For complete installation instructions including quick start and manual setup options, see [INSTALLATION.md](./INSTALLATION.md).
 
+**Quick Start:**
 ```bash
-bash hooks/install-rule-checker.sh
+curl -sSL https://raw.githubusercontent.com/tyabonil/cursor_rules/main/install-rule-checker.sh | bash
 ```
-
-This will install the necessary git hooks to enforce the rules locally.
 
 ## Usage
 

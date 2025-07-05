@@ -163,4 +163,4 @@
 -   All commits MUST pass the pre-commit and commit-msg hooks.
 -   The `pre-commit` hook will run security checks and PR health checks.
 -   The `commit-msg` hook will validate your commit message format.
--   To install the hooks, run `bash hooks/install-rule-checker.sh`.
+-   For installation instructions, see [INSTALLATION.md](./INSTALLATION.md).

@@ -1,10 +1,12 @@
-# 🚀 MANDATORY Rules - Local Installation Guide
+# 🚀 MANDATORY Rules - Installation Guide
 
 ## 📋 Overview
 
 Install the MANDATORY Rules pre-commit and commit-msg hooks to ensure all commits are compliant with the rules defined in this repository.
 
-## ⚡ Quick Installation (Recommended)
+## ⚡ Quick Start (One-Command Installation)
+
+**Fastest way to get started** - Install everything with a single command:
 
 Run this script in your repository to automatically install the hooks:
 
@@ -13,7 +15,16 @@ Run this script in your repository to automatically install the hooks:
 curl -sSL https://raw.githubusercontent.com/tyabonil/cursor_rules/main/install-rule-checker.sh | bash
 ```
 
-This script will copy the necessary hooks to your local `.git/hooks` directory and make them executable.
+This script will automatically:
+- Copy the necessary hook files to your local `.git/hooks` directory
+- Make the hooks executable
+- Set up automated rule enforcement
+
+✅ **Benefits of Quick Installation:**
+- Consistent rules across all commits
+- Automated validation before each commit  
+- Improved commit quality with Conventional Commits
+- Your environment will be set up in under a minute!
 
 ---
 
