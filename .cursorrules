@@ -1,0 +1,25 @@
+# Repository-specific MANDATORY Rules overrides
+# These settings override the central rules from tyabonil/cursor_rules
+# Remove this file to use central rules without modification
+
+# Example: Disable specific checks for this repository
+# level4_patterns:
+#   file_size_limits:
+#     enabled: false
+
+# Example: Custom branch naming patterns
+# level2_workflow:
+#   branch_naming:
+#     required_patterns:
+#       - "^feat\\/.*"
+#       - "^fix\\/.*"
+#       - "^docs\\/.*"
+
+# Example: Custom test coverage threshold  
+# level3_quality:
+#   test_coverage:
+#     require_100_percent: false
+#     minimum_threshold: 80
+
+# For complete configuration options, see:
+# https://github.com/tyabonil/cursor_rules/blob/main/config/rules.json
