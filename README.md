@@ -1,39 +1,254 @@
-# MANDATORY Rules
+# Cursor Rules
 
-This repository contains a set of rules for AI-powered development that are designed to be both comprehensive and efficient. The rules are divided into two main parts:
+A comprehensive rule enforcement system for AI-powered development, designed to maintain code quality, security, and workflow consistency across projects.
 
--   **`MANDATORY-RULES.md`**: This is the complete, human-readable guide to all rules, including context, reasoning, and examples.
--   **`RULES-LLM-OPTIMIZED.md`**: This is the token-efficient, structured version of the rules, specifically designed for LLM consumption.
+## Overview
 
-## Installation
+This repository provides a structured framework for enforcing development best practices through automated git hooks and validation rules. The system is designed to be both comprehensive and efficient, with rules optimized for both human developers and AI assistants.
 
-To install the rules, simply run the following command:
+### Core Components
+
+-   **`MANDATORY-RULES.md`**: Complete human-readable guide containing all rules with context, reasoning, and examples
+-   **`core-workspace-rules.md`**: High-level workspace rules for universal application
+-   **Automated Enforcement**: Git hooks that validate commits, check security, and ensure compliance
+
+## Quick Start
+
+### Installation
+
+Install the rule checker with a single command:
 
 ```bash
-bash hooks/install-rule-checker.sh
+bash install-rule-checker.sh
 ```
 
-This will install the necessary git hooks to enforce the rules locally.
+For detailed installation options, see [INSTALLATION.md](./INSTALLATION.md).
+
+### What Gets Installed
+
+The installation script sets up:
+- **Pre-commit hooks**: Security scanning and PR health checks
+- **Commit message validation**: Ensures Conventional Commits format
+- **Configuration files**: Rules and patterns for validation
+
+## Repository Structure
+
+```
+cursor_rules/
+├── .claude/                  # AI-assisted development tools
+│   ├── hooks/               # Claude workflow hooks
+│   ├── config/              # Claude-specific configuration
+│   └── context/             # Context preservation files
+├── config/                   # Configuration files
+│   ├── rules.json           # Rule definitions and patterns
+│   └── commit-msg.json      # Commit message validation rules
+├── copy-paste-rules/        # Ready-to-use rule templates
+├── enhanced-rules/          # Advanced rule configurations
+├── hooks/                   # Git hooks and utility scripts
+├── llm-specific/           # LLM-specific rule adaptations
+├── review-bots/            # Automated PR review system
+├── scripts/                # Core rule engine and utilities
+├── tests/                  # Test suite for rule validation
+└── workflow/               # Workflow documentation and patterns
+```
 
 ## Usage
 
-Once the hooks are installed, they will run automatically before each commit and when you edit a commit message.
+Once installed, the hooks run automatically:
 
-### **`pre-commit` Hook**
+### Pre-commit Hook
 
-This hook runs before you type a commit message. It performs the following checks:
+Executes before commit message entry:
+-   **Security Scan**: Detects secrets, API keys, and sensitive data
+-   **PR Health Check**: Validates PR status and compliance
+-   **File Validation**: Ensures code meets quality standards
 
--   **PR Health Check**: Checks for stale pull requests and compliance violations.
--   **Security Pre-Commit**: Scans for secrets in your staged files.
+### Commit Message Hook
 
-If any of these checks fail, the commit will be aborted.
+Validates commit messages against:
+-   Conventional Commits specification
+-   Required format: `type(scope): description`
+-   Character limits and content requirements
 
-### **`commit-msg` Hook**
+## Features
 
-This hook runs after you have entered a commit message. It validates that your commit message follows the Conventional Commits specification.
+### Rule Engine
 
-If your commit message is not valid, the commit will be aborted.
+The core rule engine (`scripts/rule-engine.js`) provides:
+- Pattern-based rule matching
+- Security vulnerability detection
+- Code quality validation
+- Workflow compliance checks
+
+### Review Bots
+
+Automated PR review system with multiple bot personalities:
+- **Balance Bot**: Provides balanced, constructive feedback
+- **Hater Bot**: Identifies potential issues aggressively
+- **White Knight Bot**: Focuses on positive reinforcement
+
+See [review-bots/README.md](./review-bots/README.md) for details.
+
+### LLM-Specific Adaptations
+
+Optimized rules for various AI assistants:
+- Claude (Anthropic)
+- GPT-4 (OpenAI)
+- GitHub Copilot
+- Cursor AI
+- Cline
+
+See [llm-specific/README.md](./llm-specific/README.md) for model-specific configurations.
+
+### AI-Assisted Development Tools (.claude)
+
+Advanced tooling for AI-powered development workflows:
+
+#### Context Management
+```bash
+# Check current context usage
+./.claude/hooks/monitor-context.sh
+
+# Update restart context when usage is high
+./.claude/hooks/update-restart-context.sh
+```
+
+#### PR Management
+```bash
+# Analyze PR check failures (systemic vs violations)
+./.claude/hooks/pr-check-handler.sh [PR_NUMBER]
+
+# Report issues with cursor_rules
+./.claude/hooks/report-issue.sh
+```
+
+#### Deployment Verification
+```bash
+# Verify deployment after merge
+./.claude/hooks/post-deploy.sh [BRANCH]
+```
+
+## Configuration
+
+### Rules Configuration
+
+Edit `config/rules.json` to customize:
+- Security patterns
+- Code quality rules
+- Workflow requirements
+- File naming conventions
+
+### Commit Message Rules
+
+Modify `config/commit-msg.json` to adjust:
+- Allowed commit types
+- Scope requirements
+- Message format validation
+
+### Claude Configuration
+
+Configure AI-assisted development in `.claude/config/settings.json`:
+- Context management thresholds
+- PR check analysis patterns
+- Issue reporting settings
+
+## Testing
+
+Run the test suite:
+
+```bash
+npm test
+```
+
+Tests cover:
+- Rule engine functionality
+- Security pattern detection
+- Exception handling
+- Configuration validation
+
+## Advanced Usage
+
+### Manual Hook Installation
+
+For custom installations:
+
+```bash
+# Install specific hooks
+cp hooks/pre-commit .git/hooks/
+cp hooks/commit-msg .git/hooks/
+chmod +x .git/hooks/*
+```
+
+### CI/CD Integration
+
+Integrate with GitHub Actions:
+
+```yaml
+- name: Run Rule Checker
+  run: |
+    npm install
+    npm run validate
+```
+
+### Centralized Rule Management
+
+For organizations managing multiple repositories:
+
+1. **Install centralized workflow**:
+   ```bash
+   curl -sSL https://raw.githubusercontent.com/tyabonil/cursor_rules/main/install-rule-checker.sh | bash
+   ```
+
+2. **Configure repository permissions**:
+   - Settings → Actions → General → Workflow permissions: "Read and write permissions"
+
+3. **Benefits**:
+   - Always uses latest rules from cursor_rules
+   - Centralized updates across all repositories
+   - No local rule maintenance required
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Permission Denied**: Ensure hooks have execute permissions
+   ```bash
+   chmod +x .git/hooks/*
+   ```
+
+2. **Hook Not Running**: Verify Git version (2.9+) and hook installation
+   ```bash
+   ls -la .git/hooks/
+   ```
+
+3. **False Positives**: Add exceptions to `config/rules.json`
+
+4. **Context Management**: Use Claude hooks for AI session continuity
+   ```bash
+   ./.claude/hooks/monitor-context.sh
+   ```
 
 ## Contributing
 
-Contributions are welcome! Please see the [contribution guidelines](./PULL_REQUEST.md) for more information.
+We welcome contributions! Please:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit changes using Conventional Commits
+4. Push to your branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+See [PULL_REQUEST.md](./PULL_REQUEST.md) for PR template.
+
+## License
+
+This project is licensed under the MIT License - see [LICENSE](./LICENSE) file for details.
+
+## Related Documentation
+
+- [MANDATORY-RULES.md](./MANDATORY-RULES.md) - Complete rule reference
+- [README-RULE-CHECKER.md](./README-RULE-CHECKER.md) - Technical architecture
+- [INSTALLATION.md](./INSTALLATION.md) - Detailed installation guide
+- [enhanced-rules/](./enhanced-rules/) - Advanced rule configurations
+- [workflow/](./workflow/) - Development workflow patterns
+- [.claude/README.md](./.claude/README.md) - AI-assisted development tools
