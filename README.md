@@ -6,11 +6,22 @@ A comprehensive rule enforcement system for AI-powered development, designed to 
 
 This repository provides a structured framework for enforcing development best practices through automated git hooks and validation rules. The system is designed to be both comprehensive and efficient, with rules optimized for both human developers and AI assistants.
 
-### Core Components
+## 📖 Documentation Navigation
 
--   **`MANDATORY-RULES.md`**: Complete human-readable guide containing all rules with context, reasoning, and examples
--   **`core-workspace-rules.md`**: High-level workspace rules for universal application
--   **Automated Enforcement**: Git hooks that validate commits, check security, and ensure compliance
+### 👨‍💻 For Human Developers
+- **[USAGE-GUIDE.md](./USAGE-GUIDE.md)** - Complete usage guide with examples and scenarios
+- **[INSTALLATION.md](./INSTALLATION.md)** - Detailed installation instructions
+- **[PROJECT_CONTEXT.md](./PROJECT_CONTEXT.md)** - Repository architecture and decisions
+
+### 🤖 For AI Assistants  
+- **[MANDATORY-RULES.md](./MANDATORY-RULES.md)** - Primary rule specification (LLM-optimized)
+- **[LLM-USAGE-REFERENCE.md](./LLM-USAGE-REFERENCE.md)** - Technical reference for AI systems
+- **[config/project-patterns.json](./config/project-patterns.json)** - Configurable workflow patterns
+
+### 🔧 Component Documentation
+- **[.claude/README.md](./.claude/README.md)** - Claude Code integration tools
+- **[review-bots/README.md](./review-bots/README.md)** - Automated PR review system
+- **[llm-specific/README.md](./llm-specific/README.md)** - LLM-specific adaptations
 
 ## Quick Start
 
