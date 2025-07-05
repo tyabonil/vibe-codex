@@ -1,0 +1,204 @@
+name: MANDATORY Rules Compliance Checker
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review]
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  rule-compliance:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      checks: write
+      issues: read
+      
+    steps:
+      - name: Checkout PR code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          
+      - name: Download MANDATORY Rules and Scripts
+        env:
+          GITHUB_TOKEN: ${{ secrets.RULES_ACCESS_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          # Create directories
+          mkdir -p scripts config
+          
+          echo "📥 Downloading latest MANDATORY-RULES.md from tyabonil/cursor_rules..."
+          curl -H "Authorization: token $GITHUB_TOKEN" \
+               -H "Accept: application/vnd.github.raw" \
+               -o MANDATORY-RULES.md \
+               "https://api.github.com/repos/tyabonil/cursor_rules/contents/MANDATORY-RULES.md" || \
+          curl -H "Accept: application/vnd.github.raw" \
+               -o MANDATORY-RULES.md \
+               "https://api.github.com/repos/tyabonil/cursor_rules/contents/MANDATORY-RULES.md"
+          
+          echo "📥 Downloading rule checker scripts from tyabonil/cursor_rules..."
+          
+          # Download rule engine
+          curl -H "Authorization: token $GITHUB_TOKEN" \
+               -H "Accept: application/vnd.github.raw" \
+               -o scripts/rule-engine.js \
+               "https://api.github.com/repos/tyabonil/cursor_rules/contents/scripts/rule-engine.js" || \
+          curl -H "Accept: application/vnd.github.raw" \
+               -o scripts/rule-engine.js \
+               "https://api.github.com/repos/tyabonil/cursor_rules/contents/scripts/rule-engine.js"
+               
+          # Download GitHub client
+          curl -H "Authorization: token $GITHUB_TOKEN" \
+               -H "Accept: application/vnd.github.raw" \
+               -o scripts/github-client.js \
+               "https://api.github.com/repos/tyabonil/cursor_rules/contents/scripts/github-client.js" || \
+          curl -H "Accept: application/vnd.github.raw" \
+               -o scripts/github-client.js \
+               "https://api.github.com/repos/tyabonil/cursor_rules/contents/scripts/github-client.js"
+               
+          # Download reporter
+          curl -H "Authorization: token $GITHUB_TOKEN" \
+               -H "Accept: application/vnd.github.raw" \
+               -o scripts/reporter.js \
+               "https://api.github.com/repos/tyabonil/cursor_rules/contents/scripts/reporter.js" || \
+          curl -H "Accept: application/vnd.github.raw" \
+               -o scripts/reporter.js \
+               "https://api.github.com/repos/tyabonil/cursor_rules/contents/scripts/reporter.js"
+               
+          # Download configuration
+          curl -H "Authorization: token $GITHUB_TOKEN" \
+               -H "Accept: application/vnd.github.raw" \
+               -o config/rules.json \
+               "https://api.github.com/repos/tyabonil/cursor_rules/contents/config/rules.json" || \
+          curl -H "Accept: application/vnd.github.raw" \
+               -o config/rules.json \
+               "https://api.github.com/repos/tyabonil/cursor_rules/contents/config/rules.json"
+               
+          echo "✅ All files downloaded successfully from tyabonil/cursor_rules"
+          echo "📊 Rules version: $(date)"
+          
+      - name: Install dependencies
+        run: |
+          npm init -y
+          npm install @actions/core @actions/github
+          
+      - name: Run MANDATORY Rules Compliance Check
+        id: rule-check
+        uses: actions/github-script@v7
+        env:
+          RULES_SOURCE_REPO: 'tyabonil/cursor_rules'
+          RULES_SOURCE_BRANCH: 'main'
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            
+            console.log('🚀 Starting MANDATORY Rules Compliance Check...');
+            console.log(`📋 Rules source: ${process.env.RULES_SOURCE_REPO}`);
+            console.log(`🌟 Repository: ${context.repo.owner}/${context.repo.repo}`);
+            
+            try {
+              // Import rule checking modules
+              const RuleEngine = require('./scripts/rule-engine.js');
+              const GitHubClient = require('./scripts/github-client.js');
+              const Reporter = require('./scripts/reporter.js');
+              
+              // Initialize components
+              const ruleEngine = new RuleEngine();
+              const githubClient = new GitHubClient(github, context);
+              const reporter = new Reporter();
+              
+              // Get PR and files data
+              const prData = await githubClient.getPRData();
+              const files = await githubClient.getPRFiles();
+              const commits = await githubClient.getPRCommits();
+              
+              console.log(`📋 Analyzing PR #${prData.number}: ${prData.title}`);
+              console.log(`📁 Files changed: ${files.length}`);
+              console.log(`📝 Commits: ${commits.length}`);
+              
+              // Run all rule checks
+              const violations = [];
+              
+              // Level 1: Security (BLOCKER)
+              console.log('🔐 Checking Level 1: Security & Safety...');
+              const level1Violations = await ruleEngine.checkLevel1Security(files, prData);
+              violations.push(...level1Violations);
+              
+              // Level 2: Workflow (MANDATORY)
+              console.log('🔄 Checking Level 2: Workflow Integrity...');
+              const level2Violations = await ruleEngine.checkLevel2Workflow(prData, files, commits, githubClient);
+              violations.push(...level2Violations);
+              
+              // Level 3: Quality (MANDATORY)
+              console.log('🎯 Checking Level 3: Quality Gates...');
+              const level3Violations = await ruleEngine.checkLevel3Quality(prData, files, githubClient);
+              violations.push(...level3Violations);
+              
+              // Level 4: Patterns (RECOMMENDED)
+              console.log('📐 Checking Level 4: Development Patterns...');
+              const level4Violations = await ruleEngine.checkLevel4Patterns(files, prData);
+              violations.push(...level4Violations);
+              
+              // Calculate compliance score and blocking status
+              const criticalViolations = violations.filter(v => v.level <= 3 && v.severity === 'BLOCKER');
+              const isBlocking = criticalViolations.length > 0;
+              const score = Math.max(0, 10 - violations.length);
+              
+              console.log(`📊 Compliance Results:`);
+              console.log(`   Total violations: ${violations.length}`);
+              console.log(`   Critical (blocking): ${criticalViolations.length}`);
+              console.log(`   Score: ${score}/10`);
+              console.log(`   Status: ${isBlocking ? 'BLOCKED' : 'PASSED'}`);
+              
+              // Generate and post compliance report
+              const report = reporter.generateReport(violations, score, isBlocking, prData);
+              
+              // Add centralized rules footer
+              const centralizedFooter = `\n\n---\n\n*Rules validated against [tyabonil/cursor_rules](https://github.com/tyabonil/cursor_rules) • Updated: ${new Date().toISOString().split('T')[0]}*`;
+              
+              if (violations.length > 0) {
+                await githubClient.postComplianceComment(report + centralizedFooter);
+                console.log('💬 Posted compliance report comment to PR');
+              } else {
+                await githubClient.postComplianceComment(`## ✅ MANDATORY Rules Compliance - PASSED\n\nAll rules are compliant! Great work! 🎉${centralizedFooter}`);
+                console.log('✅ Posted success comment to PR');
+              }
+              
+              // Set status check
+              await githubClient.setStatusCheck(
+                isBlocking ? 'failure' : 'success',
+                `${score}/10 compliance score - ${isBlocking ? 'BLOCKED' : 'PASSED'}`,
+                violations.length
+              );
+              
+              console.log('🏁 MANDATORY Rules Compliance Check completed');
+              console.log(`📋 Rules enforced from: ${process.env.RULES_SOURCE_REPO}`);
+              
+              return {
+                violations: violations.length,
+                score: score,
+                blocking: isBlocking,
+                success: !isBlocking
+              };
+              
+            } catch (error) {
+              console.error('❌ Rule check failed:', error);
+              
+              // Post error comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: `## ❌ MANDATORY Rules Checker Error\n\n\`\`\`\n${error.message}\n\`\`\`\n\nPlease check the [workflow logs](${context.payload.repository.html_url}/actions) for details.\n\n*Rules from [tyabonil/cursor_rules](https://github.com/tyabonil/cursor_rules)*`
+              });
+              
+              throw error;
+            }
