@@ -33,12 +33,15 @@ jobs:
         cd review-bots
         npm install
         chmod +x bin/*.js
-        npm link
+        # The 'npm link' command is not suitable for CI/CD environments as it creates global symlinks.
+        # Instead, we'll rely on the 'npm install' in the 'review-bots' directory to make the binaries available
+        # within the local 'node_modules/.bin' which is typically in the PATH for npm scripts.
+        # For direct execution in the workflow, we'll use the full path or ensure it's in the PATH.
         
-        # Verify installation
-        which hater-bot || echo "hater-bot not found in PATH"
-        which white-knight-bot || echo "white-knight-bot not found in PATH"
-        which balance-bot || echo "balance-bot not found in PATH"
+        # Verify installation by checking if the binaries exist in node_modules/.bin
+        ls -l node_modules/.bin/hater-bot || echo "hater-bot not found in node_modules/.bin"
+        ls -l node_modules/.bin/white-knight-bot || echo "white-knight-bot not found in node_modules/.bin"
+        ls -l node_modules/.bin/balance-bot || echo "balance-bot not found in node_modules/.bin"
     
     - name: Get Changed Files
       id: changed-files
@@ -64,15 +67,24 @@ jobs:
         if [[ -n "$REVIEWABLE_FILES" ]]; then
           echo "Files to review: $REVIEWABLE_FILES"
           
+          # Prefix each file with ../ for relative paths from review-bots directory
+          PREFIXED_FILES=""
+          for file in $REVIEWABLE_FILES; do
+            PREFIXED_FILES="$PREFIXED_FILES ../$file"
+          done
+          
           # Run all three bots and save outputs
           echo "Running hater-bot..."
-          hater-bot $REVIEWABLE_FILES --output hater-report.md --no-color || echo "Hater bot failed"
+          cd review-bots && node bin/hater-bot.js $PREFIXED_FILES --output ../hater-report.md --no-color || echo "Hater bot failed"
+          cd ..
           
           echo "Running white-knight-bot..."
-          white-knight-bot $REVIEWABLE_FILES --output knight-report.md --no-color || echo "White knight bot failed"
+          cd review-bots && node bin/white-knight-bot.js $PREFIXED_FILES --output ../knight-report.md --no-color || echo "White knight bot failed"
+          cd ..
           
           echo "Running balance-bot..."
-          balance-bot $REVIEWABLE_FILES --output balance-report.md --no-color || echo "Balance bot failed"
+          cd review-bots && node bin/balance-bot.js $PREFIXED_FILES --output ../balance-report.md --no-color || echo "Balance bot failed"
+          cd ..
           
           # Combine reports
           echo "# 🤖 Review Bots Analysis" > combined-report.md
@@ -177,7 +189,7 @@ jobs:
           let status = 'success';
           let description = 'All bots have reviewed the code';
           
-          const balanceReport = '/tmp/balance-report.md';
+          const balanceReport = 'balance-report.md';
           if (fs.existsSync(balanceReport)) {
             const content = fs.readFileSync(balanceReport, 'utf8');
             
