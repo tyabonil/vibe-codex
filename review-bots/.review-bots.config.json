@@ -1,0 +1,63 @@
+{
+  "project": "cursor_rules",
+  "description": "Configuration for review bots specific to the cursor_rules repository",
+  "rules": {
+    "haterBot": {
+      "extraChecks": {
+        "ruleConsistency": {
+          "enabled": true,
+          "patterns": [
+            "Check that MANDATORY-RULES.md and RULES-LLM-OPTIMIZED.md are in sync",
+            "Verify all rules referenced in config/rules.json exist in MANDATORY-RULES.md",
+            "Ensure no duplicate or contradictory rules"
+          ]
+        },
+        "tokenEfficiency": {
+          "enabled": true,
+          "maxFileSizeKB": 40,
+          "severity": "high"
+        }
+      }
+    },
+    "whiteKnightBot": {
+      "contextualDefenses": {
+        "legacyCode": {
+          "patterns": ["hooks/*.sh", "scripts/*.js"],
+          "defense": "Shell scripts and Node.js scripts may use older patterns for compatibility"
+        },
+        "metaDocumentation": {
+          "patterns": ["README*.md", "*.md"],
+          "defense": "Documentation files naturally contain meta-information and context"
+        }
+      }
+    },
+    "balanceBot": {
+      "priorities": {
+        "security": "critical",
+        "workflowIntegrity": "high",
+        "tokenEfficiency": "medium",
+        "codeStyle": "low"
+      },
+      "customRecommendations": {
+        "ruleFiles": {
+          "pattern": "MANDATORY-RULES.md",
+          "recommendation": "Changes to rule files should be carefully reviewed for consistency and clarity"
+        },
+        "configFiles": {
+          "pattern": "config/*.json",
+          "recommendation": "Configuration changes may affect the entire validation system"
+        }
+      }
+    }
+  },
+  "github": {
+    "requireApprovalForCritical": true,
+    "autoMergeOnSuccess": false,
+    "labelMapping": {
+      "critical": "review-bot:critical",
+      "high": "review-bot:high",
+      "medium": "review-bot:medium",
+      "low": "review-bot:low"
+    }
+  }
+}

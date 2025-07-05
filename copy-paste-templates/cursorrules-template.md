@@ -17,7 +17,7 @@ Copy this entire content to your `.cursorrules` file for immediate implementatio
 - If the repo is not initialized, initialize it with appropriate gitignore for the type of project
 - These rules apply to every interaction and always follow them
 - ALWAYS Use the Github API if available.
-- **ALWAYS use MCP GitHub API tools (mcp_github_*) instead of terminal git commands for all repository operations**
+- **ALWAYS run the local hooks before committing.**
 - **Never attempt git pull, git push, git commit, or other git terminal commands - use GitHub API equivalents exclusively**
 - Never merge into main or master
 - If there is no "preview" branch, create one - ensure all "ready" issues are merged into "preview"
@@ -107,7 +107,7 @@ Copy this entire content to your `.cursorrules` file for immediate implementatio
 1. **Copy the above content** to your `.cursorrules` file
 2. **Create PROJECT_CONTEXT.md** in your repository root
 3. **Initialize preview branch** if it doesn't exist
-4. **Set up GitHub API access** for MCP tools
+4. **Install the local hooks** by running `bash hooks/install-rule-checker.sh`
 5. **Review environment variables** and create .env.example
 
 ## Immediate Benefits

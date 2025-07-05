@@ -1,0 +1,41 @@
+{
+  "name": "@cursor-rules/review-bots",
+  "version": "1.0.0",
+  "description": "Automated code review bots with different perspectives: hater_bot (critical), white_knight_bot (defensive), and balance_bot (pragmatic)",
+  "main": "src/index.js",
+  "bin": {
+    "hater-bot": "./bin/hater-bot.js",
+    "white-knight-bot": "./bin/white-knight-bot.js",
+    "balance-bot": "./bin/balance-bot.js",
+    "review-bots": "./bin/review-bots.js"
+  },
+  "scripts": {
+    "test": "jest --coverage",
+    "lint": "eslint src/ --ext .js",
+    "install-global": "npm link",
+    "uninstall-global": "npm unlink"
+  },
+  "keywords": [
+    "code-review",
+    "automated-review",
+    "criticism",
+    "code-quality",
+    "perspective-analysis"
+  ],
+  "author": "cursor_rules",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "commander": "^11.0.0",
+    "glob": "^10.3.0",
+    "ora": "^5.4.1",
+    "simple-git": "^3.19.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "jest": "^29.7.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
