@@ -1,0 +1,43 @@
+{
+  "contextManagement": {
+    "warningThreshold": 40,
+    "criticalThreshold": 75,
+    "autoUpdateContext": false,
+    "contextFile": ".claude/context/RESTART_CONTEXT.md"
+  },
+  "prCheckHandler": {
+    "systeMicErrorPatterns": [
+      "timeout",
+      "ETIMEDOUT", 
+      "ECONNRESET",
+      "SyntaxError.*Unexpected token",
+      "JSON.*parse",
+      "rate.limit",
+      "429",
+      "Too Many Requests",
+      "503",
+      "Service Unavailable", 
+      "502",
+      "Bad Gateway"
+    ],
+    "violationPatterns": [
+      "MANDATORY.*Rules",
+      "rule.*violation",
+      "compliance.*failed"
+    ]
+  },
+  "issueReporter": {
+    "targetRepo": "tyabonil/cursor_rules",
+    "defaultLabels": ["feedback"],
+    "includeContext": true
+  },
+  "postDeploy": {
+    "healthCheckTimeout": 30,
+    "securityHeaders": [
+      "x-frame-options",
+      "x-content-type-options",
+      "x-xss-protection"
+    ],
+    "secretScanPaths": ["public", "dist", "build"]
+  }
+}
