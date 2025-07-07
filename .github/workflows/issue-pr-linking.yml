@@ -2,7 +2,7 @@ name: Issue-PR Linking Validation
 
 on:
   pull_request:
-    types: [opened, edited, reopened, ready_for_review, converted_to_draft]
+    types: [opened, edited, reopened, ready_for_review, converted_to_draft, closed]
   pull_request_review:
     types: [submitted]
   issue_comment:
@@ -148,6 +148,98 @@ jobs:
             }
           }
           
+          // Helper function to auto-comment on issue when PR is created
+          async function notifyIssueOfPR(issueNumber, prNumber, prData) {
+            const message = `## 🔗 Pull Request Created
+          
+          PR #${prNumber} has been created to address this issue.
+          
+          **PR Details:**
+          - Title: ${prData.title}
+          - Branch: \`${prData.head.ref}\`
+          - Status: ${prData.draft ? '📝 Draft' : '✅ Ready for review'}
+          - Link: ${prData.html_url}
+          
+          **Next Steps:**
+          1. Monitor PR progress
+          2. Update this issue with implementation decisions
+          3. Document any changes from the original plan
+          
+          *This is an automated notification to maintain issue context.*`;
+            
+            try {
+              // Check if we already notified
+              const comments = await github.rest.issues.listComments({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber
+              });
+              
+              const alreadyNotified = comments.data.some(comment => 
+                comment.body.includes('🔗 Pull Request Created') &&
+                comment.body.includes(`PR #${prNumber}`) &&
+                comment.user.type === 'Bot'
+              );
+              
+              if (!alreadyNotified) {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issueNumber,
+                  body: message
+                });
+                console.log(`✅ Notified issue #${issueNumber} about PR #${prNumber}`);
+              }
+            } catch (error) {
+              console.log(`Error notifying issue: ${error.message}`);
+            }
+          }
+          
+          // Helper function to notify issue when PR is closed
+          async function notifyIssueOfPRClosure(issueNumber, prNumber, prData, merged) {
+            const message = merged
+              ? `## ✅ Pull Request Merged
+          
+          PR #${prNumber} has been successfully merged!
+          
+          **Merge Details:**
+          - Merged by: @${prData.merged_by?.login || 'unknown'}
+          - Merged at: ${new Date(prData.merged_at).toLocaleString()}
+          - Commits: ${prData.commits}
+          - Changes: +${prData.additions} -${prData.deletions}
+          
+          **Resolution:**
+          This issue has been resolved by the merged PR. Please verify the implementation meets all requirements.
+          
+          *This is an automated notification. Consider closing this issue if fully resolved.*`
+              : `## 🚫 Pull Request Closed
+          
+          PR #${prNumber} has been closed without merging.
+          
+          **Closure Details:**
+          - Closed by: @${prData.closed_by?.login || 'unknown'}
+          - Reason: ${prData.title.includes('[WIP]') ? 'Work in progress' : 'Not specified'}
+          
+          **Next Steps:**
+          - Review why the PR was closed
+          - Determine if this issue still needs to be addressed
+          - Create a new PR if necessary
+          
+          *This is an automated notification to maintain issue context.*`;
+            
+            try {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                body: message
+              });
+              console.log(`✅ Notified issue #${issueNumber} about PR #${prNumber} closure`);
+            } catch (error) {
+              console.log(`Error notifying issue of closure: ${error.message}`);
+            }
+          }
+          
           // Main validation logic
           async function validateLinking() {
             if (context.eventName === 'pull_request') {
@@ -174,6 +266,18 @@ jobs:
               } catch (error) {
                 console.log(`Issue #${issueNumber} not found - skipping validation`);
                 return;
+              }
+              
+              // Handle different PR events
+              if (context.payload.action === 'opened') {
+                // Auto-notify issue when PR is created
+                await notifyIssueOfPR(issueNumber, pr.number, pr);
+              }
+              
+              if (context.payload.action === 'closed') {
+                // Notify issue when PR is closed/merged
+                await notifyIssueOfPRClosure(issueNumber, pr.number, pr, pr.merged);
+                return; // No need for linking reminders on closed PRs
               }
               
               // Check if issue has PR link
