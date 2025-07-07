@@ -152,11 +152,15 @@ jobs:
               const isBlocking = criticalViolations.length > 0;
               const score = Math.max(0, 10 - violations.length);
               
+              // Determine merge allowed status - only block for critical violations
+              const mergeAllowed = criticalViolations.length === 0;
+              
               console.log(`📊 Compliance Results:`);
               console.log(`   Total violations: ${violations.length}`);
               console.log(`   Critical (blocking): ${criticalViolations.length}`);
               console.log(`   Score: ${score}/10`);
               console.log(`   Status: ${isBlocking ? 'BLOCKED' : 'PASSED'}`);
+              console.log(`   Merge: ${mergeAllowed ? 'ALLOWED' : 'BLOCKED'}`);
               
               // Generate and post compliance report
               const report = reporter.generateReport(violations, score, isBlocking, prData);
@@ -172,21 +176,32 @@ jobs:
                 console.log('✅ Posted success comment to PR');
               }
               
-              // Set status check
-              await githubClient.setStatusCheck(
-                isBlocking ? 'failure' : 'success',
-                `${score}/10 compliance score - ${isBlocking ? 'BLOCKED' : 'PASSED'}`,
-                violations.length
-              );
+              // Set status check - use mergeAllowed to determine conclusion
+              try {
+                await githubClient.setStatusCheck(
+                  mergeAllowed ? 'success' : 'failure',
+                  `${score}/10 compliance score - ${mergeAllowed ? 'PASSED' : 'BLOCKED'}`,
+                  violations.length
+                );
+              } catch (statusError) {
+                console.warn('⚠️ Could not set commit status (this is normal):', statusError.message);
+                // Continue - the workflow exit status will determine the check conclusion
+              }
               
               console.log('🏁 MANDATORY Rules Compliance Check completed');
               console.log(`📋 Rules enforced from: ${process.env.RULES_SOURCE_REPO}`);
+              
+              // Exit with appropriate code based on merge allowed status
+              if (!mergeAllowed) {
+                core.setFailed(`Compliance check failed: ${criticalViolations.length} critical violations found`);
+              }
               
               return {
                 violations: violations.length,
                 score: score,
                 blocking: isBlocking,
-                success: !isBlocking
+                mergeAllowed: mergeAllowed,
+                success: mergeAllowed
               };
               
             } catch (error) {
