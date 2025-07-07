@@ -152,11 +152,15 @@ jobs:
               const isBlocking = criticalViolations.length > 0;
               const score = Math.max(0, 10 - violations.length);
               
+              // Determine merge allowed status - only block for critical violations
+              const mergeAllowed = criticalViolations.length === 0;
+              
               console.log(`📊 Compliance Results:`);
               console.log(`   Total violations: ${violations.length}`);
               console.log(`   Critical (blocking): ${criticalViolations.length}`);
               console.log(`   Score: ${score}/10`);
               console.log(`   Status: ${isBlocking ? 'BLOCKED' : 'PASSED'}`);
+              console.log(`   Merge: ${mergeAllowed ? 'ALLOWED' : 'BLOCKED'}`);
               
               // Generate and post compliance report
               const report = reporter.generateReport(violations, score, isBlocking, prData);
@@ -172,10 +176,10 @@ jobs:
                 console.log('✅ Posted success comment to PR');
               }
               
-              // Set status check
+              // Set status check - use mergeAllowed to determine conclusion
               await githubClient.setStatusCheck(
-                isBlocking ? 'failure' : 'success',
-                `${score}/10 compliance score - ${isBlocking ? 'BLOCKED' : 'PASSED'}`,
+                mergeAllowed ? 'success' : 'failure',
+                `${score}/10 compliance score - ${mergeAllowed ? 'PASSED' : 'BLOCKED'}`,
                 violations.length
               );
               
@@ -186,7 +190,8 @@ jobs:
                 violations: violations.length,
                 score: score,
                 blocking: isBlocking,
-                success: !isBlocking
+                mergeAllowed: mergeAllowed,
+                success: mergeAllowed
               };
               
             } catch (error) {
