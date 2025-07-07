@@ -1,0 +1,212 @@
+name: Issue-PR Linking Validation
+
+on:
+  pull_request:
+    types: [opened, edited, reopened]
+  issue_comment:
+    types: [created, edited]
+
+jobs:
+  validate-issue-pr-linking:
+    runs-on: ubuntu-latest
+    name: Validate Issue-PR Linking Compliance
+    
+    permissions:
+      issues: write
+      pull-requests: write
+      contents: read
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: Validate Issue-PR Linking
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          
+          // Helper function to extract issue number from branch name
+          function extractIssueNumber(branchName) {
+            const match = branchName.match(/^(?:feature|bugfix|hotfix)\/issue-(\d+)-/);
+            return match ? parseInt(match[1]) : null;
+          }
+          
+          // Helper function to check if issue has PR link
+          async function issueHasPRLink(issueNumber, prNumber) {
+            try {
+              const comments = await github.rest.issues.listComments({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber
+              });
+              
+              const prLinkPattern = new RegExp(`(pull/${prNumber}|PR #${prNumber}|#${prNumber})`, 'i');
+              
+              return comments.data.some(comment => 
+                prLinkPattern.test(comment.body)
+              );
+            } catch (error) {
+              console.log(`Error checking issue comments: ${error.message}`);
+              return false;
+            }
+          }
+          
+          // Helper function to add reminder comment to PR
+          async function addPRReminder(prNumber, issueNumber) {
+            const reminderMessage = `
+          ## 📝 Issue Linking Reminder
+          
+          This PR appears to be related to issue #${issueNumber}, but the issue doesn't have a link to this PR yet.
+          
+          **According to MANDATORY-RULES.md, you should:**
+          - Comment on issue #${issueNumber} with a link to this PR
+          
+          **Quick fix:**
+          \`\`\`bash
+          gh issue comment ${issueNumber} --body "Created PR #${prNumber}: ${context.payload.pull_request.html_url}"
+          \`\`\`
+          
+          This comment will be automatically removed once the issue is properly linked.
+          
+          *This is an automated reminder to help maintain project documentation standards.*
+            `;
+            
+            try {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: reminderMessage
+              });
+            } catch (error) {
+              console.log(`Error adding reminder comment: ${error.message}`);
+            }
+          }
+          
+          // Helper function to remove existing reminder comments
+          async function removeExistingReminders(prNumber) {
+            try {
+              const comments = await github.rest.issues.listComments({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber
+              });
+              
+              const reminderComments = comments.data.filter(comment => 
+                comment.body.includes('📝 Issue Linking Reminder') &&
+                comment.user.type === 'Bot'
+              );
+              
+              for (const comment of reminderComments) {
+                await github.rest.issues.deleteComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: comment.id
+                });
+              }
+            } catch (error) {
+              console.log(`Error removing reminder comments: ${error.message}`);
+            }
+          }
+          
+          // Main validation logic
+          async function validateLinking() {
+            if (context.eventName === 'pull_request') {
+              const pr = context.payload.pull_request;
+              const branchName = pr.head.ref;
+              const issueNumber = extractIssueNumber(branchName);
+              
+              console.log(`PR #${pr.number}: ${pr.title}`);
+              console.log(`Branch: ${branchName}`);
+              console.log(`Extracted issue number: ${issueNumber}`);
+              
+              if (!issueNumber) {
+                console.log('Branch does not follow issue convention - skipping validation');
+                return;
+              }
+              
+              // Check if issue exists
+              try {
+                await github.rest.issues.get({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issueNumber
+                });
+              } catch (error) {
+                console.log(`Issue #${issueNumber} not found - skipping validation`);
+                return;
+              }
+              
+              // Check if issue has PR link
+              const hasLink = await issueHasPRLink(issueNumber, pr.number);
+              
+              if (!hasLink) {
+                console.log(`Issue #${issueNumber} missing PR link - adding reminder`);
+                await addPRReminder(pr.number, issueNumber);
+              } else {
+                console.log(`Issue #${issueNumber} has PR link - removing any existing reminders`);
+                await removeExistingReminders(pr.number);
+              }
+              
+            } else if (context.eventName === 'issue_comment') {
+              // Check if a comment was added that might link to a PR
+              const comment = context.payload.comment;
+              const issueNumber = context.payload.issue.number;
+              
+              // Look for PR references in the comment
+              const prReferencePattern = /(?:pull\/(\d+)|PR #(\d+)|#(\d+))/gi;
+              let match;
+              const referencedPRs = [];
+              
+              while ((match = prReferencePattern.exec(comment.body)) !== null) {
+                const prNumber = match[1] || match[2] || match[3];
+                if (prNumber) {
+                  referencedPRs.push(parseInt(prNumber));
+                }
+              }
+              
+              // For each referenced PR, remove reminder comments
+              for (const prNumber of referencedPRs) {
+                try {
+                  // Check if this PR exists and is related to this issue
+                  const pr = await github.rest.pulls.get({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    pull_number: prNumber
+                  });
+                  
+                  const branchIssueNumber = extractIssueNumber(pr.data.head.ref);
+                  
+                  if (branchIssueNumber === issueNumber) {
+                    console.log(`Removing reminders from PR #${prNumber} due to issue link`);
+                    await removeExistingReminders(prNumber);
+                  }
+                } catch (error) {
+                  console.log(`PR #${prNumber} not found or accessible`);
+                }
+              }
+            }
+          }
+          
+          await validateLinking();
+
+    - name: Add status check
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          
+          // This is a non-blocking check - we always pass
+          // The validation above provides reminders but doesn't block
+          console.log('Issue-PR linking validation completed');
+          console.log('This check provides reminders but does not block PRs');
+          
+          // Set a success status
+          process.exit(0);

@@ -50,6 +50,22 @@ class RuleEngine {
       }
     }
     
+    // Check for private repo references in PR title and body (SEC-12)
+    const prContent = `${prData.title || ''} ${prData.body || ''}`;
+    if (prContent && this.containsPrivateRepoReferences(prContent)) {
+      violations.push({
+        level: 1,
+        type: 'SECURITY',
+        severity: 'WARNING',
+        rule: 'SEC-12: NO PRIVATE REPO REFERENCES',
+        message: '⚠️ WARNING: Potential private repository references detected',
+        details: 'PR title or description may contain references to private repositories that are not accessible to public users.',
+        action: 'Review and sanitize repository references',
+        fix: 'Replace private repo references with generic examples or remove them entirely',
+        evidence: this.extractPrivateRepoReferences(prContent)
+      });
+    }
+    
     console.log(`🔐 Level 1 Security: ${violations.length} violations found`);
     return violations;
   }
@@ -143,6 +159,46 @@ class RuleEngine {
     return issueReferencePatterns.some(pattern => new RegExp(pattern).test(text));
   }
   
+  containsPrivateRepoReferences(content) {
+    const config = this.rules.rules.level1_security.checks.private_repo_references;
+    if (!config.enabled) return false;
+    
+    // Check if content contains any patterns that might be private repo references
+    const hasRepoRef = config.patterns.some(pattern => new RegExp(pattern, 'gi').test(content));
+    if (!hasRepoRef) return false;
+    
+    // Check if all found references are in the exclude list
+    const excludePatterns = config.exclude_patterns;
+    let tempContent = content;
+    
+    // Remove all excluded patterns from content
+    excludePatterns.forEach(excludePattern => {
+      tempContent = tempContent.replace(new RegExp(excludePattern, 'gi'), '');
+    });
+    
+    // Check if any repo references remain after exclusions
+    return config.patterns.some(pattern => new RegExp(pattern, 'gi').test(tempContent));
+  }
+  
+  extractPrivateRepoReferences(content) {
+    const config = this.rules.rules.level1_security.checks.private_repo_references;
+    const references = [];
+    
+    config.patterns.forEach(pattern => {
+      const regex = new RegExp(pattern, 'gi');
+      const matches = content.match(regex) || [];
+      references.push(...matches);
+    });
+    
+    // Filter out excluded patterns
+    const excludePatterns = config.exclude_patterns;
+    return references.filter(ref => {
+      return !excludePatterns.some(excludePattern => 
+        new RegExp(excludePattern, 'gi').test(ref)
+      );
+    });
+  }
+  
   isValidBranchName(branchName) {
     const branchNamingPatterns = this.rules.rules.level2_workflow.checks.branch_naming.required_patterns;
     return branchNamingPatterns.some(pattern => new RegExp(pattern).test(branchName));
@@ -166,6 +222,119 @@ class RuleEngine {
     }
     
     return violations;
+  }
+
+  /**
+   * Level 3: Quality Gates (MANDATORY)
+   */
+  async checkLevel3Quality(prData, files, githubClient) {
+    const violations = [];
+    
+    console.log('🎯 Checking quality gates...');
+    
+    // Check for test coverage requirements
+    const hasTests = files.some(file => 
+      file.filename.includes('test') || 
+      file.filename.includes('spec') || 
+      file.filename.includes('.test.') || 
+      file.filename.includes('.spec.')
+    );
+    
+    const hasCodeChanges = files.some(file => 
+      !file.filename.includes('test') && 
+      !file.filename.includes('spec') && 
+      !file.filename.includes('.md') && 
+      !file.filename.includes('.json') && 
+      !file.filename.includes('.yml') && 
+      !file.filename.includes('.yaml')
+    );
+    
+    if (hasCodeChanges && !hasTests) {
+      violations.push({
+        level: 3,
+        type: 'QUALITY',
+        severity: 'MANDATORY',
+        rule: '100% TEST COVERAGE FOR NEW CODE',
+        message: '🧪 Missing tests for code changes',
+        details: 'All new code requires appropriate test coverage.',
+        action: 'Add tests for the new functionality',
+        fix: 'Create test files using appropriate framework (Jest, RTL, Cypress)'
+      });
+    }
+    
+    // Check for self-review requirement
+    const prAuthor = prData.user.login;
+    if (prData.comments === 0) {
+      violations.push({
+        level: 3,
+        type: 'QUALITY',
+        severity: 'MANDATORY',
+        rule: 'SELF-REVIEW REQUIREMENT',
+        message: '👀 PR requires self-review',
+        details: 'After creating a PR, you MUST perform a self-review.',
+        action: 'Add a self-review comment to the PR',
+        fix: 'Comment on your own PR documenting your review process'
+      });
+    }
+    
+    console.log(`🎯 Level 3 Quality: ${violations.length} violations found`);
+    return violations;
+  }
+
+  /**
+   * Level 4: Development Patterns (RECOMMENDED)
+   */
+  async checkLevel4Patterns(files, prData) {
+    const violations = [];
+    
+    console.log('📐 Checking development patterns...');
+    
+    // Check for large file violations
+    const largeFiles = files.filter(file => {
+      if (file.additions && file.deletions) {
+        return (file.additions + file.deletions) > 300;
+      }
+      return false;
+    });
+    
+    for (const file of largeFiles) {
+      violations.push({
+        level: 4,
+        type: 'PATTERN',
+        severity: 'RECOMMENDED',
+        rule: 'FILES ≤200-300 LINES',
+        message: `📄 Large file detected: ${file.filename}`,
+        details: 'Consider refactoring large files into smaller, focused modules.',
+        action: 'Consider breaking down the file into smaller modules',
+        fix: 'Refactor into multiple smaller files with single responsibilities'
+      });
+    }
+    
+    // Check for commit message quality
+    if (prData.title && !this.isDescriptiveCommitMessage(prData.title)) {
+      violations.push({
+        level: 4,
+        type: 'PATTERN',
+        severity: 'RECOMMENDED',
+        rule: 'CLEAR, DESCRIPTIVE COMMIT MESSAGES',
+        message: '💬 PR title could be more descriptive',
+        details: 'Commit messages should clearly describe what and why.',
+        action: 'Update PR title to be more descriptive',
+        fix: 'Use format: "type: description of what and why"'
+      });
+    }
+    
+    console.log(`📐 Level 4 Patterns: ${violations.length} violations found`);
+    return violations;
+  }
+
+  isDescriptiveCommitMessage(message) {
+    // Check if message has at least 10 characters and contains descriptive words
+    if (message.length < 10) return false;
+    
+    // Should start with a type prefix (feat:, fix:, docs:, etc.)
+    const typePattern = /^(feat|fix|docs|style|refactor|test|chore|perf|ci|build):/;
+    return typePattern.test(message);
   }
 }
 
