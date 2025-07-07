@@ -242,6 +242,7 @@ jobs:
             // Add reminder to update issue with review feedback
             await addReviewFeedbackReminder(pr.number, issueNumber, review.state);
           }
+          }
           
           await validateLinking();
 
