@@ -84,6 +84,10 @@ class RuleEngine {
     // Check for proper token efficiency (file count and duplication)
     const tokenEfficiencyViolations = this.checkTokenEfficiency(files);
     violations.push(...tokenEfficiencyViolations);
+
+    // Check Vercel deployment status
+    const vercelViolations = await this.checkVercelDeploymentStatus(prData, githubClient);
+    violations.push(...vercelViolations);
     
     console.log(`🔄 Level 2 Workflow: ${violations.length} violations found`);
     return violations;
@@ -144,6 +148,97 @@ class RuleEngine {
         });
     }
 
+    return violations;
+  }
+
+  /**
+   * Check Vercel deployment status for the PR
+   */
+  async checkVercelDeploymentStatus(prData, githubClient) {
+    const violations = [];
+    
+    console.log('🚀 Checking Vercel deployment status...');
+    
+    try {
+      const vercelStatus = await githubClient.checkVercelDeploymentStatus();
+      
+      if (!vercelStatus.hasVercelChecks) {
+        // No Vercel checks found - this is optional, not a violation
+        console.log('ℹ️ No Vercel deployment checks detected (optional)');
+        return violations;
+      }
+      
+      // Check for failed Vercel deployments
+      if (vercelStatus.failedChecks > 0) {
+        const failureDetails = vercelStatus.failures.map(failure => ({
+          name: failure.name,
+          state: failure.state,
+          description: failure.description || 'No description available',
+          url: failure.target_url
+        }));
+        
+        violations.push({
+          level: 2,
+          type: 'DEPLOYMENT',
+          severity: 'WARNING',
+          rule: 'DEP-1: VERCEL DEPLOYMENT VALIDATION',
+          message: `🚀 Vercel deployment failed (${vercelStatus.failedChecks} failure${vercelStatus.failedChecks > 1 ? 's' : ''})`,
+          details: 'Vercel deployment must succeed before merging to ensure the application builds correctly.',
+          action: 'Fix deployment issues before proceeding with merge',
+          fix: 'Run local build and address deployment errors',
+          evidence: failureDetails.map(f => `❌ ${f.name}: ${f.state} - ${f.description}`),
+          deploymentInfo: {
+            totalChecks: vercelStatus.totalChecks,
+            failedChecks: vercelStatus.failedChecks,
+            failures: failureDetails,
+            deploymentUrls: vercelStatus.deploymentUrls
+          },
+          troubleshooting: [
+            '🔧 **Common Vercel deployment issues:**',
+            '• Build errors (TypeScript, missing dependencies)',
+            '• Environment variable issues', 
+            '• Prisma schema problems',
+            '• Memory or timeout issues',
+            '',
+            '🛠️ **Debug steps:**',
+            '1. Run `npm run build` locally to identify build errors',
+            '2. Check Vercel deployment logs for detailed error messages',
+            '3. Verify environment variables match Vercel settings',
+            '4. Ensure all dependencies are properly installed',
+            '',
+            '🔗 **Deployment URLs:**',
+            ...vercelStatus.deploymentUrls.map(url => `• [View deployment](${url})`)
+          ]
+        });
+      }
+      
+      // Check for pending deployments (informational)
+      if (vercelStatus.pendingChecks > 0) {
+        violations.push({
+          level: 2,
+          type: 'DEPLOYMENT',
+          severity: 'INFO',
+          rule: 'DEP-2: VERCEL DEPLOYMENT PENDING',
+          message: `⏳ Vercel deployment in progress (${vercelStatus.pendingChecks} pending)`,
+          details: 'Vercel deployment is currently running. Wait for completion before merging.',
+          action: 'Wait for deployment to complete',
+          fix: 'Monitor deployment progress in Vercel dashboard',
+          evidence: vercelStatus.pending.map(p => `⏳ ${p.name}: ${p.state}`),
+          deploymentInfo: {
+            pendingChecks: vercelStatus.pendingChecks,
+            pending: vercelStatus.pending,
+            deploymentUrls: vercelStatus.deploymentUrls
+          }
+        });
+      }
+      
+      console.log(`🚀 Vercel deployment check: ${vercelStatus.totalChecks} total, ${vercelStatus.failedChecks} failed, ${vercelStatus.pendingChecks} pending`);
+      
+    } catch (error) {
+      console.error('❌ Failed to check Vercel deployment status:', error.message);
+      // Don't add violations for API errors - deployment checks are optional
+    }
+    
     return violations;
   }
 
