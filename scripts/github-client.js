@@ -372,6 +372,147 @@ class GitHubClient {
       (file.deletions && file.deletions > 50)
     );
   }
+
+  /**
+   * Get all status checks for the PR
+   */
+  async getStatusChecks() {
+    console.log(`🔍 Fetching status checks for PR #${this.prNumber}...`);
+    
+    try {
+      const prData = await this.getPRData();
+      
+      // Get combined status for the head commit
+      const { data: combinedStatus } = await this.github.rest.repos.getCombinedStatusForRef({
+        owner: this.owner,
+        repo: this.repo,
+        ref: prData.head.sha
+      });
+      
+      // Get check runs (newer GitHub Checks API)
+      const { data: checkRuns } = await this.github.rest.checks.listForRef({
+        owner: this.owner,
+        repo: this.repo,
+        ref: prData.head.sha
+      });
+      
+      const statusChecks = {
+        combined: combinedStatus,
+        statuses: combinedStatus.statuses || [],
+        checkRuns: checkRuns.check_runs || [],
+        totalCount: (combinedStatus.statuses?.length || 0) + (checkRuns.check_runs?.length || 0)
+      };
+      
+      console.log(`✅ Found ${statusChecks.totalCount} status checks`);
+      return statusChecks;
+      
+    } catch (error) {
+      console.error(`❌ Failed to fetch status checks: ${error.message}`);
+      return {
+        combined: { statuses: [] },
+        statuses: [],
+        checkRuns: [],
+        totalCount: 0
+      };
+    }
+  }
+
+  /**
+   * Check Vercel deployment status
+   */
+  async checkVercelDeploymentStatus() {
+    console.log(`🔍 Checking Vercel deployment status for PR #${this.prNumber}...`);
+    
+    try {
+      const statusChecks = await this.getStatusChecks();
+      const vercelChecks = [];
+      
+      // Check legacy status API for Vercel
+      const vercelStatuses = statusChecks.statuses.filter(status =>
+        status.context && (
+          status.context.toLowerCase().includes('vercel') ||
+          status.context.toLowerCase().includes('deployment')
+        )
+      );
+      
+      // Check GitHub Checks API for Vercel
+      const vercelCheckRuns = statusChecks.checkRuns.filter(check =>
+        check.name && (
+          check.name.toLowerCase().includes('vercel') ||
+          check.name.toLowerCase().includes('deployment') ||
+          check.app?.name?.toLowerCase().includes('vercel')
+        )
+      );
+      
+      // Combine all Vercel-related checks
+      vercelChecks.push(...vercelStatuses.map(status => ({
+        type: 'status',
+        name: status.context,
+        state: status.state,
+        description: status.description,
+        target_url: status.target_url,
+        created_at: status.created_at,
+        updated_at: status.updated_at
+      })));
+      
+      vercelChecks.push(...vercelCheckRuns.map(check => ({
+        type: 'check',
+        name: check.name,
+        state: check.conclusion || check.status,
+        description: check.output?.title || check.output?.summary,
+        target_url: check.html_url,
+        created_at: check.started_at,
+        updated_at: check.completed_at
+      })));
+      
+      const vercelFailures = vercelChecks.filter(check => 
+        check.state === 'failure' || 
+        check.state === 'error' ||
+        check.state === 'cancelled'
+      );
+      
+      const vercelPending = vercelChecks.filter(check =>
+        check.state === 'pending' ||
+        check.state === 'in_progress' ||
+        check.state === 'queued'
+      );
+      
+      const result = {
+        hasVercelChecks: vercelChecks.length > 0,
+        totalChecks: vercelChecks.length,
+        failedChecks: vercelFailures.length,
+        pendingChecks: vercelPending.length,
+        checks: vercelChecks,
+        failures: vercelFailures,
+        pending: vercelPending,
+        deploymentUrls: vercelChecks
+          .filter(check => check.target_url)
+          .map(check => check.target_url)
+      };
+      
+      console.log(`✅ Vercel check analysis:`, {
+        hasVercel: result.hasVercelChecks,
+        total: result.totalChecks,
+        failed: result.failedChecks,
+        pending: result.pendingChecks
+      });
+      
+      return result;
+      
+    } catch (error) {
+      console.error(`❌ Failed to check Vercel deployment status: ${error.message}`);
+      return {
+        hasVercelChecks: false,
+        totalChecks: 0,
+        failedChecks: 0,
+        pendingChecks: 0,
+        checks: [],
+        failures: [],
+        pending: [],
+        deploymentUrls: []
+      };
+    }
+  }
 }
 
 module.exports = GitHubClient;

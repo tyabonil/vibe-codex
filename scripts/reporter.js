@@ -40,7 +40,7 @@ class Reporter {
     if (levelGroups[2] && levelGroups[2].length > 0) {
       report.push(this.generateLevel2Section(levelGroups[2]));
     } else {
-      report.push('### ✅ **Level 2: Workflow Integrity**\n- ✅ Issue reference found\n- ✅ Branch naming compliant\n- ✅ MCP GitHub API usage detected\n- ✅ TOKEN efficiency maintained\n');
+      report.push('### ✅ **Level 2: Workflow Integrity**\n- ✅ Issue reference found\n- ✅ Branch naming compliant\n- ✅ MCP GitHub API usage detected\n- ✅ TOKEN efficiency maintained\n- ✅ Deployment status verified\n');
     }
     
     // Level 3: Quality (MANDATORY)
@@ -100,13 +100,32 @@ ${violation.evidence ? `- **Evidence**: ${violation.evidence.join(', ')}` : ''}`
     const section = [`### ${this.emojis.level2} **Level 2: Workflow Integrity (MANDATORY)**`];
     
     violations.forEach(violation => {
-      section.push(`#### ${this.emojis.mandatory} **${violation.rule}**
+      let violationSection = `#### ${this.emojis.mandatory} **${violation.rule}**
 - **Issue**: ${violation.message}
 - **Details**: ${violation.details}
 - **Action Required**: ${violation.action}
-- **Fix**: ${violation.fix}
-${violation.file ? `- **File**: \`${violation.file}\`` : ''}
-${violation.evidence ? `- **Evidence**: ${violation.evidence.join(', ')}` : ''}`);
+- **Fix**: ${violation.fix}`;
+
+      if (violation.file) {
+        violationSection += `\n- **File**: \`${violation.file}\``;
+      }
+      
+      if (violation.evidence) {
+        violationSection += `\n- **Evidence**: ${violation.evidence.join(', ')}`;
+      }
+      
+      // Special handling for deployment violations
+      if (violation.type === 'DEPLOYMENT') {
+        if (violation.deploymentInfo && violation.deploymentInfo.deploymentUrls.length > 0) {
+          violationSection += `\n- **Deployment URLs**: ${violation.deploymentInfo.deploymentUrls.map(url => `[View](${url})`).join(', ')}`;
+        }
+        
+        if (violation.troubleshooting) {
+          violationSection += `\n\n**Troubleshooting Guide:**\n${violation.troubleshooting.join('\n')}`;
+        }
+      }
+      
+      section.push(violationSection);
     });
     
     section.push('> **⚡ MANDATORY**: Level 2 violations must be resolved for merge approval.');
