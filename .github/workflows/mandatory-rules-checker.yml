@@ -177,14 +177,24 @@ jobs:
               }
               
               // Set status check - use mergeAllowed to determine conclusion
-              await githubClient.setStatusCheck(
-                mergeAllowed ? 'success' : 'failure',
-                `${score}/10 compliance score - ${mergeAllowed ? 'PASSED' : 'BLOCKED'}`,
-                violations.length
-              );
+              try {
+                await githubClient.setStatusCheck(
+                  mergeAllowed ? 'success' : 'failure',
+                  `${score}/10 compliance score - ${mergeAllowed ? 'PASSED' : 'BLOCKED'}`,
+                  violations.length
+                );
+              } catch (statusError) {
+                console.warn('⚠️ Could not set commit status (this is normal):', statusError.message);
+                // Continue - the workflow exit status will determine the check conclusion
+              }
               
               console.log('🏁 MANDATORY Rules Compliance Check completed');
               console.log(`📋 Rules enforced from: ${process.env.RULES_SOURCE_REPO}`);
+              
+              // Exit with appropriate code based on merge allowed status
+              if (!mergeAllowed) {
+                core.setFailed(`Compliance check failed: ${criticalViolations.length} critical violations found`);
+              }
               
               return {
                 violations: violations.length,
