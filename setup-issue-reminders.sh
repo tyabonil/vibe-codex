@@ -108,13 +108,57 @@ EOF
 fi
 
 echo -e "${GREEN}✨ Issue reminder hooks installed successfully!${NC}"
+
+# Install test coverage validator if available
+if [ -f "hooks/test-coverage-validator.sh" ]; then
+    echo -e "${BLUE}🧪 Installing test coverage validator...${NC}"
+    
+    # Create a comprehensive pre-push hook that combines all validators
+    cat > "$HOOKS_DIR/pre-push-final" << 'EOF'
+#!/bin/bash
+# Combined pre-push hook with all validators
+
+# First run branch validation
+if [ -f "$(git rev-parse --git-dir)/../hooks/branch-name-validator.sh" ]; then
+    "$(git rev-parse --git-dir)/../hooks/branch-name-validator.sh"
+    if [ $? -ne 0 ]; then
+        exit 1
+    fi
+fi
+
+# Then run test coverage validation
+if [ -f "$(git rev-parse --git-dir)/../hooks/test-coverage-validator.sh" ]; then
+    "$(git rev-parse --git-dir)/../hooks/test-coverage-validator.sh"
+    if [ $? -ne 0 ]; then
+        exit 1
+    fi
+fi
+
+# Finally run issue reminder
+if [ -f "$(git rev-parse --git-dir)/pre-push-original" ]; then
+    "$(git rev-parse --git-dir)/pre-push-original" "$@"
+fi
+EOF
+    
+    if [ -f "$HOOKS_DIR/pre-push" ]; then
+        mv "$HOOKS_DIR/pre-push" "$HOOKS_DIR/pre-push-original"
+    fi
+    mv "$HOOKS_DIR/pre-push-final" "$HOOKS_DIR/pre-push"
+    chmod +x "$HOOKS_DIR/pre-push"
+    
+    echo -e "${GREEN}✅ Test coverage validator installed${NC}"
+fi
+
 echo -e "${BLUE}ℹ️  The hooks will:${NC}"
 echo -e "  • Remind you to update issues after your first commit"
+echo -e "  • Validate branch naming before push"
+echo -e "  • Check test coverage before push"
 echo -e "  • Check for PR creation before pushing"
 echo -e "  • Ensure issues are linked to PRs"
 echo -e ""
 echo -e "${YELLOW}💡 To disable reminders temporarily:${NC}"
 echo -e "  export ISSUE_REMINDER_ENABLED=false"
+echo -e "  export TEST_COVERAGE_ENABLED=false"
 echo -e ""
 echo -e "${YELLOW}💡 To uninstall:${NC}"
 echo -e "  rm $HOOKS_DIR/post-commit"
