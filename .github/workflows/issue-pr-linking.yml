@@ -2,7 +2,9 @@ name: Issue-PR Linking Validation
 
 on:
   pull_request:
-    types: [opened, edited, reopened]
+    types: [opened, edited, reopened, ready_for_review, converted_to_draft]
+  pull_request_review:
+    types: [submitted]
   issue_comment:
     types: [created, edited]
 
@@ -115,6 +117,37 @@ jobs:
             }
           }
           
+          // Helper function to remind about review feedback
+          async function addReviewFeedbackReminder(prNumber, issueNumber, reviewState) {
+            if (reviewState !== 'changes_requested') return;
+            
+            const reminderMessage = `
+          ## 🔍 Review Feedback Update Reminder
+          
+          This PR has received a review requesting changes. According to MANDATORY-RULES.md, you should:
+          - Update issue #${issueNumber} with the review feedback received
+          - Document any changes or decisions made in response
+          
+          **Quick update:**
+          \`\`\`bash
+          gh issue comment ${issueNumber} --body "PR #${prNumber} received review feedback. Working on requested changes..."
+          \`\`\`
+          
+          *This reminder helps maintain project context and communication.*
+            `;
+            
+            try {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                body: reminderMessage
+              });
+            } catch (error) {
+              console.log(`Error adding review reminder: ${error.message}`);
+            }
+          }
+          
           // Main validation logic
           async function validateLinking() {
             if (context.eventName === 'pull_request') {
@@ -192,6 +225,23 @@ jobs:
                 }
               }
             }
+          } else if (context.eventName === 'pull_request_review') {
+            // Handle review events
+            const review = context.payload.review;
+            const pr = context.payload.pull_request;
+            const branchName = pr.head.ref;
+            const issueNumber = extractIssueNumber(branchName);
+            
+            console.log(`Review on PR #${pr.number}: ${review.state}`);
+            
+            if (!issueNumber) {
+              console.log('Branch does not follow issue convention - skipping validation');
+              return;
+            }
+            
+            // Add reminder to update issue with review feedback
+            await addReviewFeedbackReminder(pr.number, issueNumber, review.state);
+          }
           }
           
           await validateLinking();
