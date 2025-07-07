@@ -50,6 +50,22 @@ class RuleEngine {
       }
     }
     
+    // Check for private repo references in PR title and body (SEC-12)
+    const prContent = `${prData.title || ''} ${prData.body || ''}`;
+    if (prContent && this.containsPrivateRepoReferences(prContent)) {
+      violations.push({
+        level: 1,
+        type: 'SECURITY',
+        severity: 'WARNING',
+        rule: 'SEC-12: NO PRIVATE REPO REFERENCES',
+        message: '⚠️ WARNING: Potential private repository references detected',
+        details: 'PR title or description may contain references to private repositories that are not accessible to public users.',
+        action: 'Review and sanitize repository references',
+        fix: 'Replace private repo references with generic examples or remove them entirely',
+        evidence: this.extractPrivateRepoReferences(prContent)
+      });
+    }
+    
     console.log(`🔐 Level 1 Security: ${violations.length} violations found`);
     return violations;
   }
@@ -141,6 +157,46 @@ class RuleEngine {
     const issueReferencePatterns = this.rules.rules.level2_workflow.checks.issue_reference.patterns;
     const text = `${title} ${body || ''}`;
     return issueReferencePatterns.some(pattern => new RegExp(pattern).test(text));
+  }
+  
+  containsPrivateRepoReferences(content) {
+    const config = this.rules.rules.level1_security.checks.private_repo_references;
+    if (!config.enabled) return false;
+    
+    // Check if content contains any patterns that might be private repo references
+    const hasRepoRef = config.patterns.some(pattern => new RegExp(pattern, 'gi').test(content));
+    if (!hasRepoRef) return false;
+    
+    // Check if all found references are in the exclude list
+    const excludePatterns = config.exclude_patterns;
+    let tempContent = content;
+    
+    // Remove all excluded patterns from content
+    excludePatterns.forEach(excludePattern => {
+      tempContent = tempContent.replace(new RegExp(excludePattern, 'gi'), '');
+    });
+    
+    // Check if any repo references remain after exclusions
+    return config.patterns.some(pattern => new RegExp(pattern, 'gi').test(tempContent));
+  }
+  
+  extractPrivateRepoReferences(content) {
+    const config = this.rules.rules.level1_security.checks.private_repo_references;
+    const references = [];
+    
+    config.patterns.forEach(pattern => {
+      const regex = new RegExp(pattern, 'gi');
+      const matches = content.match(regex) || [];
+      references.push(...matches);
+    });
+    
+    // Filter out excluded patterns
+    const excludePatterns = config.exclude_patterns;
+    return references.filter(ref => {
+      return !excludePatterns.some(excludePattern => 
+        new RegExp(excludePattern, 'gi').test(ref)
+      );
+    });
   }
   
   isValidBranchName(branchName) {
