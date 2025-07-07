@@ -6,6 +6,10 @@
 -   NEVER overwrite environment files.
 -   ALWAYS use environment variables for sensitive data.
 -   ALWAYS create `.env.example` with documented variables.
+-   SEC-12: NEVER include private repository references in public issues or PRs.
+    -   Avoid linking to private repos (e.g., `github.com/company/internal-app`)
+    -   Replace with generic examples or descriptions
+    -   This prevents information disclosure and maintains accessibility
 
 ## PROJECT-SPECIFIC PATTERNS
 

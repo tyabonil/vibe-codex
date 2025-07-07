@@ -19,6 +19,18 @@
             "\\.env\\.",
             "environment"
           ]
+        },
+        "private_repo_references": {
+          "enabled": true,
+          "patterns": [
+            "github\\.com/[^/\\s]+/[^/\\s]+(?:/pull|/issues|/blob|/tree)?/\\d+",
+            "PR\\s+#\\d+\\s+in\\s+[\\w-]+",
+            "issue\\s+#\\d+\\s+in\\s+[\\w-]+"
+          ],
+          "exclude_patterns": [
+            "github\\.com/[^/]+/cursor_rules",
+            "github\\.com/[^/]+/public-"
+          ]
         }
       }
     },
