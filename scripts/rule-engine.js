@@ -112,15 +112,21 @@ class RuleEngine {
     // SEQ-2: Check branch naming convention
     const branchName = prData.head.ref;
     if (branchName !== 'preview' && !this.isValidBranchName(branchName)) {
+      const branchExample = this.generateCorrectBranchName(branchName);
       violations.push({
         level: 2,
         type: 'WORKFLOW',
         severity: 'MANDATORY',
         rule: 'SEQ-2: CREATE A BRANCH',
-        message: `🌿 Branch naming violation: ${branchName}`,
-        details: 'Branch should follow pattern: feature/issue-{number}-{description}',
+        message: `🌿 Branch naming violation: '${branchName}'`,
+        details: `Branch must include the feature/ prefix and follow the pattern: {type}/issue-{number}-{description}`,
         action: 'Rename branch to follow naming convention',
-        fix: 'Use: feature/issue-{number}-{short-description} or bugfix/issue-{number}-{description}'
+        fix: `Rename to: ${branchExample}`,
+        evidence: [
+          `❌ Current: ${branchName}`,
+          `✅ Required format: feature/issue-{number}-{description}`,
+          `✅ Example: ${branchExample}`
+        ]
       });
     }
     
@@ -202,6 +208,29 @@ class RuleEngine {
   isValidBranchName(branchName) {
     const branchNamingPatterns = this.rules.rules.level2_workflow.checks.branch_naming.required_patterns;
     return branchNamingPatterns.some(pattern => new RegExp(pattern).test(branchName));
+  }
+  
+  generateCorrectBranchName(incorrectBranch) {
+    // Try to extract issue number from the branch name
+    const issueMatch = incorrectBranch.match(/(\d+)/);
+    const issueNumber = issueMatch ? issueMatch[1] : '{number}';
+    
+    // Try to extract description
+    let description = incorrectBranch
+      .replace(/issue[-_]?\d+[-_]?/i, '')
+      .replace(/^[-_]+|[-_]+$/g, '')
+      .replace(/[^a-z0-9-]/gi, '-')
+      .toLowerCase();
+    
+    if (!description || description.length < 3) {
+      description = '{description}';
+    }
+    
+    // Check if it looks like a bug fix
+    const isBugfix = /bug|fix|hotfix/i.test(incorrectBranch);
+    const type = isBugfix ? 'bugfix' : 'feature';
+    
+    return `${type}/issue-${issueNumber}-${description}`;
   }
   
   checkTokenEfficiency(files) {

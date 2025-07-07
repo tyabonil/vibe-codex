@@ -57,6 +57,40 @@ install_hook "post-commit"
 install_hook "pre-commit"
 install_hook "pre-push"
 
+# Install branch name validator as pre-push hook
+if [ -f "hooks/branch-name-validator.sh" ]; then
+    echo -e "${BLUE}🌿 Installing branch name validator...${NC}"
+    # If pre-push already exists, combine them
+    if [ -f "$HOOKS_DIR/pre-push" ]; then
+        # Create a wrapper that calls both
+        cat > "$HOOKS_DIR/pre-push-combined" << 'EOF'
+#!/bin/bash
+# Combined pre-push hook
+
+# First run branch validation
+if [ -f "$(git rev-parse --git-dir)/../hooks/branch-name-validator.sh" ]; then
+    "$(git rev-parse --git-dir)/../hooks/branch-name-validator.sh"
+    if [ $? -ne 0 ]; then
+        exit 1
+    fi
+fi
+
+# Then run issue reminder
+if [ -f "$(git rev-parse --git-dir)/pre-push-original" ]; then
+    "$(git rev-parse --git-dir)/pre-push-original" "$@"
+fi
+EOF
+        mv "$HOOKS_DIR/pre-push" "$HOOKS_DIR/pre-push-original"
+        mv "$HOOKS_DIR/pre-push-combined" "$HOOKS_DIR/pre-push"
+        chmod +x "$HOOKS_DIR/pre-push"
+        chmod +x "$HOOKS_DIR/pre-push-original"
+    else
+        cp "hooks/branch-name-validator.sh" "$HOOKS_DIR/pre-push"
+        chmod +x "$HOOKS_DIR/pre-push"
+    fi
+    echo -e "${GREEN}✅ Branch name validator installed${NC}"
+fi
+
 # Create a config file for enabling/disabling reminders
 CONFIG_FILE=".git/issue-reminders.config"
 if [ ! -f "$CONFIG_FILE" ]; then
