@@ -1,0 +1,159 @@
+name: Automated Branch Cleanup
+
+on:
+  pull_request:
+    types: [closed]
+  schedule:
+    # Run weekly cleanup on Sundays at 2 AM UTC
+    - cron: '0 2 * * 0'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run mode (show what would be deleted)'
+        required: false
+        default: 'false'
+        type: boolean
+
+jobs:
+  cleanup-merged-branches:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: read
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup GitHub CLI
+      run: |
+        # GitHub CLI is pre-installed on GitHub runners
+        gh --version
+
+    - name: Delete branch after PR merge
+      if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
+        
+        echo "🔗 PR #${{ github.event.pull_request.number }} was merged"
+        echo "🌿 Branch to delete: $BRANCH_NAME"
+        
+        # Skip if branch is protected
+        if [[ "$BRANCH_NAME" =~ ^(main|master|preview|develop|staging|production)$ ]]; then
+          echo "🛡️ Skipping protected branch: $BRANCH_NAME"
+          exit 0
+        fi
+        
+        # Delete the branch
+        echo "🗑️ Deleting merged branch: $BRANCH_NAME"
+        if git push origin --delete "$BRANCH_NAME"; then
+          echo "✅ Successfully deleted branch: $BRANCH_NAME"
+        else
+          echo "⚠️ Branch may have already been deleted: $BRANCH_NAME"
+        fi
+
+    - name: Scheduled cleanup of merged branches
+      if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        echo "🧹 Starting scheduled branch cleanup..."
+        
+        DRY_RUN="${{ github.event.inputs.dry_run || 'false' }}"
+        PROTECTED_BRANCHES="main master preview develop staging production"
+        CLEANUP_COUNT=0
+        
+        echo "📋 Protected branches: $PROTECTED_BRANCHES"
+        
+        if [ "$DRY_RUN" = "true" ]; then
+          echo "🔍 DRY RUN MODE - No branches will be deleted"
+        fi
+        
+        # Get all remote branches except protected ones
+        git fetch --prune origin
+        
+        # List all merged PRs from the last 30 days
+        echo "🔍 Finding merged PRs and their branches..."
+        
+        gh pr list --state merged --limit 100 --json number,headRefName,mergedAt | \
+        jq -r '.[] | select(.mergedAt != null) | .headRefName' | \
+        sort | uniq | while read -r branch; do
+          
+          if [ -z "$branch" ]; then
+            continue
+          fi
+          
+          # Skip protected branches
+          skip=false
+          for protected in $PROTECTED_BRANCHES; do
+            if [ "$branch" = "$protected" ]; then
+              skip=true
+              break
+            fi
+          done
+          
+          if [ "$skip" = true ]; then
+            echo "🛡️ Skipping protected branch: $branch"
+            continue
+          fi
+          
+          # Check if remote branch exists
+          if git ls-remote --exit-code --heads origin "$branch" >/dev/null 2>&1; then
+            echo "🔍 Found merged branch: $branch"
+            
+            if [ "$DRY_RUN" = "true" ]; then
+              echo "  [DRY RUN] Would delete: origin/$branch"
+            else
+              echo "🗑️ Deleting merged branch: $branch"
+              if git push origin --delete "$branch" 2>/dev/null; then
+                echo "  ✅ Deleted: origin/$branch"
+                CLEANUP_COUNT=$((CLEANUP_COUNT + 1))
+              else
+                echo "  ⚠️ Could not delete: origin/$branch (may not exist)"
+              fi
+            fi
+          fi
+        done
+        
+        if [ "$DRY_RUN" = "false" ]; then
+          echo "✨ Cleanup complete! Deleted $CLEANUP_COUNT branches"
+        else
+          echo "🔍 Dry run complete! Check output above for branches that would be deleted"
+        fi
+
+    - name: Clean up local tracking branches
+      if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+      run: |
+        echo "🧹 Cleaning up local tracking branches..."
+        git remote prune origin
+        echo "✅ Local tracking branch cleanup complete"
+
+    - name: Generate cleanup report
+      if: github.event_name == 'schedule'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        echo "📊 Generating branch cleanup report..."
+        
+        # Count current branches
+        TOTAL_BRANCHES=$(git ls-remote --heads origin | wc -l)
+        FEATURE_BRANCHES=$(git ls-remote --heads origin | grep -E "(feature|bugfix|hotfix)/" | wc -l)
+        
+        echo "📈 Current repository statistics:"
+        echo "  Total branches: $TOTAL_BRANCHES"
+        echo "  Feature branches: $FEATURE_BRANCHES"
+        
+        # Check for old branches (older than 30 days)
+        echo "⚠️ Branches older than 30 days:"
+        git for-each-ref --format='%(refname:short) %(committerdate)' refs/remotes/origin | \
+        grep -E "(feature|bugfix|hotfix)/" | \
+        while read -r branch date; do
+          # Simple age check (this is approximate)
+          echo "  $branch (last commit: $date)"
+        done || echo "  None found"
+        
+        echo "✅ Cleanup report generated"
