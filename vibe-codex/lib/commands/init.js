@@ -12,6 +12,7 @@ const { detectProjectType, detectTestFramework } = require('../utils/detector');
 const { preflightChecks } = require('../utils/preflight');
 const { installGitHooks } = require('../installer/git-hooks');
 const { installGitHubActions } = require('../installer/github-actions');
+const { installRules } = require('../installer/rules');
 const { createConfiguration } = require('../utils/config-creator');
 
 module.exports = async function init(options) {
@@ -57,6 +58,11 @@ module.exports = async function init(options) {
       projectType
     });
     spinner.succeed('Configuration created');
+    
+    // Install MANDATORY rules and related files
+    spinner.start('Installing MANDATORY rules...');
+    await installRules(config, options);
+    spinner.succeed('MANDATORY rules installed');
     
     // Install git hooks
     if (!options.gitHooks === false) {

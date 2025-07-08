@@ -5,6 +5,7 @@
 const chalk = require('chalk');
 const fs = require('fs-extra');
 const path = require('path');
+const semver = require('semver');
 
 module.exports = async function status(options) {
   console.log(chalk.blue('\n📊 vibe-codex Status\n'));
@@ -25,10 +26,35 @@ module.exports = async function status(options) {
     
     // Display status information
     console.log(chalk.bold('Installation:'));
-    console.log(`  Version: ${chalk.green(config.version || 'unknown')}`);
+    console.log(`  Version: ${chalk.green(config.version || '1.0.0')}`);
     console.log(`  Project Type: ${chalk.cyan(config.projectType)}`);
     console.log(`  Created: ${chalk.gray(config.createdAt || 'unknown')}`);
     console.log(`  Last Modified: ${chalk.gray(config.lastModified || 'unknown')}`);
+    
+    // Check for updates
+    const packageJson = require('../../package.json');
+    const currentVersion = packageJson.version;
+    if (config.version && semver.lt(config.version, currentVersion)) {
+      console.log(chalk.yellow(`  Update Available: ${config.version} → ${currentVersion}`));
+      console.log(chalk.gray('  Run "npx vibe-codex update" to update'));
+    }
+    
+    // Check MANDATORY files
+    console.log(chalk.bold('\nMANDATORY Files:'));
+    const mandatoryFiles = [
+      { file: 'MANDATORY-RULES.md', required: true },
+      { file: 'PROJECT_CONTEXT.md', required: false },
+      { file: '.cursorrules', required: false },
+      { file: '.vibe-codex.json', required: true },
+      { file: 'config/project-patterns.json', required: false },
+      { file: 'config/rules.json', required: false }
+    ];
+    
+    for (const { file, required } of mandatoryFiles) {
+      const exists = await fs.pathExists(file);
+      const status = exists ? chalk.green('✓') : (required ? chalk.red('✗') : chalk.gray('○'));
+      console.log(`  ${status} ${file}`);
+    }
     
     // Show enabled modules
     console.log(chalk.bold('\nEnabled Modules:'));
@@ -65,12 +91,27 @@ module.exports = async function status(options) {
       console.log(`  ${status} ${hook}`);
     }
     
+    // Check hook scripts
+    console.log(chalk.bold('\nHook Scripts:'));
+    const hookScriptsDir = 'hooks';
+    if (await fs.pathExists(hookScriptsDir)) {
+      const hookScripts = await fs.readdir(hookScriptsDir);
+      const shellScripts = hookScripts.filter(h => h.endsWith('.sh'));
+      if (shellScripts.length > 0) {
+        console.log(`  ${chalk.green('✓')} ${shellScripts.length} hook scripts installed`);
+      } else {
+        console.log(chalk.gray('  No hook scripts found'));
+      }
+    } else {
+      console.log(chalk.gray('  No hooks directory found'));
+    }
+    
     // Check GitHub Actions
     console.log(chalk.bold('\nGitHub Actions:'));
     const workflowsDir = '.github/workflows';
     if (await fs.pathExists(workflowsDir)) {
       const workflows = await fs.readdir(workflowsDir);
-      const vibeWorkflows = workflows.filter(w => w.includes('vibe-codex'));
+      const vibeWorkflows = workflows.filter(w => w.includes('vibe-codex') || w.includes('mandatory-rules'));
       if (vibeWorkflows.length > 0) {
         for (const workflow of vibeWorkflows) {
           console.log(`  ${chalk.green('✓')} ${workflow}`);
@@ -80,6 +121,27 @@ module.exports = async function status(options) {
       }
     } else {
       console.log(chalk.gray('  No workflows directory found'));
+    }
+    
+    // Quick validation check
+    console.log(chalk.bold('\nCompliance Status:'));
+    try {
+      const RuleValidator = require('../validator');
+      const validator = new RuleValidator(config);
+      const results = await validator.validate({ silent: true });
+      
+      if (results.violations.length === 0) {
+        console.log(`  ${chalk.green('✓')} All mandatory rules passed`);
+      } else {
+        console.log(`  ${chalk.red('✗')} ${results.violations.length} violation(s) found`);
+        console.log(chalk.gray('  Run "npx vibe-codex validate" for details'));
+      }
+      
+      if (results.warnings.length > 0) {
+        console.log(`  ${chalk.yellow('⚠')} ${results.warnings.length} warning(s)`);
+      }
+    } catch (error) {
+      console.log(chalk.gray('  Unable to check compliance'));
     }
     
     // Output as JSON if requested
