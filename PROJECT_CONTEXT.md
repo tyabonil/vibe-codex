@@ -20,6 +20,7 @@ This repository provides:
 - **GitHub Actions**: Centralized rule checking workflows
 - **Git Hooks**: Local pre-commit and commit-msg validation
 - **.claude Directory**: AI-assisted development tools
+- **Development Workflow Hooks**: Issue progress tracking and PR review automation
 
 ### Technology Stack
 - **Node.js**: Rule engine and validation scripts
@@ -37,6 +38,8 @@ This repository provides:
 - **PR check failure analysis** and reporting
 - **Interactive issue reporter** for feedback
 - **Post-deployment verification** hooks
+- **Issue progress tracking hook** (Issue #169) - Automated issue status updates
+- **PR review check hook** (Issue #171) - Compliance violation analysis
 
 ### 🚧 In Progress
 - **Enhanced pre-commit validation** (Issue #128)
@@ -90,6 +93,12 @@ This repository provides:
 - **Deployment platforms** (Vercel, Netlify) for post-deploy verification
 
 ## Recent Major Changes
+
+### 2025-07-08
+- **Added issue progress tracking hook** (Issue #169) for automated GitHub issue updates
+- **Added PR review check hook** (Issue #171) for compliance violation analysis
+- **Comprehensive test coverage** for both new hooks (35 tests total)
+- **Integration tests** verifying npm package compatibility
 
 ### 2025-07-05
 - **Added .claude directory** with comprehensive AI tooling
