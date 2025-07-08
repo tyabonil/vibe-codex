@@ -328,24 +328,23 @@ jobs:
                   console.log(`PR #${prNumber} not found or accessible`);
                 }
               }
+            } else if (context.eventName === 'pull_request_review') {
+              // Handle review events
+              const review = context.payload.review;
+              const pr = context.payload.pull_request;
+              const branchName = pr.head.ref;
+              const issueNumber = extractIssueNumber(branchName);
+              
+              console.log(`Review on PR #${pr.number}: ${review.state}`);
+              
+              if (!issueNumber) {
+                console.log('Branch does not follow issue convention - skipping validation');
+                return;
+              }
+              
+              // Add reminder to update issue with review feedback
+              await addReviewFeedbackReminder(pr.number, issueNumber, review.state);
             }
-          } else if (context.eventName === 'pull_request_review') {
-            // Handle review events
-            const review = context.payload.review;
-            const pr = context.payload.pull_request;
-            const branchName = pr.head.ref;
-            const issueNumber = extractIssueNumber(branchName);
-            
-            console.log(`Review on PR #${pr.number}: ${review.state}`);
-            
-            if (!issueNumber) {
-              console.log('Branch does not follow issue convention - skipping validation');
-              return;
-            }
-            
-            // Add reminder to update issue with review feedback
-            await addReviewFeedbackReminder(pr.number, issueNumber, review.state);
-          }
           }
           
           await validateLinking();

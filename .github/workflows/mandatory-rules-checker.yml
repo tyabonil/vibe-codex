@@ -33,54 +33,54 @@ jobs:
           # Create directories
           mkdir -p scripts config
           
-          echo "📥 Downloading latest MANDATORY-RULES.md from tyabonil/cursor_rules..."
-          curl -H "Authorization: token $GITHUB_TOKEN" \
+          echo "📥 Downloading latest MANDATORY-RULES.md from tyabonil/vibe-codex..."
+          curl -L -H "Authorization: token $GITHUB_TOKEN" \
                -H "Accept: application/vnd.github.raw" \
                -o MANDATORY-RULES.md \
-               "https://api.github.com/repos/tyabonil/cursor_rules/contents/MANDATORY-RULES.md" || \
-          curl -H "Accept: application/vnd.github.raw" \
+               "https://api.github.com/repos/tyabonil/vibe-codex/contents/MANDATORY-RULES.md" || \
+          curl -L -H "Accept: application/vnd.github.raw" \
                -o MANDATORY-RULES.md \
-               "https://api.github.com/repos/tyabonil/cursor_rules/contents/MANDATORY-RULES.md"
+               "https://api.github.com/repos/tyabonil/vibe-codex/contents/MANDATORY-RULES.md"
           
-          echo "📥 Downloading rule checker scripts from tyabonil/cursor_rules..."
+          echo "📥 Downloading rule checker scripts from tyabonil/vibe-codex..."
           
           # Download rule engine
-          curl -H "Authorization: token $GITHUB_TOKEN" \
+          curl -L -H "Authorization: token $GITHUB_TOKEN" \
                -H "Accept: application/vnd.github.raw" \
                -o scripts/rule-engine.js \
-               "https://api.github.com/repos/tyabonil/cursor_rules/contents/scripts/rule-engine.js" || \
-          curl -H "Accept: application/vnd.github.raw" \
+               "https://api.github.com/repos/tyabonil/vibe-codex/contents/scripts/rule-engine.js" || \
+          curl -L -H "Accept: application/vnd.github.raw" \
                -o scripts/rule-engine.js \
-               "https://api.github.com/repos/tyabonil/cursor_rules/contents/scripts/rule-engine.js"
+               "https://api.github.com/repos/tyabonil/vibe-codex/contents/scripts/rule-engine.js"
                
           # Download GitHub client
-          curl -H "Authorization: token $GITHUB_TOKEN" \
+          curl -L -H "Authorization: token $GITHUB_TOKEN" \
                -H "Accept: application/vnd.github.raw" \
                -o scripts/github-client.js \
-               "https://api.github.com/repos/tyabonil/cursor_rules/contents/scripts/github-client.js" || \
-          curl -H "Accept: application/vnd.github.raw" \
+               "https://api.github.com/repos/tyabonil/vibe-codex/contents/scripts/github-client.js" || \
+          curl -L -H "Accept: application/vnd.github.raw" \
                -o scripts/github-client.js \
-               "https://api.github.com/repos/tyabonil/cursor_rules/contents/scripts/github-client.js"
+               "https://api.github.com/repos/tyabonil/vibe-codex/contents/scripts/github-client.js"
                
           # Download reporter
-          curl -H "Authorization: token $GITHUB_TOKEN" \
+          curl -L -H "Authorization: token $GITHUB_TOKEN" \
                -H "Accept: application/vnd.github.raw" \
                -o scripts/reporter.js \
-               "https://api.github.com/repos/tyabonil/cursor_rules/contents/scripts/reporter.js" || \
-          curl -H "Accept: application/vnd.github.raw" \
+               "https://api.github.com/repos/tyabonil/vibe-codex/contents/scripts/reporter.js" || \
+          curl -L -H "Accept: application/vnd.github.raw" \
                -o scripts/reporter.js \
-               "https://api.github.com/repos/tyabonil/cursor_rules/contents/scripts/reporter.js"
+               "https://api.github.com/repos/tyabonil/vibe-codex/contents/scripts/reporter.js"
                
           # Download configuration
-          curl -H "Authorization: token $GITHUB_TOKEN" \
+          curl -L -H "Authorization: token $GITHUB_TOKEN" \
                -H "Accept: application/vnd.github.raw" \
                -o config/rules.json \
-               "https://api.github.com/repos/tyabonil/cursor_rules/contents/config/rules.json" || \
-          curl -H "Accept: application/vnd.github.raw" \
+               "https://api.github.com/repos/tyabonil/vibe-codex/contents/config/rules.json" || \
+          curl -L -H "Accept: application/vnd.github.raw" \
                -o config/rules.json \
-               "https://api.github.com/repos/tyabonil/cursor_rules/contents/config/rules.json"
+               "https://api.github.com/repos/tyabonil/vibe-codex/contents/config/rules.json"
                
-          echo "✅ All files downloaded successfully from tyabonil/cursor_rules"
+          echo "✅ All files downloaded successfully from tyabonil/vibe-codex"
           echo "📊 Rules version: $(date)"
           
       - name: Install dependencies
@@ -92,7 +92,7 @@ jobs:
         id: rule-check
         uses: actions/github-script@v7
         env:
-          RULES_SOURCE_REPO: 'tyabonil/cursor_rules'
+          RULES_SOURCE_REPO: 'tyabonil/vibe-codex'
           RULES_SOURCE_BRANCH: 'main'
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -166,7 +166,7 @@ jobs:
               const report = reporter.generateReport(violations, score, isBlocking, prData);
               
               // Add centralized rules footer
-              const centralizedFooter = `\n\n---\n\n*Rules validated against [tyabonil/cursor_rules](https://github.com/tyabonil/cursor_rules) • Updated: ${new Date().toISOString().split('T')[0]}*`;
+              const centralizedFooter = `\n\n---\n\n*Rules validated against [tyabonil/vibe-codex](https://github.com/tyabonil/vibe-codex) • Updated: ${new Date().toISOString().split('T')[0]}*`;
               
               if (violations.length > 0) {
                 await githubClient.postComplianceComment(report + centralizedFooter);
@@ -212,7 +212,7 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.issue.number,
-                body: `## ❌ MANDATORY Rules Checker Error\n\n\`\`\`\n${error.message}\n\`\`\`\n\nPlease check the [workflow logs](${context.payload.repository.html_url}/actions) for details.\n\n*Rules from [tyabonil/cursor_rules](https://github.com/tyabonil/cursor_rules)*`
+                body: `## ❌ MANDATORY Rules Checker Error\n\n\`\`\`\n${error.message}\n\`\`\`\n\nPlease check the [workflow logs](${context.payload.repository.html_url}/actions) for details.\n\n*Rules from [tyabonil/vibe-codex](https://github.com/tyabonil/vibe-codex)*`
               });
               
               throw error;
