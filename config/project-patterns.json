@@ -3,7 +3,7 @@
   "rulesets": {
     "preview_workflow": {
       "description": "Git flow using preview branch for testing before main",
-      "enabled": false,
+      "enabled": true,
       "rules": [
         "All development work should be based on the `preview` branch, not `main`",
         "Create a branch from the `preview` branch",
@@ -54,7 +54,7 @@
     },
     "copilot_integration": {
       "description": "GitHub Copilot-specific workflow integration",
-      "enabled": false,
+      "enabled": true,
       "rules": [
         "Request a review from `@copilot` immediately after creating the PR"
       ]
