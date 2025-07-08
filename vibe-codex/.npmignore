@@ -1,0 +1,33 @@
+# Development files
+test/
+examples/
+docs/
+.github/
+.vscode/
+.idea/
+
+# Source control
+.git/
+.gitignore
+
+# CI/CD
+.travis.yml
+.gitlab-ci.yml
+appveyor.yml
+
+# Config files
+.eslintrc*
+.prettierrc*
+jest.config.js
+tsconfig.json
+
+# Misc
+*.log
+*.tmp
+.DS_Store
+coverage/
+.nyc_output/
+node_modules/
+
+# Keep only essential files for npm package
+# See "files" field in package.json for included files
