@@ -67,16 +67,5 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
-  },
-  "jest": {
-    "testEnvironment": "node",
-    "coverageDirectory": "coverage",
-    "collectCoverageFrom": [
-      "lib/**/*.js",
-      "!lib/**/*.test.js"
-    ],
-    "testMatch": [
-      "**/test/**/*.test.js"
-    ]
   }
 }
