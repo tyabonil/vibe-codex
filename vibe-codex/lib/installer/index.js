@@ -4,5 +4,6 @@
 
 module.exports = {
   gitHooks: require('./git-hooks'),
-  githubActions: require('./github-actions')
+  githubActions: require('./github-actions'),
+  rules: require('./rules')
 };
