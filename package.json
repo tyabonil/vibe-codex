@@ -37,7 +37,8 @@
     "collectCoverageFrom": [
       "scripts/**/*.js",
       "!scripts/validate-config.js",
-      "!scripts/generate-docs.js"
+      "!scripts/generate-docs.js",
+      "!hooks/**/*.sh"
     ],
     "coverageReporters": [
       "text",

@@ -165,6 +165,52 @@ A comprehensive rule enforcement system designed for AI-powered development that
    - Reduced maintainer burden
    - Professional project standards
 
+### 📊 Issue & PR Management
+**Scenario**: Teams needing automated issue tracking and PR compliance checking.
+
+**Implementation**:
+1. **Issue Progress Tracking**:
+   ```bash
+   # Start work on an issue
+   ./hooks/issue-progress-tracker.sh start 95 "Beginning implementation"
+   
+   # Update progress
+   ./hooks/issue-progress-tracker.sh update 95 "Fixed root cause"
+   
+   # Link PR when ready
+   ./hooks/issue-progress-tracker.sh link-pr 95 99
+   
+   # Complete when merged
+   ./hooks/issue-progress-tracker.sh complete 95 99 "Successfully deployed"
+   ```
+
+2. **PR Review Automation**:
+   ```bash
+   # Check PR for compliance violations
+   ./hooks/pr-review-check.sh --auto
+   
+   # Get detailed violation summary
+   ./hooks/pr-review-check.sh 99 --summary
+   
+   # Export for CI/CD integration
+   ./hooks/pr-review-check.sh 99 --json
+   ```
+
+3. **Git Hook Integration**:
+   ```bash
+   # Add to .git/hooks/post-commit
+   ./hooks/issue-progress-tracker.sh auto commit
+   
+   # Add to .git/hooks/pre-push
+   ./hooks/issue-progress-tracker.sh auto push
+   ```
+
+4. **Benefits**:
+   - Automated issue status updates
+   - Never miss compliance violations
+   - Streamlined workflow tracking
+   - Reduced manual overhead
+
 ---
 
 ## Component Deep Dive
@@ -216,6 +262,18 @@ A comprehensive rule enforcement system designed for AI-powered development that
 - Conventional Commits validation
 - Issue reference checking
 - Format standardization
+
+**Issue Progress Tracker** (`hooks/issue-progress-tracker.sh`):
+- Automated GitHub issue status updates
+- Progress tracking throughout development lifecycle
+- Integration with git hooks for automatic updates
+- Actions: start, update, link-pr, complete, validate
+
+**PR Review Check** (`hooks/pr-review-check.sh`):
+- Automatic PR comment analysis for compliance violations
+- Multiple output formats (summary, JSON, violations-only)
+- Auto-detection from current branch
+- Interactive mode with resolution suggestions
 
 **Installation**: Automatic via `install-rule-checker.sh`
 
