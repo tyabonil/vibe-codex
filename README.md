@@ -91,6 +91,12 @@ The core rule engine (`scripts/rule-engine.js`) provides:
 - Code quality validation
 - Workflow compliance checks
 
+### Development Workflow Automation
+
+New automated hooks for streamlining development:
+- **Issue Progress Tracker**: Automatically update GitHub issues throughout development
+- **PR Review Check**: Analyze PR comments for compliance violations before merge
+
 ### Review Bots
 
 Automated PR review system with multiple bot personalities:
@@ -138,6 +144,36 @@ Advanced tooling for AI-powered development workflows:
 # Verify deployment after merge
 ./.claude/hooks/post-deploy.sh [BRANCH]
 ```
+
+### Development Workflow Hooks
+
+Automated hooks for enhancing development workflows:
+
+#### Issue Progress Tracker
+```bash
+# Track issue progress throughout development lifecycle
+./hooks/issue-progress-tracker.sh <action> <issue_number> [message] [pr_number]
+
+# Examples:
+./hooks/issue-progress-tracker.sh start 95 "Beginning work"
+./hooks/issue-progress-tracker.sh update 95 "Fixed root cause"
+./hooks/issue-progress-tracker.sh link-pr 95 99
+./hooks/issue-progress-tracker.sh complete 95 99 "Deployed"
+```
+
+#### PR Review Check
+```bash
+# Automatically analyze PR comments for compliance violations
+./hooks/pr-review-check.sh [PR_NUMBER] [options]
+
+# Examples:
+./hooks/pr-review-check.sh 99                  # Review specific PR
+./hooks/pr-review-check.sh --auto              # Auto-detect from branch
+./hooks/pr-review-check.sh 99 --summary        # Summary only
+./hooks/pr-review-check.sh --auto --json       # JSON output
+```
+
+See [hooks/README.md](./hooks/README.md) for detailed documentation.
 
 ## Configuration
 
