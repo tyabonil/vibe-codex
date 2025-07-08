@@ -10,6 +10,10 @@ Automates issue status updates throughout the development lifecycle.
 
 Automatically fetches and analyzes PR comments for compliance violations.
 
+## Pre-Issue-Close Validation (`pre-issue-close.sh`)
+
+Validates all requirements are met before closing an issue, ensuring completeness and quality.
+
 ### Issue Progress Tracker Usage
 
 ```bash
@@ -91,16 +95,76 @@ You can integrate this with git hooks for automatic updates:
 ./hooks/issue-progress-tracker.sh auto push
 ```
 
+### Pre-Issue-Close Validation Usage
+
+```bash
+./hooks/pre-issue-close.sh <issue_number> [options]
+```
+
+#### Options
+
+- `--force` - Skip warnings and proceed with validation
+- `--json` - Output results in JSON format
+- `--checklist` - Show validation checklist only
+- `--auto-close` - Automatically close if all validations pass
+
+#### Validation Checks
+
+1. **Required Checks:**
+   - All linked PRs are merged
+   - Test files exist for new features/fixes
+   - Documentation is updated (if applicable)
+   - Completion comments document the resolution
+   - Appropriate labels are applied
+
+2. **Optional Checks:**
+   - Deployment verified (if applicable)
+   - Related issues are cross-referenced
+   - Changelog updated (for user-facing changes)
+   - Migration guide provided (for breaking changes)
+
+#### Examples
+
+```bash
+# Validate issue #169
+./hooks/pre-issue-close.sh 169
+
+# Force validation (skip warnings)
+./hooks/pre-issue-close.sh 169 --force
+
+# Check multiple issues
+./hooks/pre-issue-close.sh 169 171 173
+
+# Auto-close if validation passes
+./hooks/pre-issue-close.sh 169 --auto-close
+
+# Show validation checklist
+./hooks/pre-issue-close.sh --checklist
+
+# Get JSON output for automation
+./hooks/pre-issue-close.sh 169 --json
+```
+
 ### Testing
 
-The hook includes comprehensive tests in `tests/issue-progress-tracker.test.js` that verify:
+The hooks include comprehensive tests that verify:
 
 - Help and usage output
 - Input validation for all actions
-- Auto-mode functionality
+- Command-line option handling
 - Error handling scenarios
 
 Run tests with:
 ```bash
+# Test issue progress tracker
 npm test -- tests/issue-progress-tracker.test.js
+
+# Test PR review check
+npm test -- tests/pr-review-check.test.js
+
+# Test pre-issue-close validation
+npm test -- tests/pre-issue-close.test.js
+
+# Test all hooks integration
+npm test -- tests/hooks-integration.test.js
 ```
