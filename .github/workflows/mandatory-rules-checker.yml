@@ -148,16 +148,17 @@ jobs:
               violations.push(...level4Violations);
               
               // Calculate compliance score and blocking status
-              const criticalViolations = violations.filter(v => v.level <= 3 && v.severity === 'BLOCKER');
-              const isBlocking = criticalViolations.length > 0;
+              // Level 1-3 violations are ALL blocking (regardless of severity)
+              const blockingViolations = violations.filter(v => v.level <= 3);
+              const isBlocking = blockingViolations.length > 0;
               const score = Math.max(0, 10 - violations.length);
               
-              // Determine merge allowed status - only block for critical violations
-              const mergeAllowed = criticalViolations.length === 0;
+              // Determine merge allowed status - block for ANY Level 1-3 violations
+              const mergeAllowed = blockingViolations.length === 0;
               
               console.log(`📊 Compliance Results:`);
               console.log(`   Total violations: ${violations.length}`);
-              console.log(`   Critical (blocking): ${criticalViolations.length}`);
+              console.log(`   Blocking (Level 1-3): ${blockingViolations.length}`);
               console.log(`   Score: ${score}/10`);
               console.log(`   Status: ${isBlocking ? 'BLOCKED' : 'PASSED'}`);
               console.log(`   Merge: ${mergeAllowed ? 'ALLOWED' : 'BLOCKED'}`);
@@ -193,7 +194,7 @@ jobs:
               
               // Exit with appropriate code based on merge allowed status
               if (!mergeAllowed) {
-                core.setFailed(`Compliance check failed: ${criticalViolations.length} critical violations found`);
+                core.setFailed(`Compliance check failed: ${blockingViolations.length} Level 1-3 violations found`);
               }
               
               return {
