@@ -2,7 +2,23 @@
  * Tests for base module functionality
  */
 
-const { RuleModule } = require('../../../lib/modules/base');
+// Mock logger
+jest.mock('../../../lib/utils/logger.js', () => ({
+  default: {
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+    success: jest.fn()
+  }
+}));
+
+// Since RuleModule is ES module, we need to handle it specially
+let RuleModule;
+
+beforeAll(async () => {
+  const module = await import('../../../lib/modules/base.js');
+  RuleModule = module.RuleModule;
+});
 
 describe('RuleModule Base Class', () => {
   let module;

@@ -2,16 +2,30 @@
  * Tests for GitHub module
  */
 
-import { GitHubModule } from '../../../lib/modules/github/index.js';
-import fs from 'fs/promises';
-import path from 'path';
-import { exec } from 'child_process';
-import { promisify } from 'util';
-
+// Mock dependencies first
 jest.mock('fs/promises');
 jest.mock('child_process');
+jest.mock('../../../lib/utils/logger.js', () => ({
+  default: {
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+    success: jest.fn()
+  }
+}));
 
-const execAsync = promisify(exec);
+const fs = require('fs/promises');
+const path = require('path');
+const { exec } = require('child_process');
+const { promisify } = require('util');
+
+// Since GitHubModule is ES module, we need to handle it specially
+let GitHubModule;
+
+beforeAll(async () => {
+  const module = await import('../../../lib/modules/github/index.js');
+  GitHubModule = module.GitHubModule;
+});
 
 describe('GitHubModule', () => {
   let module;

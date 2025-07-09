@@ -2,15 +2,31 @@
  * Tests for testing module
  */
 
-import { TestingModule } from '../../../lib/modules/testing/index.js';
-import fs from 'fs/promises';
-import path from 'path';
-
+// Mock dependencies
 jest.mock('fs/promises');
 jest.mock('child_process', () => ({
   exec: jest.fn(),
   promisify: () => jest.fn()
 }));
+jest.mock('../../../lib/utils/logger.js', () => ({
+  default: {
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+    success: jest.fn(),
+    debug: jest.fn()
+  }
+}));
+
+const fs = require('fs/promises');
+
+// Since TestingModule is ES module, we need to handle it specially
+let TestingModule;
+
+beforeAll(async () => {
+  const module = await import('../../../lib/modules/testing/index.js');
+  TestingModule = module.TestingModule;
+});
 
 describe('TestingModule', () => {
   let module;
