@@ -198,6 +198,30 @@ for branch in $protected_branches; do
   fi
 done
 
+# Check for open PRs and ensure comments are reviewed
+if command -v gh >/dev/null 2>&1; then
+  echo "📋 Checking for open PRs that need review..."
+  pr_number=$(gh pr list --head "$current_branch" --json number --jq '.[0].number' 2>/dev/null)
+  
+  if [ -n "$pr_number" ]; then
+    # Check if PR has unresolved review comments
+    unresolved_count=$(gh api "repos/{owner}/{repo}/pulls/$pr_number/comments" --jq '[.[] | select(.in_reply_to_id == null)] | length' 2>/dev/null || echo 0)
+    
+    if [ "$unresolved_count" -gt "0" ]; then
+      echo "⚠️  Warning: PR #$pr_number has $unresolved_count unresolved review comments"
+      echo ""
+      echo "Please review and address all PR comments before pushing."
+      echo "Run: gh pr view $pr_number --comments"
+      echo ""
+      read -p "Continue anyway? (y/N) " -n 1 -r
+      echo
+      if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        exit 1
+      fi
+    fi
+  fi
+fi
+
 # Run tests if testing module is enabled
 ${config.modules.testing?.enabled ? `
 echo "🧪 Running tests before push..."
