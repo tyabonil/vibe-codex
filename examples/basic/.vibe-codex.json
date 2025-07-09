@@ -1,0 +1,20 @@
+{
+  "version": "1.0.0",
+  "description": "Basic vibe-codex configuration for simple projects",
+  "modules": {
+    "core": {
+      "enabled": true
+    },
+    "testing": {
+      "enabled": true,
+      "coverageThreshold": 70,
+      "requireTestFiles": false
+    },
+    "documentation": {
+      "enabled": true,
+      "requireApiDocs": false,
+      "requireChangelog": false,
+      "minReadmeLength": 100
+    }
+  }
+}

@@ -31,5 +31,9 @@ module.exports = {
   },
   transformIgnorePatterns: [
     'node_modules/(?!(chalk|ora|node-fetch)/)'
-  ]
+  ],
+  // Support for dynamic imports
+  testEnvironmentOptions: {
+    experimental: { vm: { modules: true } }
+  }
 };
