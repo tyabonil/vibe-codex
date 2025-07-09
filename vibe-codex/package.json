@@ -2,17 +2,6 @@
   "name": "vibe-codex",
   "version": "2.0.0",
   "description": "Interactive configuration and rule management for development workflows",
-  "main": "lib/index.js",
-  "bin": {
-    "vibe-codex": "bin/vibe-codex.js"
-  },
-  "scripts": {
-    "test": "jest --coverage",
-    "test:watch": "jest --watch",
-    "lint": "eslint lib/ bin/",
-    "lint:fix": "eslint lib/ bin/ --fix",
-    "postinstall": "node lib/installer/post-install.js"
-  },
   "keywords": [
     "vibe-codex",
     "development-workflow",
@@ -21,10 +10,44 @@
     "ci-cd",
     "git-hooks",
     "code-quality",
-    "modular-rules"
+    "modular-rules",
+    "devops",
+    "automation",
+    "workflow"
   ],
-  "author": "tyabonil",
+  "homepage": "https://github.com/tyabonil/vibe-codex",
+  "bugs": {
+    "url": "https://github.com/tyabonil/vibe-codex/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tyabonil/vibe-codex.git"
+  },
   "license": "MIT",
+  "author": "Ty Yabonil",
+  "main": "lib/index.js",
+  "bin": {
+    "vibe-codex": "./bin/vibe-codex.js"
+  },
+  "files": [
+    "bin/",
+    "lib/",
+    "templates/",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "jest --coverage",
+    "test:watch": "jest --watch",
+    "test:ci": "jest --coverage --ci --watchAll=false",
+    "lint": "eslint lib test",
+    "lint:fix": "eslint lib test --fix",
+    "format": "prettier --write \"lib/**/*.js\" \"test/**/*.js\"",
+    "prepublishOnly": "npm test && npm run lint",
+    "version": "npm run format && git add -A",
+    "postversion": "git push && git push --tags",
+    "postinstall": "node lib/installer/post-install.js || true"
+  },
   "dependencies": {
     "chalk": "^5.3.0",
     "commander": "^11.1.0",
@@ -47,19 +70,8 @@
   "engines": {
     "node": ">=14.0.0"
   },
-  "files": [
-    "bin/",
-    "lib/",
-    "templates/",
-    "README.md",
-    "LICENSE"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/tyabonil/vibe-codex.git"
-  },
-  "bugs": {
-    "url": "https://github.com/tyabonil/vibe-codex/issues"
-  },
-  "homepage": "https://github.com/tyabonil/vibe-codex#readme"
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
 }
