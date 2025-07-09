@@ -125,7 +125,7 @@ async function runModularValidation(options) {
   // Group rules by level
   const rulesByLevel = {};
   rules.forEach(rule => {
-    if (\!rulesByLevel[rule.level]) {
+    if (!rulesByLevel[rule.level]) {
       rulesByLevel[rule.level] = [];
     }
     rulesByLevel[rule.level].push(rule);
