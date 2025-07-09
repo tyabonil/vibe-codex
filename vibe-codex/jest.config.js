@@ -33,7 +33,6 @@ module.exports = {
     'node_modules/(?!(chalk|ora|node-fetch)/)'
   ],
   // Support for dynamic imports
-  extensionsToTreatAsEsm: ['.js'],
   testEnvironmentOptions: {
     experimental: { vm: { modules: true } }
   }
