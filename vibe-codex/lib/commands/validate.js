@@ -7,6 +7,7 @@ const ora = require('ora');
 const fs = require('fs-extra');
 const RuleValidator = require('../validator');
 const moduleLoader = require('../modules/loader');
+const logger = require('../utils/logger');
 
 module.exports = async function validate(options) {
   const spinner = ora('Loading configuration...').start();

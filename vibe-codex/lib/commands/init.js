@@ -16,6 +16,8 @@ const { installRules } = require('../installer/rules');
 const { createConfiguration } = require('../utils/config-creator');
 const moduleLoader = require('../modules/loader');
 const { configExamples } = require('../modules/config-schema');
+const { validateSetup, getInstallInstructions } = require('../utils/package-manager');
+const logger = require('../utils/logger');
 
 module.exports = async function init(options) {
   console.log(chalk.blue('\n🎯 Welcome to vibe-codex!\n'));
@@ -23,6 +25,32 @@ module.exports = async function init(options) {
   const spinner = ora('Running pre-flight checks...').start();
   
   try {
+    // Validate package manager setup
+    const setupValidation = await validateSetup();
+    
+    if (setupValidation.errors.length > 0) {
+      spinner.fail('Setup validation failed');
+      logger.output(chalk.red('\n❌ Setup errors:'));
+      setupValidation.errors.forEach(err => logger.output(chalk.red(`   - ${err}`)));
+      process.exit(1);
+    }
+    
+    if (setupValidation.warnings.length > 0) {
+      spinner.warn('Setup validation completed with warnings');
+      logger.output(chalk.yellow('\n⚠️  Warnings:'));
+      setupValidation.warnings.forEach(warn => logger.output(chalk.yellow(`   - ${warn}`)));
+      
+      if (!setupValidation.npxAvailable) {
+        const instructions = getInstallInstructions(setupValidation.packageManager);
+        console.log(chalk.blue('\n💡 To ensure best compatibility, consider upgrading npm:'));
+        console.log(chalk.cyan('   npm install -g npm@latest'));
+        console.log(chalk.blue('\nOr install vibe-codex locally:'));
+        console.log(chalk.cyan(`   ${instructions.local}`));
+      }
+    } else {
+      spinner.succeed('Setup validation passed');
+    }
+    
     // Run pre-flight checks
     const { packageManager } = await preflightChecks(options);
     spinner.succeed('Pre-flight checks passed');
@@ -46,7 +74,7 @@ module.exports = async function init(options) {
         }]);
         projectType = answer.projectType;
       } else {
-        console.log(chalk.green(`✓ Detected project type: ${projectType}`));
+        logger.output(chalk.green(`✓ Detected project type: ${projectType}`));
       }
     }
     
@@ -151,7 +179,7 @@ module.exports = async function init(options) {
     spinner.succeed('Module configuration validated');
     
     // Show success message and next steps
-    showSuccessMessage(config, selectedModules);
+    showSuccessMessage(config, selectedModules, setupValidation.packageManager);
     
   } catch (error) {
     spinner.fail(`Installation failed: ${error.message}`);
@@ -233,7 +261,7 @@ async function updatePackageJson(config, packageManager) {
   const pkgPath = 'package.json';
   
   if (!await fs.pathExists(pkgPath)) {
-    console.log(chalk.yellow('⚠ No package.json found, skipping script updates'));
+    logger.warn('No package.json found, skipping script updates');
     return;
   }
   
@@ -248,7 +276,7 @@ async function updatePackageJson(config, packageManager) {
   await fs.writeJSON(pkgPath, pkg, { spaces: 2 });
 }
 
-function showSuccessMessage(config, selectedModules) {
+function showSuccessMessage(config, selectedModules, packageManager = 'npm') {
   console.log(chalk.green('\n✨ vibe-codex installed successfully!\n'));
   
   console.log(chalk.bold('Installed modules:'));
@@ -258,21 +286,37 @@ function showSuccessMessage(config, selectedModules) {
     }
   });
   
+  const { getRunCommand } = require('../utils/package-manager');
+  const runCmd = getRunCommand(packageManager, false);
+  
   console.log(chalk.bold('\nNext steps:'));
   console.log('1. Review your configuration:');
   console.log(chalk.cyan('   cat .vibe-codex.json'));
   
   console.log('\n2. Run validation:');
-  console.log(chalk.cyan('   npx vibe-codex validate'));
+  if (packageManager === 'npm' || runCmd.includes('npx')) {
+    console.log(chalk.cyan('   npx vibe-codex validate'));
+  } else {
+    console.log(chalk.cyan(`   ${runCmd} vibe-codex validate`));
+  }
   
   console.log('\n3. Configure additional modules:');
-  console.log(chalk.cyan('   npx vibe-codex config'));
+  if (packageManager === 'npm' || runCmd.includes('npx')) {
+    console.log(chalk.cyan('   npx vibe-codex config'));
+  } else {
+    console.log(chalk.cyan(`   ${runCmd} vibe-codex config`));
+  }
   
   console.log('\n4. Commit your changes:');
   console.log(chalk.cyan('   git add .'));
-  console.log(chalk.cyan('   git commit -m "Add vibe-codex configuration"'));
+  console.log(chalk.cyan('   git commit -m "feat: add vibe-codex configuration"'));
+  
+  console.log(chalk.bold('\n💡 Tips:'));
+  console.log(`  - Git hooks are installed and will run automatically`);
+  console.log(`  - To skip hooks temporarily: SKIP_VIBE_CODEX=1 git commit ...`);
+  console.log(`  - Package manager detected: ${packageManager}`);
   
   console.log('\nFor more help:');
-  console.log(chalk.gray('   npx vibe-codex --help'));
+  console.log(chalk.gray(`   ${packageManager === 'npm' ? 'npx' : runCmd} vibe-codex --help`));
   console.log(chalk.gray('   https://github.com/tyabonil/vibe-codex'));
 }

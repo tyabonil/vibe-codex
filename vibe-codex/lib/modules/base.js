@@ -27,10 +27,14 @@ export class RuleModule {
    * @returns {Promise<void>}
    */
   async initialize() {
-    // Load rules, hooks, and validators
-    await this.loadRules();
-    await this.loadHooks();
-    await this.loadValidators();
+    try {
+      // Load rules, hooks, and validators
+      await this.loadRules();
+      await this.loadHooks();
+      await this.loadValidators();
+    } catch (error) {
+      throw new Error(`Failed to initialize module ${this.name}: ${error.message}`);
+    }
   }
 
   /**

@@ -112,6 +112,25 @@ program
     }
   });
 
+// Doctor command - Diagnose vibe-codex installation issues
+program
+  .command('doctor')
+  .description('Diagnose vibe-codex installation and configuration issues')
+  .option('--fix', 'attempt to automatically fix issues')
+  .option('--verbose', 'show detailed diagnostic information')
+  .action(async (options) => {
+    try {
+      const doctor = require('../lib/commands/doctor');
+      await doctor(options);
+    } catch (error) {
+      console.error(chalk.red('Error:'), error.message);
+      if (program.opts().debug) {
+        console.error(error.stack);
+      }
+      process.exit(1);
+    }
+  });
+
 // Handle unknown commands
 program.on('command:*', function () {
   console.error(chalk.red('Invalid command:'), program.args.join(' '));

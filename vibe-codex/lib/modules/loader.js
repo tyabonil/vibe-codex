@@ -5,6 +5,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import logger from '../utils/logger.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -112,7 +113,7 @@ export class ModuleLoader {
       await instance.initialize();
       
       this.modules.set(moduleName, instance);
-      console.log(`✅ Loaded module: ${moduleName}`);
+      logger.debug(`✅ Loaded module: ${moduleName}`);
     } catch (error) {
       // Try to load custom module
       if (this.config.customModules && this.config.customModules[moduleName]) {
@@ -123,12 +124,12 @@ export class ModuleLoader {
           
           await instance.initialize();
           this.modules.set(moduleName, instance);
-          console.log(`✅ Loaded custom module: ${moduleName}`);
+          logger.debug(`✅ Loaded custom module: ${moduleName}`);
         } catch (customError) {
-          console.error(`❌ Failed to load module ${moduleName}:`, customError.message);
+          logger.error(`❌ Failed to load module ${moduleName}:`, customError.message);
         }
       } else {
-        console.warn(`⚠️ Module ${moduleName} not found`);
+        logger.warn(`⚠️ Module ${moduleName} not found`);
       }
     }
   }
@@ -151,9 +152,9 @@ export class ModuleLoader {
     }
     
     if (errors.length > 0) {
-      console.error('❌ Module dependency errors:');
+      logger.error('❌ Module dependency errors:');
       errors.forEach(error => {
-        console.error(`  - ${error.module}: ${error.message}`);
+        logger.error(`  - ${error.module}: ${error.message}`);
       });
       throw new Error('Module dependency validation failed');
     }

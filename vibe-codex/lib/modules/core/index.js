@@ -5,6 +5,8 @@ import { RuleModule } from '../base.js';
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import logger from '../../utils/logger.js';
+import { calculateSimilarity, checkForSecrets } from './utils.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -29,23 +31,15 @@ export class CoreModule extends RuleModule {
       category: 'security',
       severity: 'error',
       check: async (context) => {
-        const patterns = [
-          /api[_-]?key\s*[:=]\s*["'][A-Za-z0-9]{16,}["']/gi,
-          /password\s*[:=]\s*["'](?!test|mock|example)[^"']+["']/gi,
-          /token\s*[:=]\s*["'][A-Za-z0-9]{20,}["']/gi,
-          /secret\s*[:=]\s*["'](?!test|mock|example)[^"']+["']/gi
-        ];
-        
         const violations = [];
         for (const file of context.files) {
-          for (const pattern of patterns) {
-            if (pattern.test(file.content)) {
-              violations.push({
-                file: file.path,
-                line: file.content.split('\n').findIndex(line => pattern.test(line)) + 1,
-                message: 'Potential secret detected'
-              });
-            }
+          const secrets = checkForSecrets(file.content);
+          for (const secret of secrets) {
+            violations.push({
+              file: file.path,
+              line: secret.line,
+              message: 'Potential secret detected'
+            });
           }
         }
         return violations;
@@ -194,7 +188,7 @@ export class CoreModule extends RuleModule {
         for (const file of context.files) {
           const content = file.content.toLowerCase().replace(/\s+/g, ' ');
           for (const [otherFile, otherContent] of contentMap) {
-            const similarity = this.calculateSimilarity(content, otherContent);
+            const similarity = calculateSimilarity(content, otherContent);
             if (similarity > 0.25 && file.path !== otherFile) {
               violations.push({
                 files: [file.path, otherFile],
@@ -213,20 +207,20 @@ export class CoreModule extends RuleModule {
   async loadHooks() {
     // Pre-commit hook
     this.registerHook('pre-commit', async (context) => {
-      console.log('🔍 Running security pre-commit checks...');
+      logger.info('🔍 Running security pre-commit checks...');
       
       // Check for secrets
       const secretsRule = this.rules.find(r => r.id === 'SEC-1');
       if (secretsRule) {
         const violations = await secretsRule.check(context);
         if (violations.length > 0) {
-          console.error('❌ Security violations found:');
-          violations.forEach(v => console.error(`  - ${v.file}: ${v.message}`));
+          logger.error('❌ Security violations found:');
+          violations.forEach(v => logger.error(`  - ${v.file}: ${v.message}`));
           return false;
         }
       }
       
-      console.log('✅ No secrets detected');
+      logger.success('✅ No secrets detected');
       return true;
     });
 
@@ -234,9 +228,9 @@ export class CoreModule extends RuleModule {
     this.registerHook('commit-msg', async (context) => {
       const pattern = /^(feat|fix|docs|style|refactor|test|chore)(\(.+\))?:\s.+/;
       if (!pattern.test(context.message)) {
-        console.error('❌ Invalid commit message format!');
-        console.error('Expected format: <type>(<scope>): <subject>');
-        console.error('Valid types: feat, fix, docs, style, refactor, test, chore');
+        logger.error('❌ Invalid commit message format!');
+        logger.error('Expected format: <type>(<scope>): <subject>');
+        logger.error('Valid types: feat, fix, docs, style, refactor, test, chore');
         return false;
       }
       return true;
@@ -285,18 +279,6 @@ export class CoreModule extends RuleModule {
     });
   }
 
-  // Helper method for content similarity
-  calculateSimilarity(str1, str2) {
-    const words1 = str1.split(' ');
-    const words2 = str2.split(' ');
-    const set1 = new Set(words1);
-    const set2 = new Set(words2);
-    
-    const intersection = new Set([...set1].filter(x => set2.has(x)));
-    const union = new Set([...set1, ...set2]);
-    
-    return intersection.size / union.size;
-  }
 }
 
 // Export singleton instance
