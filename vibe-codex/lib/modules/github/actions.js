@@ -4,6 +4,7 @@
 
 const { PlatformManager } = require('../../platforms');
 const chalk = require('chalk');
+const logger = require('../../utils/logger');
 
 class GitHubActions {
   constructor(config = {}) {
@@ -21,10 +22,10 @@ class GitHubActions {
       this.platform = await this.platformManager.detect();
       
       if (this.platform.name !== 'GitHub') {
-        console.warn(chalk.yellow('Warning: Not in a GitHub repository'));
+        logger.warn('Warning: Not in a GitHub repository');
       }
     } catch (error) {
-      console.error(chalk.red('Failed to initialize git platform:'), error.message);
+      logger.error('Failed to initialize git platform:', error.message);
       throw error;
     }
   }
@@ -50,10 +51,10 @@ class GitHubActions {
         assignees: options.assignees || []
       });
 
-      console.log(chalk.green(`Pull request created: ${pr.url || pr.number}`));
+      logger.success(`Pull request created: ${pr.url || pr.number}`);
       return pr;
     } catch (error) {
-      console.error(chalk.red('Failed to create pull request:'), error.message);
+      logger.error('Failed to create pull request:', error.message);
       throw error;
     }
   }
@@ -76,10 +77,10 @@ class GitHubActions {
         assignees: options.assignees || []
       });
 
-      console.log(chalk.green(`Issue created: ${issue.url || issue.number}`));
+      logger.success(`Issue created: ${issue.url || issue.number}`);
       return issue;
     } catch (error) {
-      console.error(chalk.red('Failed to create issue:'), error.message);
+      logger.error('Failed to create issue:', error.message);
       throw error;
     }
   }
@@ -97,7 +98,7 @@ class GitHubActions {
     try {
       return await this.platform.listPullRequests(filters);
     } catch (error) {
-      console.error(chalk.red('Failed to list pull requests:'), error.message);
+      logger.error('Failed to list pull requests:', error.message);
       throw error;
     }
   }
@@ -115,7 +116,7 @@ class GitHubActions {
     try {
       return await this.platform.listIssues(filters);
     } catch (error) {
-      console.error(chalk.red('Failed to list issues:'), error.message);
+      logger.error('Failed to list issues:', error.message);
       throw error;
     }
   }
@@ -133,10 +134,10 @@ class GitHubActions {
 
     try {
       const pr = await this.platform.updatePullRequest(prNumber, updates);
-      console.log(chalk.green(`Pull request #${prNumber} updated`));
+      logger.success(`Pull request #${prNumber} updated`);
       return pr;
     } catch (error) {
-      console.error(chalk.red('Failed to update pull request:'), error.message);
+      logger.error('Failed to update pull request:', error.message);
       throw error;
     }
   }
@@ -154,10 +155,10 @@ class GitHubActions {
 
     try {
       const issue = await this.platform.updateIssue(issueNumber, updates);
-      console.log(chalk.green(`Issue #${issueNumber} updated`));
+      logger.success(`Issue #${issueNumber} updated`);
       return issue;
     } catch (error) {
-      console.error(chalk.red('Failed to update issue:'), error.message);
+      logger.error('Failed to update issue:', error.message);
       throw error;
     }
   }
@@ -174,10 +175,10 @@ class GitHubActions {
 
     try {
       const label = await this.platform.createLabel(options);
-      console.log(chalk.green(`Label "${options.name}" created`));
+      logger.success(`Label "${options.name}" created`);
       return label;
     } catch (error) {
-      console.error(chalk.red('Failed to create label:'), error.message);
+      logger.error('Failed to create label:', error.message);
       throw error;
     }
   }
@@ -194,7 +195,7 @@ class GitHubActions {
     try {
       return await this.platform.getRepository();
     } catch (error) {
-      console.error(chalk.red('Failed to get repository info:'), error.message);
+      logger.error('Failed to get repository info:', error.message);
       throw error;
     }
   }
@@ -211,7 +212,7 @@ class GitHubActions {
     try {
       return await this.platform.getCurrentBranch();
     } catch (error) {
-      console.error(chalk.red('Failed to get current branch:'), error.message);
+      logger.error('Failed to get current branch:', error.message);
       throw error;
     }
   }
@@ -228,7 +229,7 @@ class GitHubActions {
     try {
       return await this.platform.getBranches();
     } catch (error) {
-      console.error(chalk.red('Failed to get branches:'), error.message);
+      logger.error('Failed to get branches:', error.message);
       throw error;
     }
   }

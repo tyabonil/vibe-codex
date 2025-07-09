@@ -6,6 +6,7 @@ const fs = require('fs-extra');
 const path = require('path');
 const fetch = require('node-fetch');
 const chalk = require('chalk');
+const logger = require('../utils/logger');
 
 const HOOKS_BASE_URL = 'https://raw.githubusercontent.com/tyabonil/cursor_rules/main/hooks';
 
@@ -45,7 +46,7 @@ async function downloadHookScripts(config, options = {}) {
       installedHooks.push(hookFile);
       console.log(chalk.green(`  ✓ Installed ${hookFile}`));
     } catch (error) {
-      console.warn(chalk.yellow(`  ⚠ Failed to download ${hookFile}: ${error.message}`));
+      logger.warn(`  ⚠ Failed to download ${hookFile}: ${error.message}`);
     }
   }
   

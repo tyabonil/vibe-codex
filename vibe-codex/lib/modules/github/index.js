@@ -386,7 +386,7 @@ By contributing, you agree that your contributions will be licensed under the pr
   async loadHooks() {
     // Pre-push hook to validate GitHub requirements
     this.registerHook('pre-push', async (context) => {
-      console.log('🐙 Validating GitHub requirements...');
+      logger.info('🐙 Validating GitHub requirements...');
       
       // Check if pushing to main/master
       try {
@@ -394,12 +394,12 @@ By contributing, you agree that your contributions will be licensed under the pr
         const branch = currentBranch.trim();
         
         if (branch === 'main' || branch === 'master') {
-          console.error('❌ Direct pushes to main/master branch are not allowed');
-          console.error('Please create a feature branch and submit a pull request');
+          logger.error('❌ Direct pushes to main/master branch are not allowed');
+          logger.error('Please create a feature branch and submit a pull request');
           return false;
         }
       } catch (error) {
-        console.warn('Unable to check current branch');
+        logger.warn('Unable to check current branch');
       }
       
       return true;

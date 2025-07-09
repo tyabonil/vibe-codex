@@ -495,7 +495,7 @@ export class PatternsModule extends RuleModule {
       );
       
       if (sourceFiles.length > 0) {
-        console.log('🎯 Checking code patterns...');
+        logger.info('🎯 Checking code patterns...');
         
         // Quick check for common issues
         let hasIssues = false;
@@ -506,13 +506,13 @@ export class PatternsModule extends RuleModule {
             
             // Check for console.log statements
             if (content.includes('console.log') && !file.includes('test')) {
-              console.warn(`⚠️  ${file} contains console.log statements`);
+              logger.warn(`⚠️  ${file} contains console.log statements`);
               hasIssues = true;
             }
             
             // Check for TODO comments
             if (content.includes('TODO:') || content.includes('FIXME:')) {
-              console.warn(`⚠️  ${file} contains TODO/FIXME comments`);
+              logger.warn(`⚠️  ${file} contains TODO/FIXME comments`);
               hasIssues = true;
             }
           } catch (error) {
@@ -521,7 +521,7 @@ export class PatternsModule extends RuleModule {
         }
         
         if (!hasIssues) {
-          console.log('✅ Code patterns look good');
+          logger.success('✅ Code patterns look good');
         }
       }
       

@@ -322,12 +322,12 @@ export class DeploymentModule extends RuleModule {
       try {
         const { stdout: status } = await execAsync('git status --porcelain');
         if (status.trim()) {
-          console.error('❌ Uncommitted changes detected!');
-          console.error('Please commit or stash changes before deploying');
+          logger.error('❌ Uncommitted changes detected!');
+          logger.error('Please commit or stash changes before deploying');
           return false;
         }
       } catch (error) {
-        console.warn('Unable to check git status');
+        logger.warn('Unable to check git status');
       }
       
       // Run build to ensure it succeeds
@@ -336,7 +336,7 @@ export class DeploymentModule extends RuleModule {
         const packageJson = JSON.parse(await fs.readFile(packageJsonPath, 'utf8'));
         
         if (packageJson.scripts?.build) {
-          console.log('🔨 Running build...');
+          logger.info('🔨 Running build...');
           const { stderr } = await execAsync('npm run build', { cwd: context.projectPath });
           
           if (stderr && !stderr.includes('warning')) {

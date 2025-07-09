@@ -429,14 +429,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   async loadHooks() {
     // Pre-commit hook to check documentation
     this.registerHook('pre-commit', async (context) => {
-      console.log('📚 Checking documentation...');
+      logger.info('📚 Checking documentation...');
       
       // Check if README was modified
       const modifiedFiles = context.stagedFiles || [];
       const readmeModified = modifiedFiles.some(f => f.toLowerCase().includes('readme'));
       
       if (readmeModified) {
-        console.log('✅ README.md updated');
+        logger.success('✅ README.md updated');
       }
       
       // Check if CHANGELOG needs update
@@ -446,7 +446,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
       const changelogModified = modifiedFiles.some(f => f.toLowerCase().includes('changelog'));
       
       if (hasCodeChanges && !changelogModified) {
-        console.warn('⚠️  Consider updating CHANGELOG.md for these changes');
+        logger.warn('⚠️  Consider updating CHANGELOG.md for these changes');
       }
       
       return true;
