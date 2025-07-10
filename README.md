@@ -1,116 +1,136 @@
-# vibe-codex
+# vibe-codex v3
 
-> Automated development rules and workflow enforcement for modern software teams
+> Simple CLI tool to install development rules and git hooks
 
-> **Migration Notice**: This repository has been consolidated from the original `cursor_rules` project. If you were using the bash script installation method, please see the [migration guide](docs/getting-started/MIGRATION.md). The legacy cursor_rules implementation is preserved in the `legacy/` directory.
-
-[![npm version](https://img.shields.io/npm/v/vibe-codex.svg)](https://www.npmjs.com/package/vibe-codex)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Downloads](https://img.shields.io/npm/dm/vibe-codex.svg)](https://www.npmjs.com/package/vibe-codex)
-
-## 🚀 Quick Start
+## Quick Start
 
 ```bash
-npx vibe-codex init
+npx vibe-codex
 ```
 
-## 📋 What is vibe-codex?
+This opens an interactive menu where you can:
+- Initialize vibe-codex in your project
+- Configure rules and hooks
+- View current settings
+- Uninstall when needed
 
-vibe-codex automatically enforces development best practices through:
-- 🔒 Pre-commit security checks
-- 🧪 Test coverage requirements  
-- 📝 Documentation standards
-- 🔄 PR/Issue workflow automation
-- 🚀 Deployment validations
+## What is vibe-codex?
 
-## 💻 Installation
+vibe-codex is a lightweight tool that helps enforce development best practices through:
+- **Git hooks** - Pre-commit and commit-msg validation
+- **GitHub Actions** - Optional CI/CD checks
+- **Simple configuration** - Text-based menus, no complex setup
+
+## Installation
 
 ### One-time use (recommended)
 ```bash
-npx vibe-codex init
+npx vibe-codex
 ```
 
 ### Global installation
 ```bash
 npm install -g vibe-codex
-vibe-codex init
+vibe-codex
 ```
 
-### As project dependency
+## Available Rules
+
+- 🔒 **Security checks** - Prevents committing secrets and API keys
+- 📝 **Commit format** - Enforces conventional commit messages
+- 🧪 **Test requirements** - Runs tests before commits
+- 📚 **Documentation** - Ensures README exists
+- 🎨 **Code style** - Runs linting checks
+
+## Usage
+
+### Interactive Mode (Recommended)
+
+Just run:
 ```bash
-npm install --save-dev vibe-codex
+npx vibe-codex
 ```
 
-## 🎯 Basic Usage
+You'll see a menu like this:
+```
+What would you like to do?
+❯ 🚀 Initialize vibe-codex in this project
+  ⚙️  Configure rules and hooks
+  📋 View current configuration
+  🗑️  Uninstall vibe-codex
+  ─────────────
+  ❌ Exit
+```
 
-### Initialize in your project
+### Command Line
+
 ```bash
-cd your-project
+# Initialize with defaults
 npx vibe-codex init
 
-# With options
-npx vibe-codex init --type fullstack --github-actions
-```
-
-### Configure modules
-```bash
+# Configure interactively
 npx vibe-codex config
+
+# Remove vibe-codex
+npx vibe-codex uninstall
+
+# Show help
+npx vibe-codex help
 ```
 
-### Validate your project
-```bash
-npx vibe-codex validate
-```
+## Configuration
 
-### Update to latest rules
-```bash
-npx vibe-codex update
-```
-
-## ⚙️ Configuration
-
-vibe-codex uses a `.vibe-codex.json` file for configuration:
+vibe-codex stores its configuration in `.vibe-codex.json`:
 
 ```json
 {
-  "modules": {
-    "testing": {
-      "framework": "jest",
-      "coverage": { "threshold": 80 }
-    },
-    "github": {
-      "features": ["pr-checks", "issue-tracking"]
-    }
-  }
+  "version": "3.0.0",
+  "gitHooks": true,
+  "githubActions": false,
+  "rules": ["security", "commit-format"],
+  "created": "2024-01-10T10:00:00.000Z"
 }
 ```
 
-See [Configuration Guide](./docs/CONFIGURATION.md) for all options.
+## Git Hooks
 
-## 📦 Available Modules
+When enabled, vibe-codex installs:
 
-- **Core** - Basic git workflow and security
-- **Testing** - Test frameworks and coverage
-- **GitHub** - PR/Issue automation
-- **Deployment** - Platform-specific checks
-- **Documentation** - README and docs standards
+### pre-commit
+- Security scanning for secrets
+- Test execution (if configured)
+- Documentation checks
+- Code style validation
 
-See [Modules Guide](./docs/MODULES.md) for details.
+### commit-msg
+- Validates commit message format
+- Ensures conventional commits
 
-## 📚 Documentation
+## GitHub Actions
 
-- [Getting Started](./docs/GETTING-STARTED.md) - Installation and setup guide
-- [Configuration](./docs/CONFIGURATION.md) - Configuration options
-- [CLI Reference](./docs/CLI-REFERENCE.md) - Command line usage
-- [API Reference](./docs/API.md) - Programmatic usage
-- [Modules](./docs/MODULES.md) - Available modules
-- [Migration Guide](./docs/MIGRATION.md) - Upgrading from v1.x
-- [Troubleshooting](./docs/TROUBLESHOOTING.md) - Common issues
+When enabled, creates `.github/workflows/vibe-codex.yml` with checks that run on:
+- Push to main/master/develop
+- Pull requests
 
-## 🤝 Contributing
+## Migration from v2
 
-See [CONTRIBUTING.md](https://github.com/tyabonil/vibe-codex/blob/main/CONTRIBUTING.md)
+If you have an existing vibe-codex v2 installation:
 
-## 📄 License
+```bash
+node scripts/migrate-to-v3.js
+```
 
-MIT © vibe-codex contributors
+This will:
+- Backup your old configuration
+- Convert to the new format
+- Clean up old files
+
+## Minimal Dependencies
+
+vibe-codex v3 uses only 2 dependencies:
+- `chalk` - Terminal colors
+- `inquirer` - Interactive prompts
+
+## License
+
+MIT
