@@ -58,8 +58,8 @@ async function checkPrePush(reminder) {
   }
   
   if (needsUpdate.length > 0) {
-    console.log('\n🔍 Checking for pending issue updates...');
-    console.log(`⚠️  Issues that may need updates: ${needsUpdate.map(i => `#${i}`).join(', ')}`);
-    console.log('\nConsider running: npx vibe-codex update-issues\n');
+    logger.output('\n🔍 Checking for pending issue updates...');
+    logger.output(`⚠️  Issues that may need updates: ${needsUpdate.map(i => `#${i}`).join(', ')}`);
+    logger.output('\nConsider running: npx vibe-codex update-issues\n');
   }
 }

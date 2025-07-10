@@ -54,18 +54,26 @@ describe('IssueUpdateReminder', () => {
   
   describe('getCurrentBranch', () => {
     test('should return current branch name', async () => {
-      mockExec.mockReturnValue({ stdout: 'feature/issue-123-test\n' });
-      
-      const branch = await reminder.getCurrentBranch();
-      expect(branch).toBe('feature/issue-123-test');
-      expect(mockExec).toHaveBeenCalledWith('git branch --show-current');
+      try {
+        mockExec.mockReturnValue({ stdout: 'feature/issue-123-test\n' });
+        
+        const branch = await reminder.getCurrentBranch();
+        expect(branch).toBe('feature/issue-123-test');
+        expect(mockExec).toHaveBeenCalledWith('git branch --show-current');
+      } catch (error) {
+        fail(`Test failed: ${error.message}`);
+      }
     });
     
     test('should return null on error', async () => {
-      mockExec.mockReturnValue({ error: new Error('Not a git repo') });
-      
-      const branch = await reminder.getCurrentBranch();
-      expect(branch).toBeNull();
+      try {
+        mockExec.mockReturnValue({ error: new Error('Not a git repo') });
+        
+        const branch = await reminder.getCurrentBranch();
+        expect(branch).toBeNull();
+      } catch (error) {
+        fail(`Test failed: ${error.message}`);
+      }
     });
   });
   
@@ -112,86 +120,118 @@ describe('IssueUpdateReminder', () => {
   
   describe('findRelatedIssues', () => {
     test('should find issues from branch and commit', async () => {
-      mockExec
-        .mockReturnValueOnce({ stdout: 'feature/issue-123-test\n' })
-        .mockReturnValueOnce({ stdout: 'Fix bug #456\n' });
-      
-      const issues = await reminder.findRelatedIssues();
-      expect(issues).toEqual(['123', '456']);
+      try {
+        mockExec
+          .mockReturnValueOnce({ stdout: 'feature/issue-123-test\n' })
+          .mockReturnValueOnce({ stdout: 'Fix bug #456\n' });
+        
+        const issues = await reminder.findRelatedIssues();
+        expect(issues).toEqual(['123', '456']);
+      } catch (error) {
+        fail(`Test failed: ${error.message}`);
+      }
     });
     
     test('should deduplicate issues', async () => {
-      mockExec
-        .mockReturnValueOnce({ stdout: 'feature/issue-123-test\n' })
-        .mockReturnValueOnce({ stdout: 'Fix #123 and update #123\n' });
-      
-      const issues = await reminder.findRelatedIssues();
-      expect(issues).toEqual(['123']);
+      try {
+        mockExec
+          .mockReturnValueOnce({ stdout: 'feature/issue-123-test\n' })
+          .mockReturnValueOnce({ stdout: 'Fix #123 and update #123\n' });
+        
+        const issues = await reminder.findRelatedIssues();
+        expect(issues).toEqual(['123']);
+      } catch (error) {
+        fail(`Test failed: ${error.message}`);
+      }
     });
   });
   
   describe('needsReminder', () => {
     test('should return true if never updated', async () => {
-      fs.pathExists.mockResolvedValue(false);
-      
-      const needs = await reminder.needsReminder('123');
-      expect(needs).toBe(true);
+      try {
+        fs.pathExists.mockResolvedValue(false);
+        
+        const needs = await reminder.needsReminder('123');
+        expect(needs).toBe(true);
+      } catch (error) {
+        fail(`Test failed: ${error.message}`);
+      }
     });
     
     test('should return true if update is old', async () => {
-      fs.pathExists.mockResolvedValue(true);
-      fs.readFile.mockResolvedValue((Date.now() - 3 * 60 * 60 * 1000).toString()); // 3 hours ago
-      
-      const needs = await reminder.needsReminder('123');
-      expect(needs).toBe(true);
+      try {
+        fs.pathExists.mockResolvedValue(true);
+        fs.readFile.mockResolvedValue((Date.now() - 3 * 60 * 60 * 1000).toString()); // 3 hours ago
+        
+        const needs = await reminder.needsReminder('123');
+        expect(needs).toBe(true);
+      } catch (error) {
+        fail(`Test failed: ${error.message}`);
+      }
     });
     
     test('should return false if recently updated', async () => {
-      fs.pathExists.mockResolvedValue(true);
-      fs.readFile.mockResolvedValue((Date.now() - 30 * 60 * 1000).toString()); // 30 minutes ago
-      
-      const needs = await reminder.needsReminder('123');
-      expect(needs).toBe(false);
+      try {
+        fs.pathExists.mockResolvedValue(true);
+        fs.readFile.mockResolvedValue((Date.now() - 30 * 60 * 1000).toString()); // 30 minutes ago
+        
+        const needs = await reminder.needsReminder('123');
+        expect(needs).toBe(false);
+      } catch (error) {
+        fail(`Test failed: ${error.message}`);
+      }
     });
   });
   
   describe('getSuggestedMessage', () => {
     test('should parse git diff stats', async () => {
-      mockExec.mockReturnValue({
-        stdout: ' file1.js | 10 ++\n file2.js | 5 +-\n 2 files changed, 12 insertions(+), 3 deletions(-)\n'
-      });
-      
-      const result = await reminder.getSuggestedMessage();
-      expect(result).toEqual({
-        files: 2,
-        additions: 12,
-        deletions: 3,
-        suggestion: 'Made changes to 2 files (+12/-3 lines)'
-      });
+      try {
+        mockExec.mockReturnValue({
+          stdout: ' file1.js | 10 ++\n file2.js | 5 +-\n 2 files changed, 12 insertions(+), 3 deletions(-)\n'
+        });
+        
+        const result = await reminder.getSuggestedMessage();
+        expect(result).toEqual({
+          files: 2,
+          additions: 12,
+          deletions: 3,
+          suggestion: 'Made changes to 2 files (+12/-3 lines)'
+        });
+      } catch (error) {
+        fail(`Test failed: ${error.message}`);
+      }
     });
     
     test('should handle single file', async () => {
-      mockExec.mockReturnValue({
-        stdout: ' file1.js | 5 +\n 1 file changed, 5 insertions(+)\n'
-      });
-      
-      const result = await reminder.getSuggestedMessage();
-      expect(result.suggestion).toBe('Made changes to 1 file (+5/-0 lines)');
+      try {
+        mockExec.mockReturnValue({
+          stdout: ' file1.js | 5 +\n 1 file changed, 5 insertions(+)\n'
+        });
+        
+        const result = await reminder.getSuggestedMessage();
+        expect(result.suggestion).toBe('Made changes to 1 file (+5/-0 lines)');
+      } catch (error) {
+        fail(`Test failed: ${error.message}`);
+      }
     });
   });
   
   describe('recordUpdate', () => {
     test('should write timestamp to update file', async () => {
-      const now = Date.now();
-      jest.spyOn(Date, 'now').mockReturnValue(now);
-      
-      await reminder.recordUpdate('123');
-      
-      expect(fs.ensureDir).toHaveBeenCalledWith('.git/issue-updates');
-      expect(fs.writeFile).toHaveBeenCalledWith(
-        '.git/issue-updates/123',
-        now.toString()
-      );
+      try {
+        const now = Date.now();
+        jest.spyOn(Date, 'now').mockReturnValue(now);
+        
+        await reminder.recordUpdate('123');
+        
+        expect(fs.ensureDir).toHaveBeenCalledWith('.git/issue-updates');
+        expect(fs.writeFile).toHaveBeenCalledWith(
+          '.git/issue-updates/123',
+          now.toString()
+        );
+      } catch (error) {
+        fail(`Test failed: ${error.message}`);
+      }
     });
   });
   

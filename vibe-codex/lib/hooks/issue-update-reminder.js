@@ -199,8 +199,8 @@ class IssueUpdateReminder {
   async promptForUpdate(issueNumber) {
     const stats = await this.getSuggestedMessage();
     
-    console.log(chalk.blue(`\n📝 Issue #${issueNumber} Update`));
-    console.log(chalk.gray(`Changes: ${stats.files} files, +${stats.additions}/-${stats.deletions} lines`));
+    logger.output(chalk.blue(`\n📝 Issue #${issueNumber} Update`));
+    logger.output(chalk.gray(`Changes: ${stats.files} files, +${stats.additions}/-${stats.deletions} lines`));
     
     const { shouldUpdate } = await inquirer.prompt([{
       type: 'confirm',
@@ -248,17 +248,17 @@ class IssueUpdateReminder {
       return;
     }
     
-    console.log(chalk.yellow('\n🔔 Issue Update Reminder'));
-    console.log(chalk.gray(`Found ${needsUpdate.length} issue${needsUpdate.length > 1 ? 's' : ''} that may need updates:\n`));
+    logger.output(chalk.yellow('\n🔔 Issue Update Reminder'));
+    logger.output(chalk.gray(`Found ${needsUpdate.length} issue${needsUpdate.length > 1 ? 's' : ''} that may need updates:\n`));
     
     for (const issue of needsUpdate) {
       const lastUpdate = await this.getLastUpdateTime(issue);
       const timeAgo = lastUpdate ? formatTimeAgo(Date.now() - lastUpdate) : 'never';
-      console.log(chalk.yellow(`  • Issue #${issue} (last updated: ${timeAgo})`));
+      logger.output(chalk.yellow(`  • Issue #${issue} (last updated: ${timeAgo})`));
     }
     
-    console.log(chalk.gray('\nConsider updating these issues with your progress.'));
-    console.log(chalk.gray('Run: npx vibe-codex update-issues\n'));
+    logger.output(chalk.gray('\nConsider updating these issues with your progress.'));
+    logger.output(chalk.gray('Run: npx vibe-codex update-issues\n'));
   }
   
   /**
@@ -268,11 +268,11 @@ class IssueUpdateReminder {
     const issues = await this.findRelatedIssues();
     
     if (issues.length === 0) {
-      console.log(chalk.yellow('No related issues found.'));
+      logger.output(chalk.yellow('No related issues found.'));
       return;
     }
     
-    console.log(chalk.blue(`\n📋 Found ${issues.length} related issue${issues.length > 1 ? 's' : ''}: ${issues.map(i => `#${i}`).join(', ')}\n`));
+    logger.output(chalk.blue(`\n📋 Found ${issues.length} related issue${issues.length > 1 ? 's' : ''}: ${issues.map(i => `#${i}`).join(', ')}\n`));
     
     const updates = [];
     let skipAll = false;
@@ -284,7 +284,7 @@ class IssueUpdateReminder {
       const needsUpdate = await this.needsReminder(issue);
       
       if (needsUpdate) {
-        console.log(chalk.yellow(`⚠️  Issue #${issue} hasn't been updated in a while`));
+        logger.output(chalk.yellow(`⚠️  Issue #${issue} hasn't been updated in a while`));
       }
       
       const { action } = await inquirer.prompt([{

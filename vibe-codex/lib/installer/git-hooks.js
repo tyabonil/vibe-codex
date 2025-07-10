@@ -8,41 +8,51 @@ const chalk = require('chalk');
 const logger = require('../utils/logger');
 
 async function installGitHooks(config) {
-  const hooksDir = path.join('.git', 'hooks');
-  
-  // Ensure hooks directory exists
-  await fs.ensureDir(hooksDir);
-  
-  // Backup existing hooks
-  await backupExistingHooks(hooksDir);
-  
-  // Generate hook scripts locally
-  logger.info('Generating hook scripts...');
-  
-  // Determine which hooks to install based on enabled modules
-  const hooksToInstall = getRequiredHooks(config);
-  
-  // Install each hook
-  for (const hookName of hooksToInstall) {
-    await installHook(hookName, hooksDir, config);
+  try {
+    const hooksDir = path.join('.git', 'hooks');
+    
+    // Ensure hooks directory exists
+    await fs.ensureDir(hooksDir);
+    
+    // Backup existing hooks
+    await backupExistingHooks(hooksDir);
+    
+    // Generate hook scripts locally
+    logger.info('Generating hook scripts...');
+    
+    // Determine which hooks to install based on enabled modules
+    const hooksToInstall = getRequiredHooks(config);
+    
+    // Install each hook
+    for (const hookName of hooksToInstall) {
+      await installHook(hookName, hooksDir, config);
+    }
+  } catch (error) {
+    logger.error('Failed to install git hooks:', error.message);
+    throw error;
   }
 }
 
 async function backupExistingHooks(hooksDir) {
-  const backupDir = path.join(hooksDir, '.backup');
-  await fs.ensureDir(backupDir);
-  
-  const hooks = await fs.readdir(hooksDir);
-  for (const hook of hooks) {
-    if (!hook.includes('.sample') && !hook.startsWith('.')) {
-      const src = path.join(hooksDir, hook);
-      const dest = path.join(backupDir, `${hook}.${Date.now()}`);
-      
-      const stats = await fs.stat(src);
-      if (stats.isFile()) {
-        await fs.copy(src, dest);
+  try {
+    const backupDir = path.join(hooksDir, '.backup');
+    await fs.ensureDir(backupDir);
+    
+    const hooks = await fs.readdir(hooksDir);
+    for (const hook of hooks) {
+      if (!hook.includes('.sample') && !hook.startsWith('.')) {
+        const src = path.join(hooksDir, hook);
+        const dest = path.join(backupDir, `${hook}.${Date.now()}`);
+        
+        const stats = await fs.stat(src);
+        if (stats.isFile()) {
+          await fs.copy(src, dest);
+        }
       }
     }
+  } catch (error) {
+    logger.debug('Failed to backup hooks:', error.message);
+    // Continue installation even if backup fails
   }
 }
 
@@ -73,13 +83,18 @@ function getRequiredHooks(config) {
 }
 
 async function installHook(hookName, hooksDir, config) {
-  const hookContent = generateHookScript(hookName, config);
-  const hookPath = path.join(hooksDir, hookName);
-  
-  await fs.writeFile(hookPath, hookContent);
-  await fs.chmod(hookPath, '755');
-  
-  console.log(`  ${chalk.green('✓')} Installed ${hookName} hook`);
+  try {
+    const hookContent = generateHookScript(hookName, config);
+    const hookPath = path.join(hooksDir, hookName);
+    
+    await fs.writeFile(hookPath, hookContent);
+    await fs.chmod(hookPath, '755');
+    
+    logger.info(`✓ Installed ${hookName} hook`);
+  } catch (error) {
+    logger.error(`Failed to install ${hookName} hook:`, error.message);
+    throw error;
+  }
 }
 
 function generateHookScript(hookName, config) {

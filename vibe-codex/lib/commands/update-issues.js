@@ -33,7 +33,7 @@ module.exports = async function updateIssues(options = {}) {
     const updates = await reminder.runInteractiveUpdate();
     
     if (!updates || updates.length === 0) {
-      console.log(chalk.gray('\nNo issues were updated.'));
+      logger.output(chalk.gray('\nNo issues were updated.'));
       return;
     }
     
@@ -53,14 +53,14 @@ module.exports = async function updateIssues(options = {}) {
           
           await execAsync(`gh issue comment ${issue} --body "${commentBody.replace(/"/g, '\\"')}"`);
           
-          console.log(chalk.green(`\n✅ Updated issue #${issue}`));
+          logger.output(chalk.green(`\n✅ Updated issue #${issue}`));
         } else if (options.dryRun) {
-          console.log(chalk.blue(`\n[DRY RUN] Would update issue #${issue} with:`));
-          console.log(chalk.gray(message));
+          logger.output(chalk.blue(`\n[DRY RUN] Would update issue #${issue} with:`));
+          logger.output(chalk.gray(message));
         } else {
-          console.log(chalk.yellow(`\n⚠️  GitHub CLI not available. Manual update needed for issue #${issue}:`));
-          console.log(chalk.gray(`Message: ${message}`));
-          console.log(chalk.gray(`URL: https://github.com/${await getRepoInfo()}/issues/${issue}`));
+          logger.output(chalk.yellow(`\n⚠️  GitHub CLI not available. Manual update needed for issue #${issue}:`));
+          logger.output(chalk.gray(`Message: ${message}`));
+          logger.output(chalk.gray(`URL: https://github.com/${await getRepoInfo()}/issues/${issue}`));
         }
       } catch (error) {
         spinner.fail(`Failed to update issue #${issue}`);
@@ -71,9 +71,9 @@ module.exports = async function updateIssues(options = {}) {
     spinner.succeed(`Updated ${updates.length} issue${updates.length > 1 ? 's' : ''}`);
     
     // Show summary
-    console.log(chalk.blue('\n📊 Update Summary:'));
+    logger.output(chalk.blue('\n📊 Update Summary:'));
     updates.forEach(({ issue, message }) => {
-      console.log(chalk.gray(`  • #${issue}: ${message.substring(0, 50)}${message.length > 50 ? '...' : ''}`));
+      logger.output(chalk.gray(`  • #${issue}: ${message.substring(0, 50)}${message.length > 50 ? '...' : ''}`));
     });
     
   } catch (error) {
