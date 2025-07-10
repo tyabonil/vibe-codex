@@ -81,6 +81,10 @@ class RuleEngine {
     const sequentialWorkflowViolations = await this.checkSequentialWorkflow(prData, files, commits, githubClient);
     violations.push(...sequentialWorkflowViolations);
 
+    // Check for repository restructuring with open PRs
+    const restructuringViolations = await this.checkRepositoryRestructuring(files, githubClient);
+    violations.push(...restructuringViolations);
+
     // Check for proper token efficiency (file count and duplication)
     const tokenEfficiencyViolations = this.checkTokenEfficiency(files);
     violations.push(...tokenEfficiencyViolations);
@@ -148,6 +152,95 @@ class RuleEngine {
         });
     }
 
+    return violations;
+  }
+
+  /**
+   * Check for repository restructuring with open PRs
+   */
+  async checkRepositoryRestructuring(files, githubClient) {
+    const violations = [];
+    
+    // Detect if this PR is performing major restructuring
+    const movedFiles = files.filter(f => f.status === 'renamed' || f.previous_filename);
+    const deletedFiles = files.filter(f => f.status === 'removed');
+    const totalMovements = movedFiles.length + deletedFiles.length;
+    
+    // Check for directory-level movements
+    const isDirectoryMove = movedFiles.some(f => {
+      if (!f.previous_filename) return false;
+      const oldParts = f.previous_filename.split('/');
+      const newParts = f.filename.split('/');
+      return oldParts[0] !== newParts[0]; // Root directory changed
+    });
+    
+    // Detect major restructuring - only count moved files, not deletions alone
+    const isMajorRestructuring = movedFiles.length > 20 || isDirectoryMove;
+    
+    if (isMajorRestructuring) {
+      console.log('🏗️ Detected major repository restructuring...');
+      
+      try {
+        // Check for other open PRs
+        const openPRs = await githubClient.github.rest.pulls.list({
+          owner: githubClient.context.repo.owner,
+          repo: githubClient.context.repo.repo,
+          state: 'open'
+        });
+        
+        const otherOpenPRs = openPRs.data.filter(pr => pr.number !== githubClient.context.issue.number);
+        
+        if (otherOpenPRs.length > 0) {
+          violations.push({
+            level: 2,
+            type: 'WORKFLOW',
+            severity: 'BLOCKER',
+            rule: 'REPOSITORY RESTRUCTURING WITH OPEN PRS',
+            message: `🚨 Major restructuring detected with ${otherOpenPRs.length} open PR(s)`,
+            details: 'Repository restructuring must not be performed while other PRs are open. This causes massive merge conflicts.',
+            action: 'Close or merge all open PRs before restructuring',
+            fix: 'Postpone restructuring until all PRs are resolved',
+            evidence: [
+              `📊 Files moved/deleted: ${totalMovements}`,
+              `📁 Directory restructuring: ${isDirectoryMove ? 'Yes' : 'No'}`,
+              '',
+              '🔓 Open PRs that will be affected:',
+              ...otherOpenPRs.map(pr => `• PR #${pr.number}: ${pr.title}`)
+            ]
+          });
+        }
+      } catch (error) {
+        console.error('Failed to check for open PRs:', error.message);
+      }
+      
+      // Check for proper documentation of file mappings (even if API fails)
+      const hasMappingDoc = files.some(f => 
+        f.filename.toLowerCase().includes('migration') ||
+        f.filename.toLowerCase().includes('restructur') || // Match both restructure and restructuring
+        f.filename.toLowerCase().includes('file-mapping') ||
+        f.filename.toLowerCase().includes('refactor-map')
+      );
+      
+      if (!hasMappingDoc && movedFiles.length > 5) {
+        violations.push({
+          level: 2,
+          type: 'WORKFLOW',
+          severity: 'MANDATORY',
+          rule: 'DOCUMENT RESTRUCTURING MAPPINGS',
+          message: '📝 Missing file mapping documentation',
+          details: 'Major restructuring requires documentation of old → new file paths.',
+          action: 'Add a file documenting all path changes',
+          fix: 'Create RESTRUCTURING.md or similar with file mappings',
+          evidence: [
+            `📁 ${movedFiles.length} files moved without documentation`,
+            '',
+            'Example mappings needed:',
+            ...movedFiles.slice(0, 5).map(f => `• ${f.previous_filename || 'unknown'} → ${f.filename}`)
+          ]
+        });
+      }
+    }
+    
     return violations;
   }
 

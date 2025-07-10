@@ -53,6 +53,20 @@
 -   ALWAYS run build commands locally before committing.
 -   NEVER commit dependency changes without a successful local build.
 -   DELETE node_modules & package-lock.json for clean testing when conflicts arise.
+-   BEFORE MAJOR REPOSITORY RESTRUCTURING: You MUST complete ALL of the following steps
+    -   Review ALL open pull requests in the repository
+    -   Merge or close ALL pull requests before restructuring
+    -   Create a dedicated issue announcing the restructuring plan
+    -   Ensure NO active development branches exist (all work merged or closed)
+    -   Create restructuring PR targeting preview branch first
+-   REPOSITORY RESTRUCTURING is defined as:
+    -   Moving directories at root level
+    -   Renaming core directories (src, lib, etc.)
+    -   Changing package structure
+    -   Mass file movements (>20 files)
+-   NEVER perform repository restructuring with open PRs
+-   ALWAYS coordinate restructuring with all team members
+-   ALWAYS document file mapping (old path → new path) in restructuring PR
 -   BEFORE creating new rules: Analyze ALL existing files for redundancy
 -   NEVER maintain multiple files with duplicate content (>25% overlap)
 -   NEVER keep human-oriented summaries/meta-content in LLM-consumed files

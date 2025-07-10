@@ -52,6 +52,19 @@
         },
         "token_efficiency": {
           "max_files_per_pr": 50
+        },
+        "repository_restructuring": {
+          "enabled": true,
+          "max_files_before_blocking": 20,
+          "require_documentation_threshold": 5,
+          "detect_directory_moves": true,
+          "block_with_open_prs": true,
+          "documentation_files": [
+            "restructuring",
+            "migration",
+            "file-mapping",
+            "refactor-map"
+          ]
         }
       }
     },
