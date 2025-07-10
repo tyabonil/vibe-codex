@@ -1,13 +1,26 @@
 #!/usr/bin/env node
 
+/**
+ * vibe-codex CLI
+ * Interactive configuration and rule management for development workflows
+ */
+
 const { program } = require('commander');
-const packageJson = require('../package.json');
 const chalk = require('chalk');
+const packageJson = require('../package.json');
+
+// Display banner
+console.log(chalk.blue(`
+╔═══════════════════════════════════════╗
+║           vibe-codex v${packageJson.version}          ║
+║   Interactive Development Workflow    ║
+╚═══════════════════════════════════════╝
+`));
 
 // Set up the main program
 program
   .name('vibe-codex')
-  .description(packageJson.description)
+  .description('Interactive configuration and rule management for development workflows')
   .version(packageJson.version, '-v, --version', 'output the current version')
   .option('-d, --debug', 'enable debug mode');
 
@@ -19,7 +32,8 @@ program
   .option('-c, --config <path>', 'path to configuration file')
   .option('--skip-install', 'skip dependency installation')
   .option('--no-git-hooks', 'skip git hook installation')
-  .option('--force', 'overwrite existing configuration')
+  .option('-f, --force', 'overwrite existing configuration')
+  .option('-m, --minimal', 'create minimal configuration')
   .action(async (options) => {
     try {
       const init = require('../lib/commands/init');
@@ -33,38 +47,20 @@ program
     }
   });
 
-// Config command - Configure vibe-codex modules and settings
+// Config command - Interactive configuration management
 program
-  .command('config [action]')
-  .description('Configure vibe-codex modules and settings')
+  .command('config')
+  .description('Interactive configuration management')
   .option('-l, --list', 'list current configuration')
-  .option('-s, --set <key=value>', 'set configuration value')
-  .option('-r, --reset', 'reset to defaults')
-  .option('-e, --export', 'export configuration')
-  .option('-i, --import <file>', 'import configuration from file')
-  .action(async (action, options) => {
-    try {
-      const config = require('../lib/commands/config');
-      await config(action, options);
-    } catch (error) {
-      console.error(chalk.red('Error:'), error.message);
-      if (program.opts().debug) {
-        console.error(error.stack);
-      }
-      process.exit(1);
-    }
-  });
-
-// Update command - Update vibe-codex rules and modules
-program
-  .command('update')
-  .description('Update vibe-codex rules and modules')
-  .option('--check', 'check for updates without installing')
-  .option('--force', 'force update even if no changes detected')
+  .option('-s, --set <key> <value>', 'set a configuration value')
+  .option('-r, --reset', 'reset to default configuration')
+  .option('-e, --export <path>', 'export configuration to file')
+  .option('-i, --import <path>', 'import configuration from file')
+  .option('-p, --preview', 'preview configuration impact')
   .action(async (options) => {
     try {
-      const update = require('../lib/commands/update');
-      await update(options);
+      const config = require('../lib/commands/config');
+      await config(options);
     } catch (error) {
       console.error(chalk.red('Error:'), error.message);
       if (program.opts().debug) {
@@ -78,9 +74,11 @@ program
 program
   .command('validate')
   .description('Validate project against configured rules')
-  .option('--fix', 'attempt to auto-fix violations')
-  .option('--json', 'output results as JSON')
-  .option('-m, --module <name>', 'validate specific module only')
+  .option('-l, --level <level>', 'minimum rule level to check (1-5)', '3')
+  .option('-m, --module <modules...>', 'only check specific modules')
+  .option('-f, --fix', 'attempt to auto-fix violations')
+  .option('-j, --json', 'output results as JSON')
+  .option('-v, --verbose', 'show detailed output')
   .action(async (options) => {
     try {
       const validate = require('../lib/commands/validate');
@@ -94,15 +92,165 @@ program
     }
   });
 
-// Status command - Show vibe-codex installation status
+// Doctor command - Diagnose and fix common vibe-codex issues
+program
+  .command('doctor')
+  .description('Diagnose and fix common vibe-codex issues')
+  .option('-f, --fix', 'attempt to fix issues automatically')
+  .option('-v, --verbose', 'show detailed diagnostic information')
+  .action(async (options) => {
+    try {
+      const doctor = require('../lib/commands/doctor');
+      await doctor(options);
+    } catch (error) {
+      console.error(chalk.red('Error:'), error.message);
+      if (program.opts().debug) {
+        console.error(error.stack);
+      }
+      process.exit(1);
+    }
+  });
+
+// Update command - Update vibe-codex rules and modules
+program
+  .command('update')
+  .description('Update vibe-codex rules and modules')
+  .option('-c, --check', 'check for updates without installing')
+  .option('--force', 'force update even if no changes detected')
+  .option('-m, --module <modules...>', 'update specific modules only')
+  .action(async (options) => {
+    try {
+      const update = require('../lib/commands/update');
+      await update(options);
+    } catch (error) {
+      console.error(chalk.red('Error:'), error.message);
+      if (program.opts().debug) {
+        console.error(error.stack);
+      }
+      process.exit(1);
+    }
+  });
+
+// Status command - Show vibe-codex status and statistics
 program
   .command('status')
-  .description('Show vibe-codex installation status')
+  .description('Show vibe-codex status and statistics')
+  .option('-d, --detailed', 'show detailed statistics')
   .option('--json', 'output as JSON')
+  .option('-m, --module <module>', 'show status for specific module')
   .action(async (options) => {
     try {
       const status = require('../lib/commands/status');
       await status(options);
+    } catch (error) {
+      console.error(chalk.red('Error:'), error.message);
+      if (program.opts().debug) {
+        console.error(error.stack);
+      }
+      process.exit(1);
+    }
+  });
+
+// Module management commands
+const moduleCmd = program
+  .command('module')
+  .description('Manage vibe-codex modules');
+
+moduleCmd
+  .command('list')
+  .description('List available modules')
+  .action(async () => {
+    try {
+      const moduleLoader = require('../lib/modules/loader');
+      const modules = moduleLoader.getAvailableModules();
+      
+      console.log(chalk.blue('\n📦 Available vibe-codex Modules:\n'));
+      
+      modules.forEach(module => {
+        console.log(chalk.bold(`  ${module.name}`));
+        console.log(chalk.gray(`    ${module.description}`));
+        console.log(chalk.gray(`    Version: ${module.version}`));
+        console.log();
+      });
+    } catch (error) {
+      console.error(chalk.red('Error:'), error.message);
+      if (program.opts().debug) {
+        console.error(error.stack);
+      }
+      process.exit(1);
+    }
+  });
+
+moduleCmd
+  .command('enable <module>')
+  .description('Enable a module')
+  .action(async (moduleName) => {
+    try {
+      console.log(chalk.green(`Enabling module: ${moduleName}`));
+      // Implementation would modify config
+    } catch (error) {
+      console.error(chalk.red('Error:'), error.message);
+      if (program.opts().debug) {
+        console.error(error.stack);
+      }
+      process.exit(1);
+    }
+  });
+
+moduleCmd
+  .command('disable <module>')
+  .description('Disable a module')
+  .action(async (moduleName) => {
+    try {
+      console.log(chalk.yellow(`Disabling module: ${moduleName}`));
+      // Implementation would modify config
+    } catch (error) {
+      console.error(chalk.red('Error:'), error.message);
+      if (program.opts().debug) {
+        console.error(error.stack);
+      }
+      process.exit(1);
+    }
+  });
+
+// Hook management commands
+const hookCmd = program
+  .command('hook')
+  .description('Manage git hooks');
+
+hookCmd
+  .command('install')
+  .description('Install git hooks')
+  .action(async () => {
+    try {
+      const gitHooks = require('../lib/installer/git-hooks');
+      const fs = require('fs-extra');
+      const configPath = '.vibe-codex.json';
+      
+      let config = {};
+      if (await fs.pathExists(configPath)) {
+        config = await fs.readJSON(configPath);
+      }
+      
+      await gitHooks.installGitHooks(config);
+      console.log(chalk.green('✅ Git hooks installed'));
+    } catch (error) {
+      console.error(chalk.red('Error:'), error.message);
+      if (program.opts().debug) {
+        console.error(error.stack);
+      }
+      process.exit(1);
+    }
+  });
+
+hookCmd
+  .command('uninstall')
+  .description('Uninstall git hooks')
+  .action(async () => {
+    try {
+      const gitHooks = require('../lib/installer/git-hooks');
+      await gitHooks.uninstallGitHooks();
+      console.log(chalk.yellow('Git hooks uninstalled'));
     } catch (error) {
       console.error(chalk.red('Error:'), error.message);
       if (program.opts().debug) {

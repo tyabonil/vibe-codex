@@ -72,8 +72,15 @@ jobs:
     - name: Install dependencies
       run: npm ci
     
+    - name: Check vibe-codex installation
+      run: |
+        if ! npx --no-install vibe-codex --version 2>/dev/null; then
+          echo "vibe-codex not found, installing..."
+          npm install --save-dev vibe-codex
+        fi
+    
     - name: Run vibe-codex validation
-      run: npx vibe-codex validate
+      run: npx --no-install vibe-codex validate --ci
     
     - name: Comment PR
       if: failure() && github.event_name == 'pull_request'
@@ -151,8 +158,15 @@ jobs:
     - name: Build project
       run: npm run build
     
+    - name: Check vibe-codex installation
+      run: |
+        if ! npx --no-install vibe-codex --version 2>/dev/null; then
+          echo "vibe-codex not found, installing..."
+          npm install --save-dev vibe-codex
+        fi
+    
     - name: Validate deployment configuration
-      run: npx vibe-codex validate --module deployment
+      run: npx --no-install vibe-codex validate --module deployment
 `
   };
 

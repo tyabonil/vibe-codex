@@ -1,0 +1,120 @@
+{
+  "version": "1.0.0",
+  "description": "Enterprise-grade vibe-codex configuration with strict requirements",
+  "modules": {
+    "core": {
+      "enabled": true,
+      "workflowRules": {
+        "requireIssueReference": true,
+        "branchNamingPattern": "^(feature|bugfix|hotfix|release)/[A-Z]{2,10}-\\d+-[\\w-]+$"
+      }
+    },
+    "testing": {
+      "enabled": true,
+      "coverageThreshold": 90,
+      "requireTestFiles": true,
+      "testFilePattern": "**/*.{test,spec}.{js,ts,jsx,tsx}",
+      "excludePatterns": [
+        "**/node_modules/**",
+        "**/vendor/**",
+        "**/build/**",
+        "**/*.config.js"
+      ]
+    },
+    "github": {
+      "enabled": true,
+      "requirePRTemplate": true,
+      "requireIssueTemplates": true,
+      "requireCodeOwners": true,
+      "requireContributing": true
+    },
+    "github-workflow": {
+      "enabled": true,
+      "requireCI": true,
+      "requireSecurityScanning": true,
+      "requireDependencyUpdates": true,
+      "workflowTimeout": 30,
+      "requiredWorkflows": ["ci", "security", "codeql"]
+    },
+    "deployment": {
+      "enabled": true,
+      "platforms": ["docker", "kubernetes"],
+      "requireDockerfile": true,
+      "requireBuildScript": true,
+      "requireHealthCheck": true,
+      "environmentVariables": {
+        "required": ["NODE_ENV", "API_URL", "DATABASE_URL"],
+        "documented": true
+      }
+    },
+    "documentation": {
+      "enabled": true,
+      "requiredReadmeSections": [
+        "overview",
+        "architecture",
+        "installation",
+        "configuration",
+        "usage",
+        "api",
+        "testing",
+        "deployment",
+        "monitoring",
+        "contributing",
+        "security",
+        "license"
+      ],
+      "requireApiDocs": true,
+      "requireChangelog": true,
+      "requireJsdoc": true,
+      "minReadmeLength": 1000,
+      "changelogFormat": "keepachangelog"
+    },
+    "patterns": {
+      "enabled": true,
+      "maxFileLength": 300,
+      "maxFunctionLength": 40,
+      "maxComplexity": 8,
+      "requireIndexFiles": true,
+      "enforceNamingConventions": true,
+      "fileNaming": {
+        "components": "PascalCase",
+        "utilities": "camelCase",
+        "constants": "UPPER_SNAKE_CASE",
+        "interfaces": "IPascalCase"
+      }
+    }
+  },
+  "hooks": {
+    "pre-commit": {
+      "enabled": true,
+      "runValidation": true,
+      "modules": ["core", "patterns", "documentation"]
+    },
+    "commit-msg": {
+      "enabled": true,
+      "enforceConventional": true
+    },
+    "pre-push": {
+      "enabled": true,
+      "runTests": true,
+      "runFullValidation": true,
+      "blockForce": true
+    }
+  },
+  "validation": {
+    "enforceLevel": 5,
+    "treatWarningsAsErrors": true,
+    "allowedViolations": {},
+    "parallelJobs": 4
+  },
+  "ignore": [
+    "**/node_modules/**",
+    "**/build/**",
+    "**/dist/**",
+    "**/coverage/**",
+    "**/.next/**",
+    "**/vendor/**",
+    "**/*.min.js",
+    "**/*.bundle.js"
+  ]
+}

@@ -1,0 +1,128 @@
+{
+  "version": "2.0.0",
+  "projectType": "fullstack",
+  "packageManager": "npm",
+  "modules": {
+    "core": {
+      "enabled": true,
+      "rules": {
+        "security": "error",
+        "gitWorkflow": "error",
+        "documentation": "warning"
+      }
+    },
+    "testing": {
+      "enabled": true,
+      "framework": "jest",
+      "coverage": {
+        "threshold": 80,
+        "perFile": true,
+        "reporters": ["text", "lcov", "html"],
+        "collectFrom": [
+          "src/**/*.js",
+          "!src/**/*.test.js"
+        ]
+      },
+      "options": {
+        "requireNewFileTests": true,
+        "failOnConsole": true,
+        "allowInlineSnapshots": false,
+        "enforceTestNaming": true
+      },
+      "enforcement": "error"
+    },
+    "github": {
+      "enabled": true,
+      "features": {
+        "prChecks": true,
+        "issueTracking": true,
+        "autoMerge": false,
+        "branchCleanup": true,
+        "prTemplates": true,
+        "issueTemplates": true
+      },
+      "requireIssueReference": true,
+      "autoAssignReviewers": true,
+      "protectedBranches": ["main", "develop"]
+    },
+    "deployment": {
+      "enabled": true,
+      "platform": "vercel",
+      "environments": ["development", "staging", "production"],
+      "requireStagingBeforeProduction": true,
+      "checks": {
+        "preDeployment": ["lint", "test", "build"],
+        "postDeployment": ["smoke-test", "lighthouse"]
+      }
+    },
+    "documentation": {
+      "enabled": true,
+      "requirements": ["readme", "api", "comments", "changelog"],
+      "autoGenerate": true,
+      "generators": {
+        "api": "typedoc",
+        "changelog": "conventional-changelog"
+      }
+    },
+    "patterns": {
+      "enabled": true,
+      "enforce": [
+        "fileNaming",
+        "codeOrganization",
+        "errorHandling",
+        "asyncPatterns"
+      ],
+      "namingConvention": "kebab",
+      "componentStructure": "atomic"
+    },
+    "github-workflow": {
+      "enabled": true,
+      "workflows": ["ci", "security", "dependabot", "quality"],
+      "security": {
+        "pinActions": true,
+        "restrictPermissions": true,
+        "scanSecrets": true
+      }
+    }
+  },
+  "hooks": {
+    "pre-commit": {
+      "enabled": true,
+      "tasks": ["lint", "format", "validate"]
+    },
+    "pre-push": {
+      "enabled": true,
+      "tasks": ["test", "build"]
+    },
+    "post-merge": {
+      "enabled": true,
+      "tasks": ["install", "build"]
+    }
+  },
+  "customRules": [
+    {
+      "name": "no-console-in-production",
+      "path": "./custom-rules/no-console.js",
+      "level": 2,
+      "severity": "error"
+    },
+    {
+      "name": "api-versioning",
+      "path": "./custom-rules/api-version.js",
+      "level": 3,
+      "severity": "warning"
+    }
+  ],
+  "monorepo": {
+    "enabled": true,
+    "packages": ["frontend", "backend", "shared"],
+    "sharedConfig": true
+  },
+  "enforcementLevel": "error",
+  "reporting": {
+    "format": ["terminal", "json", "html"],
+    "outputDir": "./vibe-codex-reports"
+  },
+  "createdAt": "2024-03-20T10:00:00Z",
+  "lastModified": "2024-03-20T15:30:00Z"
+}

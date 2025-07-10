@@ -7,12 +7,38 @@ const fs = require('fs-extra');
 const path = require('path');
 const inquirer = require('inquirer');
 
-module.exports = async function config(action, options) {
-  // If no action provided, open interactive configuration
-  if (!action) {
+module.exports = async function config(options) {
+  // Handle case where options is actually the action string (for backward compatibility)
+  if (typeof options === 'string') {
+    const action = options;
+    const opts = arguments[1] || {};
+    return handleAction(action, opts);
+  }
+  
+  // Handle options object from CLI
+  if (!options || Object.keys(options).length === 0) {
     return interactiveConfig();
   }
   
+  // Determine action from options
+  if (options.list) {
+    return listConfiguration();
+  } else if (options.set) {
+    return setConfiguration(options.set);
+  } else if (options.reset) {
+    return resetConfiguration();
+  } else if (options.export) {
+    return exportConfiguration(options.export);
+  } else if (options.import) {
+    return importConfiguration(options.import);
+  } else if (options.preview) {
+    return previewConfiguration();
+  } else {
+    return interactiveConfig();
+  }
+};
+
+function handleAction(action, options) {
   switch (action) {
     case 'list':
       return listConfiguration();
@@ -21,13 +47,13 @@ module.exports = async function config(action, options) {
     case 'reset':
       return resetConfiguration();
     case 'export':
-      return exportConfiguration();
+      return exportConfiguration(options.export);
     case 'import':
       return importConfiguration(options.import);
     default:
       throw new Error(`Unknown config action: ${action}`);
   }
-};
+}
 
 async function interactiveConfig() {
   console.log(chalk.blue('🔧 vibe-codex Configuration\n'));
@@ -302,4 +328,49 @@ async function configureGitHub(config) {
     autoAssignReview: answers.autoAssignReview,
     issueTracking: answers.issueTracking
   };
+}
+
+async function previewConfiguration() {
+  const configPath = '.vibe-codex.json';
+  
+  if (!await fs.pathExists(configPath)) {
+    console.log(chalk.yellow('No configuration file found.'));
+    console.log('Run "npx vibe-codex init" to create one.');
+    return;
+  }
+  
+  const config = await fs.readJSON(configPath);
+  const logger = require('../utils/logger');
+  
+  console.log(chalk.blue('\n📋 Configuration Preview:\n'));
+  
+  // Show enabled modules
+  console.log(chalk.bold('Enabled Modules:'));
+  Object.entries(config.modules).forEach(([name, moduleConfig]) => {
+    if (moduleConfig.enabled) {
+      console.log(`  ✓ ${name}`);
+    }
+  });
+  
+  // Show impact
+  console.log(chalk.bold('\nConfiguration Impact:'));
+  if (config.modules.core?.gitHooks) {
+    console.log('  • Git hooks will be installed');
+  }
+  if (config.modules.testing?.enabled) {
+    console.log(`  • Tests will run with ${config.modules.testing.coverage?.threshold || 80}% coverage requirement`);
+  }
+  if (config.modules.github?.enabled) {
+    console.log('  • GitHub Actions workflows will be active');
+  }
+  
+  // Show suggestions
+  const { getSuggestions } = require('../utils/config-creator');
+  const suggestions = getSuggestions(config);
+  if (suggestions.length > 0) {
+    console.log(chalk.bold('\n💡 Suggestions:'));
+    suggestions.forEach(suggestion => {
+      console.log(`  • ${suggestion}`);
+    });
+  }
 }
