@@ -3,7 +3,7 @@
  * Provides environment-aware logging with levels
  */
 
-import chalk from 'chalk';
+const chalk = require('chalk');
 
 class Logger {
   constructor(name = 'vibe-codex') {
@@ -80,5 +80,5 @@ class Logger {
 const logger = new Logger();
 
 // Export both the class and instance
-export default logger;
-export { Logger };
+module.exports = logger;
+module.exports.Logger = Logger;
