@@ -71,6 +71,15 @@ jobs:
                -o scripts/reporter.js \
                "https://api.github.com/repos/tyabonil/vibe-codex/contents/scripts/reporter.js"
                
+          # Download PR file validator
+          curl -L -H "Authorization: token $GITHUB_TOKEN" \
+               -H "Accept: application/vnd.github.raw" \
+               -o scripts/pr-file-validator.js \
+               "https://api.github.com/repos/tyabonil/vibe-codex/contents/scripts/pr-file-validator.js" || \
+          curl -L -H "Accept: application/vnd.github.raw" \
+               -o scripts/pr-file-validator.js \
+               "https://api.github.com/repos/tyabonil/vibe-codex/contents/scripts/pr-file-validator.js"
+               
           # Download configuration
           curl -L -H "Authorization: token $GITHUB_TOKEN" \
                -H "Accept: application/vnd.github.raw" \
