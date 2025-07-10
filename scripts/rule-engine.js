@@ -356,34 +356,66 @@ class RuleEngine {
     
     console.log('🎯 Checking quality gates...');
     
-    // Check for test coverage requirements
-    const hasTests = files.some(file => 
-      file.filename.includes('test') || 
-      file.filename.includes('spec') || 
-      file.filename.includes('.test.') || 
-      file.filename.includes('.spec.')
-    );
+    // Filter for only NEW files (added) that are code files
+    const newCodeFiles = files.filter(file => {
+      // Only check files that are newly added
+      if (file.status !== 'added') return false;
+      
+      // Skip test files
+      if (file.filename.includes('test') || 
+          file.filename.includes('spec') || 
+          file.filename.includes('.test.') || 
+          file.filename.includes('.spec.')) {
+        return false;
+      }
+      
+      // Skip non-code files
+      if (file.filename.includes('.md') || 
+          file.filename.includes('.json') || 
+          file.filename.includes('.yml') || 
+          file.filename.includes('.yaml') ||
+          file.filename.includes('.txt') ||
+          file.filename.includes('.config.')) {
+        return false;
+      }
+      
+      // Check if it's a code file
+      const codeExtensions = ['.js', '.jsx', '.ts', '.tsx', '.py', '.java', '.go', '.rb'];
+      return codeExtensions.some(ext => file.filename.endsWith(ext));
+    });
     
-    const hasCodeChanges = files.some(file => 
-      !file.filename.includes('test') && 
-      !file.filename.includes('spec') && 
-      !file.filename.includes('.md') && 
-      !file.filename.includes('.json') && 
-      !file.filename.includes('.yml') && 
-      !file.filename.includes('.yaml')
-    );
-    
-    if (hasCodeChanges && !hasTests) {
-      violations.push({
-        level: 3,
-        type: 'QUALITY',
-        severity: 'MANDATORY',
-        rule: '100% TEST COVERAGE FOR NEW CODE',
-        message: '🧪 Missing tests for code changes',
-        details: 'All new code requires appropriate test coverage.',
-        action: 'Add tests for the new functionality',
-        fix: 'Create test files using appropriate framework (Jest, RTL, Cypress)'
+    // Check if any of the new code files lack tests
+    if (newCodeFiles.length > 0) {
+      // Check if tests exist for the new code files
+      const hasTestsForNewCode = newCodeFiles.every(codeFile => {
+        const baseName = codeFile.filename.replace(/\.[^.]+$/, '');
+        return files.some(file => 
+          file.filename.includes(baseName) && 
+          (file.filename.includes('test') || file.filename.includes('spec'))
+        );
       });
+      
+      if (!hasTestsForNewCode) {
+        const filesWithoutTests = newCodeFiles.filter(codeFile => {
+          const baseName = codeFile.filename.replace(/\.[^.]+$/, '');
+          return !files.some(file => 
+            file.filename.includes(baseName) && 
+            (file.filename.includes('test') || file.filename.includes('spec'))
+          );
+        });
+        
+        violations.push({
+          level: 3,
+          type: 'QUALITY',
+          severity: 'MANDATORY',
+          rule: '100% TEST COVERAGE FOR NEW CODE',
+          message: `🧪 Missing tests for ${filesWithoutTests.length} new code file(s)`,
+          details: 'All new code files require appropriate test coverage.',
+          action: 'Add tests for the new functionality',
+          fix: 'Create test files using appropriate framework (Jest, RTL, Cypress)',
+          evidence: filesWithoutTests.map(f => `- ${f.filename}`)
+        });
+      }
     }
     
     // Check for self-review requirement
@@ -402,6 +434,7 @@ class RuleEngine {
     }
     
     console.log(`🎯 Level 3 Quality: ${violations.length} violations found`);
+    console.log(`   New code files: ${newCodeFiles.length}`);
     return violations;
   }
 
