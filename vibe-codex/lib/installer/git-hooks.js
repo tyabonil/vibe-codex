@@ -5,7 +5,7 @@
 const fs = require('fs-extra');
 const path = require('path');
 const chalk = require('chalk');
-const { downloadHookScripts } = require('./hooks-downloader');
+const logger = require('../utils/logger');
 
 async function installGitHooks(config) {
   const hooksDir = path.join('.git', 'hooks');
@@ -16,9 +16,8 @@ async function installGitHooks(config) {
   // Backup existing hooks
   await backupExistingHooks(hooksDir);
   
-  // Download actual hook scripts from repository
-  console.log(chalk.blue('  Downloading hook scripts...'));
-  await downloadHookScripts(config);
+  // Generate hook scripts locally
+  logger.info('Generating hook scripts...');
   
   // Determine which hooks to install based on enabled modules
   const hooksToInstall = getRequiredHooks(config);

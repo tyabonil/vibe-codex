@@ -12,17 +12,19 @@ const { detectProjectType, detectTestFramework } = require('../utils/detector');
 const { preflightChecks } = require('../utils/preflight');
 const { installGitHooks } = require('../installer/git-hooks');
 const { installGitHubActions } = require('../installer/github-actions');
-const { installRules } = require('../installer/rules');
+const { installLocalRules } = require('../installer/local-rules');
 const { createConfiguration } = require('../utils/config-creator');
 const moduleLoader = require('../modules/loader');
 const { configExamples } = require('../modules/config-schema');
 const { validateSetup, getInstallInstructions } = require('../utils/package-manager');
 const logger = require('../utils/logger');
+const { createRollbackPoint, rollback } = require('../utils/rollback');
 
 module.exports = async function init(options) {
   console.log(chalk.blue('\n🎯 Welcome to vibe-codex!\n'));
   
   const spinner = ora('Running pre-flight checks...').start();
+  let rollbackPath = null;
   
   try {
     // Validate package manager setup
@@ -54,6 +56,13 @@ module.exports = async function init(options) {
     // Run pre-flight checks
     const { packageManager } = await preflightChecks(options);
     spinner.succeed('Pre-flight checks passed');
+    
+    // Create rollback point after pre-flight checks
+    if (!options.skipRollback) {
+      spinner.start('Creating rollback point...');
+      rollbackPath = await createRollbackPoint();
+      spinner.succeed('Rollback point created');
+    }
     
     // Detect or ask for project type
     let projectType = options.type;
@@ -131,7 +140,7 @@ module.exports = async function init(options) {
     // Create vibe-codex configuration
     spinner.start('Creating configuration...');
     const vibeCodexConfig = {
-      version: '1.0.0',
+      version: '2.0.0',
       modules: selectedModules,
       projectType
     };
@@ -149,10 +158,10 @@ module.exports = async function init(options) {
     });
     spinner.succeed('Configuration created');
     
-    // Install MANDATORY rules and related files
-    spinner.start('Installing MANDATORY rules...');
-    await installRules(config, options);
-    spinner.succeed('MANDATORY rules installed');
+    // Install local rules and related files
+    spinner.start('Installing vibe-codex rules...');
+    await installLocalRules(vibeCodexConfig, options);
+    spinner.succeed('vibe-codex rules installed');
     
     // Install git hooks
     if (!options.gitHooks === false) {
@@ -178,11 +187,35 @@ module.exports = async function init(options) {
     await moduleLoader.initialize(process.cwd());
     spinner.succeed('Module configuration validated');
     
+    // Run initial validation
+    spinner.start('Running initial validation...');
+    const validate = require('./validate');
+    const validationResult = await validate({ json: true, silent: true });
+    
+    if (!validationResult.valid) {
+      spinner.warn(`Initial validation found ${validationResult.violations.length} issues`);
+    } else {
+      spinner.succeed('Initial validation passed');
+    }
+    
     // Show success message and next steps
     showSuccessMessage(config, selectedModules, setupValidation.packageManager);
     
   } catch (error) {
     spinner.fail(`Installation failed: ${error.message}`);
+    
+    // Attempt rollback on failure
+    if (rollbackPath && !options.skipRollback) {
+      console.log(chalk.yellow('\n⚠️  Attempting to rollback changes...'));
+      try {
+        await rollback(rollbackPath);
+        console.log(chalk.green('✓ Successfully rolled back changes'));
+      } catch (rollbackError) {
+        console.error(chalk.red('❌ Rollback failed:'), rollbackError.message);
+        console.log(chalk.yellow('Manual cleanup may be required'));
+      }
+    }
+    
     throw error;
   }
 };
