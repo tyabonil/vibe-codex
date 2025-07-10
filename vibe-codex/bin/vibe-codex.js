@@ -260,6 +260,41 @@ hookCmd
     }
   });
 
+// Update issues command - Interactive issue update interface
+program
+  .command('update-issues')
+  .description('Interactively update related GitHub issues')
+  .option('--dry-run', 'show what would be updated without making changes')
+  .action(async (options) => {
+    try {
+      const updateIssues = require('../lib/commands/update-issues');
+      await updateIssues(options);
+    } catch (error) {
+      console.error(chalk.red('Error:'), error.message);
+      if (program.opts().debug) {
+        console.error(error.stack);
+      }
+      process.exit(1);
+    }
+  });
+
+// Check issue updates command - Used by git hooks
+program
+  .command('check-issue-updates')
+  .description('Check if issues need updates (used by git hooks)')
+  .option('--hook <hook>', 'specify which hook is calling (post-commit, pre-push)')
+  .action(async (options) => {
+    try {
+      const checkIssueUpdates = require('../lib/commands/check-issue-updates');
+      await checkIssueUpdates(options);
+    } catch (error) {
+      // Don't output errors for hook commands
+      if (program.opts().debug) {
+        console.error(error.stack);
+      }
+    }
+  });
+
 // Handle unknown commands
 program.on('command:*', function () {
   console.error(chalk.red('Invalid command:'), program.args.join(' '));

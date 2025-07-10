@@ -8,41 +8,51 @@ const chalk = require('chalk');
 const logger = require('../utils/logger');
 
 async function installGitHooks(config) {
-  const hooksDir = path.join('.git', 'hooks');
-  
-  // Ensure hooks directory exists
-  await fs.ensureDir(hooksDir);
-  
-  // Backup existing hooks
-  await backupExistingHooks(hooksDir);
-  
-  // Generate hook scripts locally
-  logger.info('Generating hook scripts...');
-  
-  // Determine which hooks to install based on enabled modules
-  const hooksToInstall = getRequiredHooks(config);
-  
-  // Install each hook
-  for (const hookName of hooksToInstall) {
-    await installHook(hookName, hooksDir, config);
+  try {
+    const hooksDir = path.join('.git', 'hooks');
+    
+    // Ensure hooks directory exists
+    await fs.ensureDir(hooksDir);
+    
+    // Backup existing hooks
+    await backupExistingHooks(hooksDir);
+    
+    // Generate hook scripts locally
+    logger.info('Generating hook scripts...');
+    
+    // Determine which hooks to install based on enabled modules
+    const hooksToInstall = getRequiredHooks(config);
+    
+    // Install each hook
+    for (const hookName of hooksToInstall) {
+      await installHook(hookName, hooksDir, config);
+    }
+  } catch (error) {
+    logger.error('Failed to install git hooks:', error.message);
+    throw error;
   }
 }
 
 async function backupExistingHooks(hooksDir) {
-  const backupDir = path.join(hooksDir, '.backup');
-  await fs.ensureDir(backupDir);
-  
-  const hooks = await fs.readdir(hooksDir);
-  for (const hook of hooks) {
-    if (!hook.includes('.sample') && !hook.startsWith('.')) {
-      const src = path.join(hooksDir, hook);
-      const dest = path.join(backupDir, `${hook}.${Date.now()}`);
-      
-      const stats = await fs.stat(src);
-      if (stats.isFile()) {
-        await fs.copy(src, dest);
+  try {
+    const backupDir = path.join(hooksDir, '.backup');
+    await fs.ensureDir(backupDir);
+    
+    const hooks = await fs.readdir(hooksDir);
+    for (const hook of hooks) {
+      if (!hook.includes('.sample') && !hook.startsWith('.')) {
+        const src = path.join(hooksDir, hook);
+        const dest = path.join(backupDir, `${hook}.${Date.now()}`);
+        
+        const stats = await fs.stat(src);
+        if (stats.isFile()) {
+          await fs.copy(src, dest);
+        }
       }
     }
+  } catch (error) {
+    logger.debug('Failed to backup hooks:', error.message);
+    // Continue installation even if backup fails
   }
 }
 
@@ -57,21 +67,34 @@ function getRequiredHooks(config) {
     hooks.add('pre-push');
   }
   
-  if (config.modules.github?.enabled) {
+  if (config.modules.github?.enabled || config.modules['github-workflow']?.enabled) {
     hooks.add('post-commit');
+  }
+  
+  // Add hooks for issue update reminders
+  if (config.issueTracking?.enableReminders !== false) {
+    hooks.add('post-commit');
+    if (config.issueTracking?.updateOnPush) {
+      hooks.add('pre-push');
+    }
   }
   
   return Array.from(hooks);
 }
 
 async function installHook(hookName, hooksDir, config) {
-  const hookContent = generateHookScript(hookName, config);
-  const hookPath = path.join(hooksDir, hookName);
-  
-  await fs.writeFile(hookPath, hookContent);
-  await fs.chmod(hookPath, '755');
-  
-  console.log(`  ${chalk.green('✓')} Installed ${hookName} hook`);
+  try {
+    const hookContent = generateHookScript(hookName, config);
+    const hookPath = path.join(hooksDir, hookName);
+    
+    await fs.writeFile(hookPath, hookContent);
+    await fs.chmod(hookPath, '755');
+    
+    logger.info(`✓ Installed ${hookName} hook`);
+  } catch (error) {
+    logger.error(`Failed to install ${hookName} hook:`, error.message);
+    throw error;
+  }
 }
 
 function generateHookScript(hookName, config) {
@@ -221,6 +244,12 @@ if command -v gh >/dev/null 2>&1; then
   fi
 fi
 
+# Check for issue update reminders on push
+${config.issueTracking?.updateOnPush ? `
+# Check if issues need updates before pushing
+run_vibe_codex check-issue-updates --hook pre-push 2>/dev/null || true
+` : ''}
+
 # Run tests if testing module is enabled
 ${config.modules.testing?.enabled ? `
 echo "🧪 Running tests before push..."
@@ -257,9 +286,15 @@ if [ "$SKIP_VIBE_CODEX" = "1" ] || [ "$SKIP_VIBE_CODEX" = "true" ]; then
 fi
 
 # Update issue status if GitHub module is enabled
-${config.modules.github?.enabled ? `
+${config.modules.github?.enabled || config.modules['github-workflow']?.enabled ? `
 # Try to run issue progress tracking
 run_vibe_codex track-progress --hook post-commit 2>/dev/null || true
+` : ''}
+
+# Check for issue update reminders
+${config.issueTracking?.enableReminders !== false ? `
+# Run issue update reminder check
+run_vibe_codex check-issue-updates --hook post-commit 2>/dev/null || true
 ` : ''}
 
 exit 0
