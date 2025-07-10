@@ -57,8 +57,16 @@ function getRequiredHooks(config) {
     hooks.add('pre-push');
   }
   
-  if (config.modules.github?.enabled) {
+  if (config.modules.github?.enabled || config.modules['github-workflow']?.enabled) {
     hooks.add('post-commit');
+  }
+  
+  // Add hooks for issue update reminders
+  if (config.issueTracking?.enableReminders !== false) {
+    hooks.add('post-commit');
+    if (config.issueTracking?.updateOnPush) {
+      hooks.add('pre-push');
+    }
   }
   
   return Array.from(hooks);
@@ -221,6 +229,12 @@ if command -v gh >/dev/null 2>&1; then
   fi
 fi
 
+# Check for issue update reminders on push
+${config.issueTracking?.updateOnPush ? `
+# Check if issues need updates before pushing
+run_vibe_codex check-issue-updates --hook pre-push 2>/dev/null || true
+` : ''}
+
 # Run tests if testing module is enabled
 ${config.modules.testing?.enabled ? `
 echo "🧪 Running tests before push..."
@@ -257,9 +271,15 @@ if [ "$SKIP_VIBE_CODEX" = "1" ] || [ "$SKIP_VIBE_CODEX" = "true" ]; then
 fi
 
 # Update issue status if GitHub module is enabled
-${config.modules.github?.enabled ? `
+${config.modules.github?.enabled || config.modules['github-workflow']?.enabled ? `
 # Try to run issue progress tracking
 run_vibe_codex track-progress --hook post-commit 2>/dev/null || true
+` : ''}
+
+# Check for issue update reminders
+${config.issueTracking?.enableReminders !== false ? `
+# Run issue update reminder check
+run_vibe_codex check-issue-updates --hook post-commit 2>/dev/null || true
 ` : ''}
 
 exit 0
