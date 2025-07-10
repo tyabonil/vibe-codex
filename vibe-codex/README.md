@@ -87,36 +87,28 @@ See [Configuration Guide](./docs/CONFIGURATION.md) for all options.
 
 ## 📦 Available Modules
 
-- **Core** - Basic git workflow and security (always enabled)
-- **Testing** - Test frameworks and coverage requirements
-- **GitHub** - PR/Issue automation and workflows
-- **Deployment** - Platform-specific deployment checks
-- **Documentation** - README and documentation standards
+- **Core** - Basic git workflow and security
+- **Testing** - Test frameworks and coverage
+- **GitHub** - PR/Issue automation
+- **Deployment** - Platform-specific checks
+- **Documentation** - README and docs standards
 
-## 🛠️ Commands
+See [Modules Guide](./docs/MODULES.md) for details.
 
-- `init` - Initialize vibe-codex in your project
-- `config` - Manage configuration interactively
-- `validate` - Run validation checks
-- `update` - Update to latest rules
-- `status` - Show installation status
+## 📚 Documentation
 
-## 📖 Documentation
-
-- [Getting Started](./docs/GETTING-STARTED.md)
-- [Configuration Guide](./docs/CONFIGURATION.md)
-- [Available Modules](./docs/MODULES.md)
-- [CLI Reference](./docs/CLI-REFERENCE.md)
-- [Troubleshooting](./docs/TROUBLESHOOTING.md)
+- [Getting Started](./docs/GETTING-STARTED.md) - Installation and setup guide
+- [Configuration](./docs/CONFIGURATION.md) - Configuration options
+- [CLI Reference](./docs/CLI-REFERENCE.md) - Command line usage
+- [API Reference](./docs/API.md) - Programmatic usage
+- [Modules](./docs/MODULES.md) - Available modules
+- [Migration Guide](./docs/MIGRATION.md) - Upgrading from v1.x
+- [Troubleshooting](./docs/TROUBLESHOOTING.md) - Common issues
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) for details.
+See [CONTRIBUTING.md](https://github.com/tyabonil/vibe-codex/blob/main/CONTRIBUTING.md)
 
 ## 📄 License
 
-MIT © Ty Yabonil
-
----
-
-Made with ❤️ by developers, for developers
+MIT © vibe-codex contributors
