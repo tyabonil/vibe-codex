@@ -356,7 +356,34 @@ class RuleEngine {
     
     console.log('🎯 Checking quality gates...');
     
-    // Check for test coverage requirements
+    // Only check NEW files (status: 'added') for test coverage
+    const newCodeFiles = files.filter(file => {
+      // Must be a new file
+      if (file.status !== 'added') return false;
+      
+      // Must be a code file
+      const codeExtensions = ['.js', '.jsx', '.ts', '.tsx', '.py', '.java', '.go', '.rb', '.cpp', '.c', '.cs'];
+      const hasCodeExtension = codeExtensions.some(ext => file.filename.endsWith(ext));
+      if (!hasCodeExtension) return false;
+      
+      // Must not be a test file itself
+      const isTestFile = file.filename.includes('test') || 
+                        file.filename.includes('spec') || 
+                        file.filename.includes('.test.') || 
+                        file.filename.includes('.spec.');
+      if (isTestFile) return false;
+      
+      // Must not be in excluded directories
+      const excludedDirs = ['node_modules', 'dist', 'build', 'coverage', '.git'];
+      const isExcluded = excludedDirs.some(dir => file.filename.includes(`/${dir}/`));
+      if (isExcluded) return false;
+      
+      return true;
+    });
+    
+    console.log(`🔍 Found ${newCodeFiles.length} new code files to check for test coverage`);
+    
+    // Check if there are tests for the new code files
     const hasTests = files.some(file => 
       file.filename.includes('test') || 
       file.filename.includes('spec') || 
@@ -364,25 +391,17 @@ class RuleEngine {
       file.filename.includes('.spec.')
     );
     
-    const hasCodeChanges = files.some(file => 
-      !file.filename.includes('test') && 
-      !file.filename.includes('spec') && 
-      !file.filename.includes('.md') && 
-      !file.filename.includes('.json') && 
-      !file.filename.includes('.yml') && 
-      !file.filename.includes('.yaml')
-    );
-    
-    if (hasCodeChanges && !hasTests) {
+    if (newCodeFiles.length > 0 && !hasTests) {
       violations.push({
         level: 3,
         type: 'QUALITY',
         severity: 'MANDATORY',
         rule: '100% TEST COVERAGE FOR NEW CODE',
-        message: '🧪 Missing tests for code changes',
-        details: 'All new code requires appropriate test coverage.',
+        message: `🧪 Missing tests for ${newCodeFiles.length} new code file(s)`,
+        details: 'All new code requires appropriate test coverage. Only NEW files (not modifications) require tests.',
         action: 'Add tests for the new functionality',
-        fix: 'Create test files using appropriate framework (Jest, RTL, Cypress)'
+        fix: 'Create test files using appropriate framework (Jest, RTL, Cypress)',
+        evidence: newCodeFiles.map(f => `• ${f.filename} (new file)`)
       });
     }
     
