@@ -188,7 +188,7 @@ fi
 
 # Check if pushing to protected branch
 protected_branches="main master"
-current_branch=$(git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\1,')
+current_branch=$(git symbolic-ref HEAD | sed -e 's,.*/\\(.*\\),\\1,')
 
 for branch in $protected_branches; do
   if [ "$current_branch" = "$branch" ]; then

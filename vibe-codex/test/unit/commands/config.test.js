@@ -30,10 +30,40 @@ jest.mock('ora', () => {
 });
 
 // Mock other dependencies
-jest.mock('../../../lib/utils/detector');
-jest.mock('../../../lib/utils/config-creator');
-jest.mock('../../../lib/utils/logger');
-jest.mock('../../../lib/installer/git-hooks');
+jest.mock('../../../lib/utils/detector', () => ({
+  detectProjectType: jest.fn(),
+  detectTestFramework: jest.fn(),
+  detectDeploymentPlatform: jest.fn(),
+  detectPackageManager: jest.fn(),
+  readPackageJsonSafe: jest.fn()
+}));
+jest.mock('../../../lib/utils/config-creator', () => ({
+  createConfig: jest.fn(),
+  createAutoConfig: jest.fn(),
+  createConfiguration: jest.fn(),
+  mergeConfigs: jest.fn(),
+  getTemplate: jest.fn(),
+  applyProjectDefaults: jest.fn(),
+  configureTestingModule: jest.fn(),
+  configureGitHubModule: jest.fn(),
+  configureDeploymentModule: jest.fn(),
+  validateConfig: jest.fn(),
+  getSuggestions: jest.fn().mockReturnValue([]),
+  createEnvironmentConfig: jest.fn(),
+  createIgnoreFile: jest.fn(),
+  createProjectContext: jest.fn()
+}));
+jest.mock('../../../lib/utils/logger', () => ({
+  log: jest.fn(),
+  debug: jest.fn(),
+  error: jest.fn()
+}));
+jest.mock('../../../lib/installer/git-hooks', () => ({
+  installGitHooks: jest.fn()
+}));
+jest.mock('../../../lib/installer/hooks-downloader', () => ({
+  downloadHookScripts: jest.fn()
+}));
 
 describe('Config Command', () => {
   let config;
@@ -67,9 +97,9 @@ describe('Config Command', () => {
   describe('interactive configuration', () => {
     it('should create new configuration interactively', async () => {
       const detector = require('../../../lib/utils/detector');
-      detector.detectFramework.mockResolvedValue('react');
+      detector.detectProjectType.mockResolvedValue('web');
       detector.detectPackageManager.mockResolvedValue('npm');
-      detector.detectTestingFramework.mockResolvedValue('jest');
+      detector.detectTestFramework.mockResolvedValue('jest');
       
       inquirer.prompt
         .mockResolvedValueOnce({ projectType: 'web' })
