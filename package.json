@@ -1,61 +1,84 @@
 {
-  "name": "mandatory-rules-checker",
-  "version": "1.0.0",
-  "description": "Automated compliance checker for MANDATORY-RULES.md validation",
-  "main": "scripts/rule-engine.js",
+  "name": "vibe-codex",
+  "version": "2.0.0",
+  "description": "CLI tool to install development rules and git hooks with interactive configuration",
+  "keywords": [
+    "vibe-codex",
+    "git-hooks",
+    "development-workflow",
+    "code-quality",
+    "linting",
+    "testing",
+    "ci-cd",
+    "automation",
+    "cli",
+    "npx"
+  ],
+  "homepage": "https://github.com/tyabonil/vibe-codex",
+  "bugs": {
+    "url": "https://github.com/tyabonil/vibe-codex/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tyabonil/vibe-codex.git"
+  },
+  "license": "MIT",
+  "author": "Ty Yabonil",
+  "main": "lib/index.js",
+  "bin": {
+    "vibe-codex": "./bin/vibe-codex.js"
+  },
+  "files": [
+    "bin/",
+    "lib/",
+    "templates/",
+    "hooks/",
+    "config/",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "test": "jest --coverage --verbose",
     "test:watch": "jest --watch",
     "test:ci": "jest --coverage --ci --watchAll=false",
-    "lint": "eslint scripts/ tests/",
-    "lint:fix": "eslint scripts/ tests/ --fix",
+    "lint": "eslint lib/ tests/ scripts/",
+    "lint:fix": "eslint lib/ tests/ scripts/ --fix",
+    "format": "prettier --write \"lib/**/*.js\" \"tests/**/*.js\"",
     "validate": "node scripts/validate-config.js",
-    "docs": "node scripts/generate-docs.js"
+    "docs": "node scripts/generate-docs.js",
+    "prepublishOnly": "npm test && npm run lint",
+    "version": "npm run format && git add -A",
+    "postversion": "git push && git push --tags"
   },
-  "keywords": [
-    "mandatory-rules",
-    "compliance",
-    "github-actions",
-    "pr-validation",
-    "security",
-    "workflow"
-  ],
-  "author": "tyabonil",
-  "license": "MIT",
   "dependencies": {
     "@actions/core": "^1.11.1",
     "@actions/github": "^5.1.1",
-    "marked": "^16.0.0"
+    "chalk": "^5.3.0",
+    "commander": "^11.1.0",
+    "conf": "^12.0.0",
+    "fs-extra": "^11.2.0",
+    "inquirer": "^9.2.12",
+    "joi": "^17.11.0",
+    "js-yaml": "^4.1.0",
+    "marked": "^16.0.0",
+    "node-fetch": "^3.3.2",
+    "ora": "^7.0.1",
+    "semver": "^7.5.4",
+    "simple-git": "^3.20.0"
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",
+    "@types/node": "^20.10.5",
     "eslint": "^8.57.0",
-    "jest": "^29.7.0"
+    "jest": "^29.7.0",
+    "prettier": "^3.1.1"
   },
-  "jest": {
-    "testEnvironment": "node",
-    "collectCoverageFrom": [
-      "scripts/**/*.js",
-      "!scripts/validate-config.js",
-      "!scripts/generate-docs.js",
-      "!hooks/**/*.sh"
-    ],
-    "coverageReporters": [
-      "text",
-      "lcov",
-      "html"
-    ],
-    "coverageThreshold": {
-      "global": {
-        "branches": 80,
-        "functions": 80,
-        "lines": 80,
-        "statements": 80
-      }
-    },
-    "testMatch": [
-      "**/tests/**/*.test.js"
-    ]
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "eslintConfig": {
     "env": {
@@ -76,19 +99,5 @@
       "prefer-const": "error",
       "no-var": "error"
     }
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/tyabonil/cursor_rules.git"
-  },
-  "bugs": {
-    "url": "https://github.com/tyabonil/cursor_rules/issues"
-  },
-  "homepage": "https://github.com/tyabonil/cursor_rules#readme",
-  "directories": {
-    "doc": "docs",
-    "example": "examples",
-    "test": "tests"
-  },
-  "type": "commonjs"
+  }
 }
