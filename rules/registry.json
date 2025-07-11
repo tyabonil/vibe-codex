@@ -200,6 +200,17 @@
       "performance_impact": "low"
     },
     {
+      "id": "wfl-005",
+      "name": "Local Issue Work Tracking",
+      "category": "workflow",
+      "complexity": "basic",
+      "enabled_by_default": false,
+      "description": "Track work on issues in local markdown files to preserve context",
+      "file": "/rules/workflow/issue-work-tracking.md#rule-wfl-005-local-issue-work-tracking",
+      "implementation": "pre-commit",
+      "performance_impact": "low"
+    },
+    {
       "id": "ai-001",
       "name": "Project Context Alignment",
       "category": "ai-development",
