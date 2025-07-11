@@ -123,6 +123,17 @@
       "performance_impact": "low"
     },
     {
+      "id": "doc-004",
+      "name": "Documentation Update Enforcement",
+      "category": "documentation",
+      "complexity": "basic",
+      "enabled_by_default": false,
+      "description": "Reminds developers to update docs when code changes",
+      "file": "/rules/quality/documentation-enforcement.md#rule-doc-004-documentation-update-enforcement",
+      "implementation": "pre-commit",
+      "performance_impact": "low"
+    },
+    {
       "id": "sty-001",
       "name": "Linting Must Pass",
       "category": "quality",
