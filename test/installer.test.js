@@ -2,11 +2,22 @@
  * Tests for simplified installer
  */
 
-const { installHooks, uninstallHooks } = require('../../lib/installer');
-const fs = require('fs').promises;
+const { installHooks, uninstallHooks } = require('../lib/installer');
 const path = require('path');
 
-jest.mock('fs').promises;
+// Mock fs.promises
+jest.mock('fs', () => ({
+  promises: {
+    access: jest.fn(),
+    mkdir: jest.fn(),
+    writeFile: jest.fn(),
+    readFile: jest.fn(),
+    unlink: jest.fn(),
+    copyFile: jest.fn()
+  }
+}));
+
+const fs = require('fs').promises;
 
 describe('Installer', () => {
   beforeEach(() => {

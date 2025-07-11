@@ -2,12 +2,12 @@
  * Tests for simplified menu system
  */
 
-const { mainMenu } = require('../../lib/menu');
+const { mainMenu } = require('../lib/menu');
 const inquirer = require('inquirer');
 
 // Mock dependencies
 jest.mock('inquirer');
-jest.mock('../../lib/commands', () => ({
+jest.mock('../lib/commands', () => ({
   init: jest.fn(),
   config: jest.fn(),
   uninstall: jest.fn()
@@ -53,7 +53,7 @@ describe('Menu System', () => {
     });
 
     it('should call init command when selected', async () => {
-      const { init } = require('../../lib/commands');
+      const { init } = require('../lib/commands');
       
       // Mock user selecting init then exit
       inquirer.prompt
@@ -69,7 +69,7 @@ describe('Menu System', () => {
     });
 
     it('should call config command when selected', async () => {
-      const { config } = require('../../lib/commands');
+      const { config } = require('../lib/commands');
       
       // Mock user selecting config then exit
       inquirer.prompt
@@ -84,7 +84,7 @@ describe('Menu System', () => {
     });
 
     it('should call uninstall command when selected', async () => {
-      const { uninstall } = require('../../lib/commands');
+      const { uninstall } = require('../lib/commands');
       
       // Mock user selecting uninstall then exit
       inquirer.prompt
