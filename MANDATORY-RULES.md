@@ -1,16 +1,40 @@
-# Mandatory Rules - Moved
+# Mandatory Rules for vibe-codex
 
-> **This file has been moved to maintain backward compatibility**
+> Simple rules for maintaining code quality
 
-The mandatory rules system has been integrated into vibe-codex. 
+## Core Rules
 
-## For the latest rules:
-- See the modular rule system in `lib/modules/`
-- Or view the original rules in `legacy/cursor-rules/MANDATORY-RULES.md`
+### 1. Security
+- No hardcoded secrets or API keys
+- No passwords in code
+- Use environment variables for sensitive data
 
-## To use vibe-codex:
+### 2. Git Workflow  
+- Use conventional commit messages (feat:, fix:, docs:, etc.)
+- Reference issue numbers in PR descriptions
+- Keep commits focused and atomic
+
+### 3. Testing
+- Include tests for new features
+- Maintain existing test coverage
+- Fix failing tests before merging
+
+### 4. Documentation
+- Update README when adding features
+- Document breaking changes
+- Keep documentation simple and clear
+
+## Enforcement
+
+These rules are enforced through:
+- Git hooks (pre-commit, commit-msg)
+- GitHub Actions checks
+- PR review requirements
+
+## Installation
+
 ```bash
 npx vibe-codex init
 ```
 
-This will install the appropriate rules and hooks for your project.
+Select the rules you want to enforce in your project.

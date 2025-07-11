@@ -2,7 +2,7 @@
   "version": "1.0.0",
   "rules": {
     "pr-targets-preview": {
-      "enabled": true,
+      "enabled": false,
       "description": "All PRs must target the 'preview' branch",
       "severity": "error"
     },
