@@ -1,0 +1,10 @@
+{
+  "name": "review-bots-stub",
+  "version": "1.0.0",
+  "description": "Stub for CI compatibility",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo 'No tests'"
+  },
+  "dependencies": {}
+}
