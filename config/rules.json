@@ -1,5 +1,24 @@
 {
-  "message": "Bad credentials",
-  "documentation_url": "https://docs.github.com/rest",
-  "status": "401"
+  "version": "1.0.0",
+  "rules": {
+    "pr-targets-preview": {
+      "enabled": true,
+      "description": "All PRs must target the 'preview' branch",
+      "severity": "error"
+    },
+    "pr-has-tests": {
+      "enabled": true,
+      "description": "PRs should include tests when adding new features",
+      "severity": "warning"
+    },
+    "issue-linked": {
+      "enabled": true,
+      "description": "PRs should reference an issue number",
+      "severity": "warning"
+    }
+  },
+  "metadata": {
+    "lastUpdated": "2024-07-11",
+    "source": "vibe-codex"
+  }
 }
