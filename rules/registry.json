@@ -1,0 +1,389 @@
+{
+  "version": "1.0.0",
+  "rules": [
+    {
+      "id": "sec-001",
+      "name": "No Secrets in Code",
+      "category": "security",
+      "complexity": "basic",
+      "enabled_by_default": true,
+      "description": "Prevents committing secrets, API keys, passwords, or credentials",
+      "file": "/rules/basic/security.md#rule-sec-001-no-secrets-in-code",
+      "implementation": "pre-commit",
+      "performance_impact": "low"
+    },
+    {
+      "id": "sec-002",
+      "name": "Environment File Protection",
+      "category": "security",
+      "complexity": "basic",
+      "enabled_by_default": true,
+      "description": "Blocks .env files while requiring .env.example",
+      "file": "/rules/basic/security.md#rule-sec-002-environment-file-protection",
+      "implementation": "pre-commit",
+      "performance_impact": "low"
+    },
+    {
+      "id": "sec-003",
+      "name": "No Private Repository References",
+      "category": "security",
+      "complexity": "basic",
+      "enabled_by_default": true,
+      "description": "Prevents private repo references in public code",
+      "file": "/rules/basic/security.md#rule-sec-003-no-private-repository-references",
+      "implementation": "pre-commit",
+      "performance_impact": "low"
+    },
+    {
+      "id": "cmt-001",
+      "name": "Conventional Commit Format",
+      "category": "workflow",
+      "complexity": "basic",
+      "enabled_by_default": true,
+      "description": "Enforces conventional commit message format",
+      "file": "/rules/basic/commit-format.md#rule-cmt-001-conventional-commit-format",
+      "implementation": "commit-msg",
+      "performance_impact": "low"
+    },
+    {
+      "id": "cmt-002",
+      "name": "Issue Reference Required",
+      "category": "workflow",
+      "complexity": "basic",
+      "enabled_by_default": false,
+      "description": "Requires commits to reference an issue number",
+      "file": "/rules/basic/commit-format.md#rule-cmt-002-issue-reference-required",
+      "implementation": "commit-msg",
+      "performance_impact": "low"
+    },
+    {
+      "id": "tst-001",
+      "name": "Tests Must Pass",
+      "category": "quality",
+      "complexity": "basic",
+      "enabled_by_default": false,
+      "description": "Ensures all tests pass before commits",
+      "file": "/rules/basic/testing.md#rule-tst-001-tests-must-pass",
+      "implementation": "pre-commit",
+      "performance_impact": "high"
+    },
+    {
+      "id": "tst-002",
+      "name": "Test Coverage Threshold",
+      "category": "quality",
+      "complexity": "basic",
+      "enabled_by_default": false,
+      "description": "Ensures code coverage meets minimum threshold",
+      "file": "/rules/basic/testing.md#rule-tst-002-test-coverage-threshold",
+      "implementation": "pre-commit",
+      "performance_impact": "medium"
+    },
+    {
+      "id": "tst-003",
+      "name": "No Skipped Tests",
+      "category": "quality",
+      "complexity": "basic",
+      "enabled_by_default": true,
+      "description": "Prevents committing skipped or focused tests",
+      "file": "/rules/basic/testing.md#rule-tst-003-no-skipped-tests",
+      "implementation": "pre-commit",
+      "performance_impact": "low"
+    },
+    {
+      "id": "doc-001",
+      "name": "README Required",
+      "category": "documentation",
+      "complexity": "basic",
+      "enabled_by_default": true,
+      "description": "Ensures project has README with required sections",
+      "file": "/rules/basic/documentation.md#rule-doc-001-readme-required",
+      "implementation": "pre-commit",
+      "performance_impact": "low"
+    },
+    {
+      "id": "doc-002",
+      "name": "Code Comments for Complex Logic",
+      "category": "documentation",
+      "complexity": "basic",
+      "enabled_by_default": false,
+      "description": "Requires comments for complex functions",
+      "file": "/rules/basic/documentation.md#rule-doc-002-code-comments-for-complex-logic",
+      "implementation": "pre-commit",
+      "performance_impact": "low"
+    },
+    {
+      "id": "doc-003",
+      "name": "Update Documentation with Code",
+      "category": "documentation",
+      "complexity": "basic",
+      "enabled_by_default": true,
+      "description": "Ensures docs are updated with code changes",
+      "file": "/rules/basic/documentation.md#rule-doc-003-update-documentation-with-code",
+      "implementation": "pre-commit",
+      "performance_impact": "low"
+    },
+    {
+      "id": "sty-001",
+      "name": "Linting Must Pass",
+      "category": "quality",
+      "complexity": "basic",
+      "enabled_by_default": true,
+      "description": "Ensures code passes linting checks",
+      "file": "/rules/basic/code-style.md#rule-sty-001-linting-must-pass",
+      "implementation": "pre-commit",
+      "performance_impact": "medium"
+    },
+    {
+      "id": "sty-002",
+      "name": "No Console Logs",
+      "category": "quality",
+      "complexity": "basic",
+      "enabled_by_default": true,
+      "description": "Prevents committing debug console statements",
+      "file": "/rules/basic/code-style.md#rule-sty-002-no-console-logs",
+      "implementation": "pre-commit",
+      "performance_impact": "low"
+    },
+    {
+      "id": "sty-003",
+      "name": "Consistent File Naming",
+      "category": "quality",
+      "complexity": "basic",
+      "enabled_by_default": false,
+      "description": "Enforces consistent file naming conventions",
+      "file": "/rules/basic/code-style.md#rule-sty-003-consistent-file-naming",
+      "implementation": "pre-commit",
+      "performance_impact": "low"
+    },
+    {
+      "id": "wfl-001",
+      "name": "Issue-Driven Development",
+      "category": "workflow",
+      "complexity": "advanced",
+      "enabled_by_default": false,
+      "description": "Every code change starts with a GitHub issue",
+      "file": "/rules/advanced/workflow-integrity.md#rule-wfl-001-issue-driven-development",
+      "implementation": "pre-commit",
+      "performance_impact": "low"
+    },
+    {
+      "id": "wfl-002",
+      "name": "PR Workflow Enforcement",
+      "category": "workflow",
+      "complexity": "advanced",
+      "enabled_by_default": false,
+      "description": "Comprehensive PR workflow for collaboration",
+      "file": "/rules/advanced/workflow-integrity.md#rule-wfl-002-pr-workflow-enforcement",
+      "implementation": "multiple",
+      "performance_impact": "medium"
+    },
+    {
+      "id": "wfl-003",
+      "name": "Anti-Stall Patterns",
+      "category": "workflow",
+      "complexity": "advanced",
+      "enabled_by_default": false,
+      "description": "Prevents development stalls with progress patterns",
+      "file": "/rules/advanced/workflow-integrity.md#rule-wfl-003-anti-stall-patterns",
+      "implementation": "multiple",
+      "performance_impact": "low"
+    },
+    {
+      "id": "wfl-004",
+      "name": "Terminal and Git Configuration",
+      "category": "workflow",
+      "complexity": "advanced",
+      "enabled_by_default": false,
+      "description": "Enforces non-interactive git operations",
+      "file": "/rules/advanced/workflow-integrity.md#rule-wfl-004-terminal-and-git-configuration",
+      "implementation": "setup",
+      "performance_impact": "low"
+    },
+    {
+      "id": "ai-001",
+      "name": "Project Context Alignment",
+      "category": "ai-development",
+      "complexity": "advanced",
+      "enabled_by_default": false,
+      "description": "Ensures AI code aligns with project context",
+      "file": "/rules/ai-development/context-preservation.md#rule-ai-001-project-context-alignment",
+      "implementation": "pre-commit",
+      "performance_impact": "low"
+    },
+    {
+      "id": "ai-002",
+      "name": "AI Agent Coordination",
+      "category": "ai-development",
+      "complexity": "advanced",
+      "enabled_by_default": false,
+      "description": "Manages multiple AI agents to prevent conflicts",
+      "file": "/rules/ai-development/context-preservation.md#rule-ai-002-ai-agent-coordination",
+      "implementation": "multiple",
+      "performance_impact": "low"
+    },
+    {
+      "id": "ai-003",
+      "name": "Reward Hacking Prevention",
+      "category": "ai-development",
+      "complexity": "advanced",
+      "enabled_by_default": true,
+      "description": "Prevents AI from gaming metrics",
+      "file": "/rules/ai-development/context-preservation.md#rule-ai-003-reward-hacking-prevention",
+      "implementation": "pre-commit",
+      "performance_impact": "low"
+    },
+    {
+      "id": "ai-004",
+      "name": "Context Window Management",
+      "category": "ai-development",
+      "complexity": "advanced",
+      "enabled_by_default": false,
+      "description": "Optimizes code for AI context windows",
+      "file": "/rules/ai-development/context-preservation.md#rule-ai-004-context-window-management",
+      "implementation": "pre-commit",
+      "performance_impact": "low"
+    },
+    {
+      "id": "owasp-001",
+      "name": "Input Validation (OWASP #3)",
+      "category": "security",
+      "complexity": "advanced",
+      "enabled_by_default": true,
+      "description": "Comprehensive input validation against injection",
+      "file": "/rules/security/owasp-compliance.md#rule-owasp-001-input-validation-owasp-3",
+      "implementation": "pre-commit",
+      "performance_impact": "medium"
+    },
+    {
+      "id": "owasp-002",
+      "name": "Authentication & Session Management (OWASP #2)",
+      "category": "security",
+      "complexity": "advanced",
+      "enabled_by_default": true,
+      "description": "Secure authentication and session practices",
+      "file": "/rules/security/owasp-compliance.md#rule-owasp-002-authentication--session-management-owasp-2",
+      "implementation": "pre-commit",
+      "performance_impact": "low"
+    },
+    {
+      "id": "owasp-003",
+      "name": "Sensitive Data Exposure Prevention (OWASP #6)",
+      "category": "security",
+      "complexity": "advanced",
+      "enabled_by_default": true,
+      "description": "Prevents logging or exposing sensitive data",
+      "file": "/rules/security/owasp-compliance.md#rule-owasp-003-sensitive-data-exposure-prevention-owasp-6",
+      "implementation": "pre-commit",
+      "performance_impact": "low"
+    },
+    {
+      "id": "owasp-004",
+      "name": "Security Misconfiguration Prevention (OWASP #5)",
+      "category": "security",
+      "complexity": "advanced",
+      "enabled_by_default": true,
+      "description": "Prevents common security misconfigurations",
+      "file": "/rules/security/owasp-compliance.md#rule-owasp-004-security-misconfiguration-prevention-owasp-5",
+      "implementation": "multiple",
+      "performance_impact": "medium"
+    },
+    {
+      "id": "eng-001",
+      "name": "SOLID Principles Enforcement",
+      "category": "quality",
+      "complexity": "advanced",
+      "enabled_by_default": false,
+      "description": "Enforces SOLID principles for OOP",
+      "file": "/rules/quality/engineering-principles.md#rule-eng-001-solid-principles-enforcement",
+      "implementation": "pre-commit",
+      "performance_impact": "medium"
+    },
+    {
+      "id": "eng-002",
+      "name": "Test-Driven Development (TDD)",
+      "category": "quality",
+      "complexity": "advanced",
+      "enabled_by_default": false,
+      "description": "Enforces TDD practices and test-first development",
+      "file": "/rules/quality/engineering-principles.md#rule-eng-002-test-driven-development-tdd",
+      "implementation": "pre-commit",
+      "performance_impact": "medium"
+    },
+    {
+      "id": "eng-003",
+      "name": "Clean Code Standards",
+      "category": "quality",
+      "complexity": "advanced",
+      "enabled_by_default": false,
+      "description": "Enforces clean code principles",
+      "file": "/rules/quality/engineering-principles.md#rule-eng-003-clean-code-standards",
+      "implementation": "pre-commit",
+      "performance_impact": "medium"
+    },
+    {
+      "id": "eng-004",
+      "name": "Design Pattern Compliance",
+      "category": "quality",
+      "complexity": "advanced",
+      "enabled_by_default": false,
+      "description": "Encourages patterns and prevents anti-patterns",
+      "file": "/rules/quality/engineering-principles.md#rule-eng-004-design-pattern-compliance",
+      "implementation": "pre-commit",
+      "performance_impact": "low"
+    }
+  ],
+  "categories": {
+    "security": {
+      "name": "Security",
+      "description": "Rules for preventing security vulnerabilities",
+      "icon": "🔒"
+    },
+    "workflow": {
+      "name": "Workflow",
+      "description": "Rules for development process and collaboration",
+      "icon": "📋"
+    },
+    "quality": {
+      "name": "Code Quality",
+      "description": "Rules for code quality and maintainability",
+      "icon": "✨"
+    },
+    "documentation": {
+      "name": "Documentation",
+      "description": "Rules for maintaining documentation",
+      "icon": "📝"
+    },
+    "ai-development": {
+      "name": "AI Development",
+      "description": "Rules for AI-assisted development",
+      "icon": "🤖"
+    }
+  },
+  "presets": {
+    "minimal": {
+      "name": "Minimal",
+      "description": "Basic security and commit format only",
+      "rules": ["sec-001", "sec-002", "cmt-001"]
+    },
+    "standard": {
+      "name": "Standard",
+      "description": "Recommended rules for most projects",
+      "rules": ["sec-001", "sec-002", "sec-003", "cmt-001", "tst-003", "doc-001", "sty-001", "sty-002"]
+    },
+    "strict": {
+      "name": "Strict",
+      "description": "All basic rules enabled",
+      "rules": ["sec-001", "sec-002", "sec-003", "cmt-001", "cmt-002", "tst-001", "tst-003", "doc-001", "doc-003", "sty-001", "sty-002"]
+    },
+    "ai-developer": {
+      "name": "AI Developer",
+      "description": "Optimized for AI-assisted development",
+      "rules": ["sec-001", "sec-002", "sec-003", "cmt-001", "cmt-002", "ai-001", "ai-003", "wfl-001", "wfl-002"]
+    },
+    "enterprise": {
+      "name": "Enterprise",
+      "description": "Comprehensive security and quality enforcement",
+      "rules": ["sec-001", "sec-002", "sec-003", "owasp-001", "owasp-002", "owasp-003", "owasp-004", "cmt-001", "cmt-002", "tst-001", "tst-002", "doc-001", "doc-003", "sty-001", "eng-001", "eng-003"]
+    }
+  }
+}

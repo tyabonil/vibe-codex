@@ -27,11 +27,11 @@ jobs:
       with:
         node-version: '20'
         cache: 'npm'
-        cache-dependency-path: review-bots/package.json
+        cache-dependency-path: legacy/review-bots/package.json
     
     - name: Install Review Bots
       run: |
-        cd review-bots
+        cd legacy/review-bots
         npm install
         chmod +x bin/*.js
         # The 'npm link' command is not suitable for CI/CD environments as it creates global symlinks.
@@ -68,24 +68,24 @@ jobs:
         if [[ -n "$REVIEWABLE_FILES" ]]; then
           echo "Files to review: $REVIEWABLE_FILES"
           
-          # Prefix each file with ../ for relative paths from review-bots directory
+          # Prefix each file with ../../ for relative paths from legacy/review-bots directory
           PREFIXED_FILES=""
           for file in $REVIEWABLE_FILES; do
-            PREFIXED_FILES="$PREFIXED_FILES ../$file"
+            PREFIXED_FILES="$PREFIXED_FILES ../../$file"
           done
           
           # Run all three bots and save outputs
           echo "Running hater-bot..."
-          cd review-bots && node bin/hater-bot.js $PREFIXED_FILES --output ../hater-report.md --no-color || echo "Hater bot failed"
-          cd ..
+          cd legacy/review-bots && node bin/hater-bot.js $PREFIXED_FILES --output ../../hater-report.md --no-color || echo "Hater bot failed"
+          cd ../..
           
           echo "Running white-knight-bot..."
-          cd review-bots && node bin/white-knight-bot.js $PREFIXED_FILES --output ../knight-report.md --no-color || echo "White knight bot failed"
-          cd ..
+          cd legacy/review-bots && node bin/white-knight-bot.js $PREFIXED_FILES --output ../../knight-report.md --no-color || echo "White knight bot failed"
+          cd ../..
           
           echo "Running balance-bot..."
-          cd review-bots && node bin/balance-bot.js $PREFIXED_FILES --output ../balance-report.md --no-color || echo "Balance bot failed"
-          cd ..
+          cd legacy/review-bots && node bin/balance-bot.js $PREFIXED_FILES --output ../../balance-report.md --no-color || echo "Balance bot failed"
+          cd ../..
           
           # Combine reports
           echo "# 🤖 Review Bots Analysis" > combined-report.md
