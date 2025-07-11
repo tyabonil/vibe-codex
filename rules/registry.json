@@ -211,6 +211,17 @@
       "performance_impact": "low"
     },
     {
+      "id": "wfl-006",
+      "name": "Pre-Push Conflict Detection",
+      "category": "workflow",
+      "complexity": "basic",
+      "enabled_by_default": true,
+      "description": "Detect merge conflicts before pushing to prevent unmergeable PRs",
+      "file": "/rules/workflow/pre-push-conflict-detection.md#rule-wfl-006-pre-push-conflict-detection",
+      "implementation": "pre-push",
+      "performance_impact": "low"
+    },
+    {
       "id": "ai-001",
       "name": "Project Context Alignment",
       "category": "ai-development",
@@ -379,7 +390,7 @@
     "standard": {
       "name": "Standard",
       "description": "Recommended rules for most projects",
-      "rules": ["sec-001", "sec-002", "sec-003", "cmt-001", "tst-003", "doc-001", "sty-001", "sty-002"]
+      "rules": ["sec-001", "sec-002", "sec-003", "cmt-001", "tst-003", "doc-001", "sty-001", "sty-002", "wfl-006"]
     },
     "strict": {
       "name": "Strict",
@@ -389,7 +400,7 @@
     "ai-developer": {
       "name": "AI Developer",
       "description": "Optimized for AI-assisted development",
-      "rules": ["sec-001", "sec-002", "sec-003", "cmt-001", "cmt-002", "ai-001", "ai-003", "wfl-001", "wfl-002"]
+      "rules": ["sec-001", "sec-002", "sec-003", "cmt-001", "cmt-002", "ai-001", "ai-003", "wfl-001", "wfl-002", "wfl-006"]
     },
     "enterprise": {
       "name": "Enterprise",
