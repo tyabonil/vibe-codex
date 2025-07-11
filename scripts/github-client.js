@@ -11,5 +11,6 @@ class GitHubClient {
   async getPRCommits() { return []; }
   async createComment() {}
   async setStatusCheck() {}
+  async postComplianceComment() {}
 }
 module.exports = GitHubClient;
