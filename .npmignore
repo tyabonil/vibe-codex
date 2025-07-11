@@ -2,6 +2,9 @@
 test/
 examples/
 docs/
+dev-hooks/
+scripts/
+.claude/
 .github/
 .vscode/
 .idea/
