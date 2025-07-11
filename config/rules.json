@@ -1,5 +1,8 @@
 {
-  "message": "Bad credentials",
-  "documentation_url": "https://docs.github.com/rest",
-  "status": "401"
+  "version": "1.0.0",
+  "rules": {},
+  "metadata": {
+    "lastUpdated": "2024-07-11",
+    "source": "vibe-codex"
+  }
 }
