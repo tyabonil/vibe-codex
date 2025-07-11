@@ -34,3 +34,21 @@ Update the configuration system to use registry.json and create a proper schema 
 - Update installer to use new config system
 - Add tests for config validation
 - Replace old config command with new one
+
+## Session 2 - 2024-07-11 (continued)
+
+### Additional Work
+- Created `/lib/installer/git-hooks-v3.js` - Updated hook installer for v3
+- Updated hook script mappings in loader.js
+- Added WFL-007 automatic work log updates
+
+### Key Improvements
+- Hook installer now uses rule IDs from config
+- Generates hooks based on enabled rules
+- Each hook lists which rules it implements
+- Cleaner script generation
+
+### Still TODO
+- Update init command to use new config
+- Add tests
+- Replace old config/installer with new versions
