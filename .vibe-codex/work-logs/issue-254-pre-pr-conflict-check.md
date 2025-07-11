@@ -12,8 +12,8 @@ Discovered while working on PR #253 that we don't check for merge conflicts befo
 - [x] Added to standard preset
 
 ## Remaining Tasks
-- [ ] Test the hook locally
-- [ ] Create PR
+- [x] Test the hook locally (it works!)
+- [ ] Create PR targeting main (preview has too many conflicts)
 - [ ] Update PR #253 after this merges
 - [ ] Consider adding manual check-merge command later
 
