@@ -14,9 +14,9 @@ Creating a rule that requires maintaining local work tracking files for each iss
 - [ ] Documentation
 
 ## Remaining Tasks
-- [ ] Add documentation to main docs
-- [ ] Create PR
-- [ ] Update .gitignore to not ignore .vibe-codex/work-logs/
+- [ ] Add documentation to main docs  
+- [x] Create PR
+- [x] Update .gitignore to not ignore .vibe-codex/work-logs/
 
 ## Key Decisions
 - Using .vibe-codex directory to avoid cluttering root
