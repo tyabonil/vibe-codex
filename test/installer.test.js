@@ -115,6 +115,30 @@ describe('Installer', () => {
         expect.any(Object)
       );
     });
+
+    it('should include .env.example bypass in security check', async () => {
+      const config = {
+        gitHooks: true,
+        rules: ['security']
+      };
+
+      fs.access.mockResolvedValue();
+      fs.mkdir.mockResolvedValue();
+      fs.writeFile.mockResolvedValue();
+
+      await installHooks(config);
+
+      // Verify security check includes .env.example bypass
+      const writeCall = fs.writeFile.mock.calls.find(call => 
+        call[0].includes('pre-commit')
+      );
+      expect(writeCall).toBeDefined();
+      const hookContent = writeCall[1];
+      
+      // Check for .env.example bypass logic
+      expect(hookContent).toContain('example|sample|template');
+      expect(hookContent).toContain('Skip .env.example and similar files');
+    });
   });
 
   describe('uninstallHooks', () => {
