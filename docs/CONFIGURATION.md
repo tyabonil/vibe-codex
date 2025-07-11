@@ -1,433 +1,63 @@
-# Configuration Guide
+# Configuration
 
-This guide covers all configuration options available in vibe-codex.
+vibe-codex uses a simple JSON configuration file.
 
 ## Configuration File
 
-vibe-codex uses a `.vibe-codex.json` file in your project root for configuration. This file is created during initialization but can be edited manually.
-
-## Basic Structure
+After initialization, vibe-codex creates `.vibe-codex.json`:
 
 ```json
 {
-  "version": "1.0.0",
-  "modules": {
-    "module-name": {
-      "enabled": true,
-      "option1": "value1",
-      "option2": "value2"
-    }
-  }
+  "version": "3.0.0",
+  "gitHooks": true,
+  "githubActions": false,
+  "rules": ["security", "commit-format"],
+  "created": "2025-07-10T10:00:00.000Z"
 }
 ```
 
-## Module Configuration
+## Options
 
-### Core Module
+### `gitHooks`
+- `true` - Install git hooks (default)
+- `false` - Skip hook installation
 
-The core module is always enabled and provides essential security and workflow rules.
+### `githubActions`
+- `true` - Install GitHub Actions workflow
+- `false` - Skip GitHub Actions (default)
 
-```json
-{
-  "modules": {
-    "core": {
-      "enabled": true,
-      "secretPatterns": [
-        "custom_secret_pattern"
-      ],
-      "workflowRules": {
-        "requireIssueReference": true,
-        "branchNamingPattern": "^(feature|bugfix|hotfix)/issue-\\d+-[\\w-]+$"
-      }
-    }
-  }
-}
-```
+### `rules`
+Array of enabled rules:
+- `"security"` - Check for secrets
+- `"commit-format"` - Validate commit messages
+- `"testing"` - Run tests before commit
+- `"documentation"` - Check for README
+- `"code-style"` - Run linting
 
-**Options:**
-- `secretPatterns`: Additional regex patterns for detecting secrets
-- `workflowRules.requireIssueReference`: Enforce issue references in commits
-- `workflowRules.branchNamingPattern`: Custom branch naming regex
+## Changing Configuration
 
-### Testing Module
-
-Configure test coverage requirements and testing standards.
-
-```json
-{
-  "modules": {
-    "testing": {
-      "enabled": true,
-      "coverageThreshold": 80,
-      "testFilePattern": "**/*.{test,spec}.{js,ts,jsx,tsx}",
-      "requireTestFiles": true,
-      "excludePatterns": [
-        "**/node_modules/**",
-        "**/vendor/**"
-      ]
-    }
-  }
-}
-```
-
-**Options:**
-- `coverageThreshold`: Minimum code coverage percentage (0-100)
-- `testFilePattern`: Glob pattern for identifying test files
-- `requireTestFiles`: Whether every source file needs a test
-- `excludePatterns`: Files/directories to exclude from checks
-
-### GitHub Module
-
-GitHub-specific features and requirements.
-
-```json
-{
-  "modules": {
-    "github": {
-      "enabled": true,
-      "requirePRTemplate": true,
-      "requireIssueTemplates": true,
-      "requireCodeOwners": false,
-      "requireContributing": true,
-      "templates": {
-        "customPRTemplate": ".github/PULL_REQUEST_TEMPLATE/custom.md"
-      }
-    }
-  }
-}
-```
-
-**Options:**
-- `requirePRTemplate`: Enforce pull request templates
-- `requireIssueTemplates`: Enforce issue templates
-- `requireCodeOwners`: Require CODEOWNERS file
-- `requireContributing`: Require CONTRIBUTING.md
-- `templates`: Custom template locations
-
-### GitHub Workflow Module
-
-GitHub Actions and CI/CD configuration.
-
-```json
-{
-  "modules": {
-    "github-workflow": {
-      "enabled": true,
-      "requireCI": true,
-      "requireSecurityScanning": true,
-      "requireDependencyUpdates": true,
-      "workflowTimeout": 60,
-      "requiredWorkflows": [
-        "ci",
-        "security"
-      ]
-    }
-  }
-}
-```
-
-**Options:**
-- `requireCI`: Enforce CI workflow exists
-- `requireSecurityScanning`: Require security scanning (CodeQL, etc.)
-- `requireDependencyUpdates`: Require Dependabot or Renovate
-- `workflowTimeout`: Maximum workflow runtime in minutes
-- `requiredWorkflows`: List of required workflow names
-
-### Deployment Module
-
-Deployment and platform-specific configuration.
-
-```json
-{
-  "modules": {
-    "deployment": {
-      "enabled": true,
-      "platforms": ["vercel", "netlify", "docker"],
-      "requireDockerfile": false,
-      "requireBuildScript": true,
-      "requireHealthCheck": true,
-      "environmentVariables": {
-        "required": ["NODE_ENV", "API_URL"],
-        "documented": true
-      }
-    }
-  }
-}
-```
-
-**Options:**
-- `platforms`: Target deployment platforms
-- `requireDockerfile`: Enforce Dockerfile presence
-- `requireBuildScript`: Require build script in package.json
-- `requireHealthCheck`: Require health check endpoint
-- `environmentVariables`: Environment variable requirements
-
-### Documentation Module
-
-Documentation standards and requirements.
-
-```json
-{
-  "modules": {
-    "documentation": {
-      "enabled": true,
-      "requiredReadmeSections": [
-        "installation",
-        "usage",
-        "api",
-        "contributing"
-      ],
-      "requireApiDocs": true,
-      "requireChangelog": true,
-      "requireJsdoc": true,
-      "minReadmeLength": 200,
-      "changelogFormat": "keepachangelog"
-    }
-  }
-}
-```
-
-**Options:**
-- `requiredReadmeSections`: Required README.md sections
-- `requireApiDocs`: Enforce API documentation
-- `requireChangelog`: Require CHANGELOG.md
-- `requireJsdoc`: Enforce JSDoc comments
-- `minReadmeLength`: Minimum README character count
-- `changelogFormat`: Changelog format standard
-
-### Patterns Module
-
-Code organization and quality patterns.
-
-```json
-{
-  "modules": {
-    "patterns": {
-      "enabled": true,
-      "maxFileLength": 500,
-      "maxFunctionLength": 50,
-      "maxComplexity": 10,
-      "requireIndexFiles": true,
-      "enforceNamingConventions": true,
-      "fileNaming": {
-        "components": "PascalCase",
-        "utilities": "camelCase",
-        "constants": "UPPER_SNAKE_CASE"
-      }
-    }
-  }
-}
-```
-
-**Options:**
-- `maxFileLength`: Maximum lines per file
-- `maxFunctionLength`: Maximum lines per function
-- `maxComplexity`: Maximum cyclomatic complexity
-- `requireIndexFiles`: Enforce index files in directories
-- `enforceNamingConventions`: Enable naming convention checks
-- `fileNaming`: Specific naming rules by file type
-
-## Global Configuration
-
-### Environment-Specific Configuration
-
-You can use environment-specific configuration files:
-
-- `.vibe-codex.json` - Default configuration
-- `.vibe-codex.development.json` - Development overrides
-- `.vibe-codex.production.json` - Production overrides
-
-### Configuration Inheritance
-
-Configurations can extend from a base configuration:
-
-```json
-{
-  "extends": "@company/vibe-codex-config",
-  "modules": {
-    "testing": {
-      "coverageThreshold": 90
-    }
-  }
-}
-```
-
-## CLI Configuration
-
-Some configurations can be overridden via CLI flags:
-
+### Interactive (Recommended)
 ```bash
-# Override module selection
-npx vibe-codex validate --modules core,testing
-
-# Use different config file
-npx vibe-codex validate --config .vibe-codex.prod.json
-
-# CI mode (fail on warnings)
-npx vibe-codex validate --ci
+npx vibe-codex config
 ```
 
-## Advanced Configuration
+This opens a menu to select/deselect rules.
 
-### Custom Rules
-
-Add custom validation rules to any module:
-
-```json
-{
-  "modules": {
-    "core": {
-      "customRules": [
-        {
-          "id": "CUSTOM-1",
-          "pattern": "console\\.log",
-          "message": "Remove console.log statements",
-          "severity": "error"
-        }
-      ]
-    }
-  }
-}
-```
-
-### Hook Configuration
-
-Customize Git hook behavior:
-
-```json
-{
-  "hooks": {
-    "pre-commit": {
-      "enabled": true,
-      "runValidation": true,
-      "modules": ["core", "patterns"]
-    },
-    "pre-push": {
-      "enabled": true,
-      "runTests": true,
-      "runFullValidation": true
-    }
-  }
-}
-```
-
-### Ignore Patterns
-
-Global ignore patterns for all modules:
-
-```json
-{
-  "ignore": [
-    "**/build/**",
-    "**/dist/**",
-    "**/*.min.js",
-    "**/vendor/**"
-  ]
-}
-```
-
-## Validation Levels
-
-Configure which rule levels to enforce:
-
-```json
-{
-  "validation": {
-    "enforceLevel": 3,
-    "treatWarningsAsErrors": false,
-    "allowedViolations": {
-      "DOC-1": 5,
-      "PATTERN-2": 10
-    }
-  }
-}
-```
-
-## Module Dependencies
-
-Some modules depend on others. Dependencies are automatically enabled:
-
-- `github-workflow` requires `github`
-- `deployment` requires `core`
-
-## Disabling Specific Rules
-
-Disable individual rules without disabling the entire module:
-
-```json
-{
-  "modules": {
-    "patterns": {
-      "enabled": true,
-      "disabledRules": ["PATTERN-3", "PATTERN-5"]
-    }
-  }
-}
-```
-
-## Configuration Validation
-
-vibe-codex validates your configuration on load. To test your configuration:
-
+### Manual
+Edit `.vibe-codex.json` directly, then reinstall:
 ```bash
-npx vibe-codex config validate
+npx vibe-codex init
 ```
 
-## Examples
+## Minimal Configuration
 
-### Minimal Configuration
-
+For the simplest setup:
 ```json
 {
-  "version": "1.0.0",
-  "modules": {
-    "core": {
-      "enabled": true
-    }
-  }
+  "version": "3.0.0",
+  "gitHooks": true,
+  "rules": ["security"]
 }
 ```
 
-### Strict Configuration
-
-```json
-{
-  "version": "1.0.0",
-  "modules": {
-    "core": { "enabled": true },
-    "testing": {
-      "enabled": true,
-      "coverageThreshold": 95
-    },
-    "github": {
-      "enabled": true,
-      "requirePRTemplate": true,
-      "requireIssueTemplates": true,
-      "requireCodeOwners": true
-    },
-    "documentation": {
-      "enabled": true,
-      "requireJsdoc": true,
-      "minReadmeLength": 500
-    },
-    "patterns": {
-      "enabled": true,
-      "maxComplexity": 5,
-      "maxFileLength": 300
-    }
-  },
-  "validation": {
-    "treatWarningsAsErrors": true
-  }
-}
-```
-
-## Migration from Older Versions
-
-If migrating from pre-1.0.0 versions, use the migration command:
-
-```bash
-npx vibe-codex migrate
-```
-
-This will convert your old configuration to the new modular format.
+This only checks for secrets - perfect for most projects.
