@@ -1,0 +1,7 @@
+# Don't ignore work logs - they should be committed
+!work-logs/
+!work-logs/*.md
+
+# But ignore any temp files
+work-logs/*.tmp
+work-logs/*.bak
