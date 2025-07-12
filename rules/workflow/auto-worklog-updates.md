@@ -59,8 +59,8 @@ This rule automates the process, ensuring every commit is logged.
 
 ### Options
 - **auto_update_issue**: Also post updates to GitHub issue (requires `gh` CLI)
-- **include_diff_stats**: Include lines added/removed statistics
-- **session_grouping**: How to group commits ("daily", "hourly", "none")
+- **include_diff_stats**: Include file change details in GitHub updates
+- **session_grouping**: How to group commits in work logs ("daily" only for now)
 
 ## Example Output
 
@@ -85,8 +85,29 @@ feat: add user authentication
 ```
 
 ### GitHub Issue Update (if enabled)
+```markdown
+🔄 **Automated Work Log Update**
+
+**Branch**: `feature/issue-123-auth`
+**Commit**: `abc123f` - 2024-07-11 14:30
+
+**Message**:
 ```
-Progress update - Commit `abc123f`: feat: add user authentication
+feat: add user authentication
+
+- Implement JWT tokens
+- Add login/logout endpoints
+- Create auth middleware
+```
+
+**Files Changed**:
+- 🆕 Added: `src/auth/jwt.js`
+- 🆕 Added: `src/routes/auth.js`
+- 📝 Modified: `src/middleware/index.js`
+- 🆕 Added: `tests/auth.test.js`
+
+---
+*This update was generated automatically by vibe-codex WFL-007*
 ```
 
 ## Benefits

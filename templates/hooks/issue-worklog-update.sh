@@ -2,6 +2,8 @@
 # vibe-codex issue work log auto-update hook
 # Automatically appends commit info to work logs
 
+set -euo pipefail
+
 # Get current branch and extract issue number
 BRANCH=$(git branch --show-current)
 ISSUE_NUM=$(echo "$BRANCH" | grep -oE '[0-9]+' | head -1)
@@ -64,16 +66,47 @@ echo "📝 Updated work log for issue #${ISSUE_NUM}"
 
 # Also update GitHub issue if configured
 if [ -f ".vibe-codex.json" ] && command -v gh &> /dev/null; then
-  # Check if auto-update is enabled in config
-  AUTO_UPDATE=$(jq -r '.rules."wfl-005".options.auto_update_issue // false' .vibe-codex.json 2>/dev/null)
+  # Check if auto-update is enabled in config (checking both .vibe-codex.json and .vibe-codex-test.json)
+  CONFIG_FILE=".vibe-codex.json"
+  if [ -f ".vibe-codex-test.json" ]; then
+    CONFIG_FILE=".vibe-codex-test.json"
+  fi
+  
+  AUTO_UPDATE=$(jq -r '.rules."wfl-007".options.auto_update_issue // false' "$CONFIG_FILE" 2>/dev/null)
+  INCLUDE_DIFF=$(jq -r '.rules."wfl-007".options.include_diff_stats // true' "$CONFIG_FILE" 2>/dev/null)
   
   if [ "$AUTO_UPDATE" = "true" ]; then
-    # Create a brief update for the issue
-    UPDATE="Progress update - Commit \`$COMMIT_HASH\`: $COMMIT_MSG"
+    # Build GitHub comment
+    UPDATE="🔄 **Automated Work Log Update**"
+    UPDATE+="\n\n**Branch**: \`$BRANCH\`"
+    UPDATE+="\n**Commit**: \`$COMMIT_HASH\` - $TIMESTAMP"
+    UPDATE+="\n\n**Message**:"
+    UPDATE+="\n\`\`\`"
+    UPDATE+="\n$COMMIT_MSG"
+    UPDATE+="\n\`\`\`"
+    
+    # Add file changes if configured
+    if [ "$INCLUDE_DIFF" = "true" ]; then
+      UPDATE+="\n\n**Files Changed**:"
+      while IFS=$'\t' read -r status file; do
+        case $status in
+          A) UPDATE+="\n- 🆕 Added: \`$file\`" ;;
+          M) UPDATE+="\n- 📝 Modified: \`$file\`" ;;
+          D) UPDATE+="\n- 🗑️ Deleted: \`$file\`" ;;
+          R*) UPDATE+="\n- 📋 Renamed: \`$file\`" ;;
+        esac
+      done < <(git diff-tree --no-commit-id --name-status -r HEAD)
+    fi
+    
+    UPDATE+="\n\n---"
+    UPDATE+="\n*This update was generated automatically by vibe-codex WFL-007*"
     
     # Post comment to issue
-    gh issue comment "$ISSUE_NUM" --body "$UPDATE" 2>/dev/null && \
+    if echo -e "$UPDATE" | gh issue comment "$ISSUE_NUM" --body-file - 2>&1; then
       echo "📌 Updated GitHub issue #${ISSUE_NUM}"
+    else
+      echo "⚠️  Failed to update GitHub issue #${ISSUE_NUM}"
+    fi
   fi
 fi
 
