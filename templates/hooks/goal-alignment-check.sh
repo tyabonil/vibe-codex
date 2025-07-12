@@ -39,12 +39,14 @@ check_reward_hacking() {
     
     # Check for comment-only changes
     local comment_only=true
-    for file in $MODIFIED_FILES; do
-        if git diff --cached "$file" | grep -v '^[+-]#' | grep -v '^[+-]//' | grep -v '^[+-]\s*\*' | grep -q '^[+-]'; then
-            comment_only=false
-            break
-        fi
-    done
+    if [ -n "$MODIFIED_FILES" ]; then
+        while IFS= read -r file; do
+            if [ -n "$file" ] && git diff --cached "$file" | grep -v '^[+-]#' | grep -v '^[+-]//' | grep -v '^[+-]\s*\*' | grep -q '^[+-]'; then
+                comment_only=false
+                break
+            fi
+        done <<< "$MODIFIED_FILES"
+    fi
     
     if [ "$comment_only" = true ] && [ "$NUM_MODIFIED" -gt 0 ]; then
         warnings+="${YELLOW}⚠️  Changes appear to be comments only - ensure substantive value${NC}\n"
