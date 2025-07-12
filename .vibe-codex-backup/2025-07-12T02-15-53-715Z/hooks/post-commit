@@ -1,0 +1,19 @@
+#!/bin/bash
+# Post-commit hook to monitor PR workflow and update work logs
+
+# Run PR monitoring after each commit
+if [ -f "hooks/continuous-pr-monitor.sh" ]; then
+    echo "Running PR workflow monitor..."
+    ./hooks/continuous-pr-monitor.sh
+fi
+
+# Run work log update (WFL-007)
+if [ -f "templates/hooks/issue-worklog-update.sh" ]; then
+    bash templates/hooks/issue-worklog-update.sh
+fi
+
+# Run issue grooming check (WFL-008) - optional info only
+if [ -f "templates/hooks/issue-grooming-hook.sh" ] && [ "${VIBE_CODEX_GROOM:-true}" = "true" ]; then
+    # Run in background to not slow down commits
+    (bash templates/hooks/issue-grooming-hook.sh 2>/dev/null &)
+fi

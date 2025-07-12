@@ -31,3 +31,29 @@ Harmonize repository structure by removing duplicates, organizing LLM rules, and
 - Created branch feature/issue-271-harmonization
 - Enhanced grooming hook for project alignment
 - Ready to start harmonization
+### Commit: 8eab744 - 2025-07-11 21:47
+```
+feat: enhance issue grooming hook for project alignment
+
+- Added project structure alignment checks
+- Detect external contributors and misaligned implementations
+- Provide guided remediation for architecture compliance
+- Enable WFL-007 with GitHub issue updates in config
+
+This ensures all contributions align with vibe-codex architecture.
+```
+
+**Files changed:**
+- Modified: .vibe-codex.json
+- Added: .vibe-codex/work-logs/issue-266-work.md
+- Added: .vibe-codex/work-logs/issue-271-work.md
+- Added: rules/llm-specific/README.md
+- Added: rules/llm-specific/claude-anthropic-rules.md
+- Added: rules/llm-specific/claude-rules.md
+- Added: rules/llm-specific/cline-rules.md
+- Added: rules/llm-specific/cursor-ai-rules.md
+- Added: rules/llm-specific/github-copilot-rules.md
+- Added: rules/llm-specific/gpt4-openai-rules.md
+- Added: rules/workflow/issue-grooming.md
+- Added: templates/hooks/issue-grooming-hook.sh
+
