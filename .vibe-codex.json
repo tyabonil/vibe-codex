@@ -4,7 +4,14 @@
   "rules": {
     "sec-001": { "enabled": true },
     "sec-002": { "enabled": true },
-    "cmt-001": { "enabled": true }
+    "cmt-001": { "enabled": true },
+    "wfl-007": { 
+      "enabled": true,
+      "options": {
+        "auto_update_issue": true,
+        "include_diff_stats": true
+      }
+    }
   },
   "projectContext": {
     "enabled": false,
