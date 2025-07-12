@@ -1,0 +1,21 @@
+{
+  "version": "3.0.0",
+  "preset": "minimal",
+  "rules": {
+    "sec-001": { "enabled": true },
+    "sec-002": { "enabled": true },
+    "cmt-001": { "enabled": true }
+  },
+  "projectContext": {
+    "enabled": false,
+    "file": "PROJECT-CONTEXT.md"
+  },
+  "hooks": {
+    "pre-commit": true,
+    "commit-msg": true,
+    "pre-push": true,
+    "post-commit": true
+  },
+  "createdAt": "2025-07-11T20:00:00Z",
+  "lastModified": "2025-07-11T20:30:00Z"
+}
