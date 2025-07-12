@@ -1,5 +1,24 @@
 {
-  "message": "Bad credentials",
-  "documentation_url": "https://docs.github.com/rest",
-  "status": "401"
+  "deprecated": true,
+  "message": "This configuration file is deprecated. Please use rules/registry.json instead.",
+  "migration": "See https://github.com/tyabonil/vibe-codex/blob/main/docs/LEGACY-MIGRATION.md",
+  "rules": {
+    "note": "Legacy rules configuration - DO NOT USE",
+    "security": {
+      "enabled": true,
+      "level": 1
+    },
+    "workflow": {
+      "enabled": true,
+      "level": 2
+    },
+    "quality": {
+      "enabled": true,
+      "level": 3
+    },
+    "patterns": {
+      "enabled": false,
+      "level": 4
+    }
+  }
 }

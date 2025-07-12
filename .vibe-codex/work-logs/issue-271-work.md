@@ -57,3 +57,50 @@ This ensures all contributions align with vibe-codex architecture.
 - Added: rules/workflow/issue-grooming.md
 - Added: templates/hooks/issue-grooming-hook.sh
 
+
+### Commit: fafddc1 - 2025-07-11 22:18
+```
+feat: add dependency safety and reward hacking prevention rules
+
+- Added WFL-009 (Dependency Safety Check) to prevent deletion of files with active dependencies
+- Added AI-005 (Goal Alignment Verification) to prevent AI reward hacking
+- Created dependency-check-hook.sh that checks all branches and working directory
+- Discovered legacy directories have active dependencies (GitHub Actions, tests)
+- Created issue #276 to properly migrate legacy dependencies
+- Downgraded chalk and ora to v4/v5 for CommonJS compatibility
+- Verified all 12 LLM rules are properly registered and files exist
+
+This work demonstrates why we need these safety rules - I almost deleted
+critical files without checking dependencies first.
+```
+
+**Files changed:**
+- Added: .vibe-codex-backup/2025-07-12T02-15-53-715Z/.vibe-codex.json
+- Added: .vibe-codex-backup/2025-07-12T02-15-53-715Z/PROJECT_CONTEXT.md
+- Added: .vibe-codex-backup/2025-07-12T02-15-53-715Z/hooks/commit-msg
+- Added: .vibe-codex-backup/2025-07-12T02-15-53-715Z/hooks/issue-worklog-update.sh
+- Added: .vibe-codex-backup/2025-07-12T02-15-53-715Z/hooks/post-commit
+- Added: .vibe-codex-backup/2025-07-12T02-15-53-715Z/hooks/post-merge
+- Added: .vibe-codex-backup/2025-07-12T02-15-53-715Z/hooks/pre-commit
+- Added: .vibe-codex-backup/2025-07-12T02-15-53-715Z/hooks/pre-push
+- Added: .vibe-codex-backup/2025-07-12T02-15-53-715Z/manifest.json
+- Modified: .vibe-codex/work-logs/issue-271-work.md
+- Deleted: MANDATORY-RULES.md
+- Modified: config/commit-msg.json
+- Deleted: config/project-patterns.json
+- Deleted: legacy/enhanced-rules/COMPARISON-MATRIX.md
+- Deleted: legacy/enhanced-rules/ENHANCED-MANDATORY-RULES.md
+- Deleted: legacy/enhanced-rules/RESEARCH-SUMMARY.md
+- Deleted: llm-specific/README.md
+- Deleted: llm-specific/claude-anthropic-rules.md
+- Deleted: llm-specific/cline-rules.md
+- Deleted: llm-specific/cursor-ai-rules.md
+- Deleted: llm-specific/github-copilot-rules.md
+- Deleted: llm-specific/gpt4-openai-rules.md
+- Modified: package.json
+- Added: rules/ai-development/reward-hacking-prevention.md
+- Deleted: rules/llm-specific/claude-anthropic-rules.md
+- Modified: rules/registry.json
+- Added: rules/workflow/dependency-safety-check.md
+- Added: templates/hooks/dependency-check-hook.sh
+

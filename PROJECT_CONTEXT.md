@@ -16,7 +16,7 @@ This repository provides:
 
 ### Core Components
 - **MANDATORY-RULES.md**: Human-readable rule documentation
-- **Rule Engine**: Automated validation system (`scripts/rule-engine.js`)
+- **Rule System**: Modular rule system with registry (`rules/registry.json`)
 - **GitHub Actions**: Centralized rule checking workflows
 - **Git Hooks**: Local pre-commit and commit-msg validation
 - **.claude Directory**: AI-assisted development tools

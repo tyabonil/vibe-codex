@@ -1,6 +1,6 @@
 /**
- * Integration tests for git hooks with npm package
- * Ensures hooks work within the mandatory-rules-checker ecosystem
+ * Integration tests for git hooks with vibe-codex
+ * Ensures hooks work within the vibe-codex ecosystem
  */
 
 const { describe, test, expect, beforeEach, afterEach } = require('@jest/globals');
@@ -71,8 +71,8 @@ describe('Hooks Integration with NPM Package', () => {
       const packagePath = path.join(originalCwd, 'package.json');
       const packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
       
-      expect(packageJson.name).toBe('mandatory-rules-checker');
-      expect(packageJson.main).toBe('scripts/rule-engine.js');
+      expect(packageJson.name).toBe('vibe-codex');
+      expect(packageJson.main).toBe('lib/index.js');
     });
 
     test('should have test scripts for hooks', () => {
@@ -124,16 +124,16 @@ describe('Hooks Integration with NPM Package', () => {
     });
   });
 
-  describe('Rule Engine Integration', () => {
-    test('should work with existing rule engine structure', () => {
-      // Check that our hooks complement the existing rule engine
-      const ruleEnginePath = path.join(originalCwd, 'scripts/rule-engine.js');
-      expect(fs.existsSync(ruleEnginePath)).toBe(true);
+  describe('Vibe Codex Integration', () => {
+    test('should work with vibe-codex rule system', () => {
+      // Check that our hooks complement the vibe-codex rule system
+      const registryPath = path.join(originalCwd, 'rules/registry.json');
+      expect(fs.existsSync(registryPath)).toBe(true);
       
-      const content = fs.readFileSync(ruleEnginePath, 'utf8');
-      expect(content).toContain('class RuleEngine');
-      expect(content).toContain('checkLevel1Security');
-      expect(content).toContain('checkLevel2Workflow');
+      const registry = JSON.parse(fs.readFileSync(registryPath, 'utf8'));
+      expect(registry.version).toBeDefined();
+      expect(registry.rules).toBeInstanceOf(Array);
+      expect(registry.rules.length).toBeGreaterThan(0);
     });
 
     test('should be testable independently', () => {
