@@ -1,2 +1,0 @@
-Test file for issue #267
-Testing GitHub issue updates
