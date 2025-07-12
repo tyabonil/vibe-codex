@@ -29,6 +29,8 @@ Plan to implement the remaining vibe-codex enhancements following our own rules.
 - Add to registry.json
 - Enhance the rule catalog
 
+---
+
 ## Implementation Approach (Following Our Rules)
 
 ### For Each Issue:
