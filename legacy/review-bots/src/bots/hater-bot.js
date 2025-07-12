@@ -77,15 +77,33 @@ class HaterBot extends BaseBot {
       });
     }
 
-    // Console.log statements
-    const consoleCount = (content.match(/console\.(log|error|warn|info)/g) || []).length;
-    if (consoleCount > 0) {
-      issues.push({
-        severity: 'high',
-        title: `${consoleCount} Amateur Hour console.log Statements`,
-        description: `Still using console.log for debugging in production code? What's next, alert() dialogs? This isn't 2008. Use a proper logging library like a professional.`,
-        suggestion: `Use a real logger with levels, timestamps, and output control. Winston, Bunyan, Pino - pick one.`
-      });
+    // Console.log statements - but be smart about it
+    const consoleMatches = content.match(/console\.(log|error|warn|info)/g) || [];
+    if (consoleMatches.length > 0) {
+      // Check if this is a CLI tool or logger utility
+      const isCLITool = filePath.includes('bin/') || filePath.includes('/cli/') || filePath.endsWith('-cli.js');
+      const isLogger = filePath.includes('logger') || filePath.includes('log');
+      const isTest = filePath.includes('.test.') || filePath.includes('.spec.') || filePath.includes('test/');
+      
+      // Check if console statements are wrapped in environment checks
+      const unwrappedConsoles = this.findUnwrappedConsoleStatements(content);
+      
+      if (unwrappedConsoles.length > 0 && !isCLITool && !isLogger && !isTest) {
+        issues.push({
+          severity: 'high',
+          title: `${unwrappedConsoles.length} Amateur Hour console.log Statements`,
+          description: `Still using console.log for debugging in production code? What's next, alert() dialogs? This isn't 2008. Use a proper logging library like a professional.`,
+          suggestion: `Use a real logger with levels, timestamps, and output control. Winston, Bunyan, Pino - pick one. Or at least wrap them in environment checks like: if (process.env.NODE_ENV !== 'production') { console.log(...) }`
+        });
+      } else if (consoleMatches.length > 10 && !isCLITool) {
+        // Even wrapped consoles are suspicious if there are too many
+        issues.push({
+          severity: 'medium',
+          title: `${consoleMatches.length} Console Statements - Even Wrapped Ones Get Excessive`,
+          description: `Sure, you wrapped them in environment checks, but ${consoleMatches.length} console statements? This isn't a debugging playground. Use a proper logging library.`,
+          suggestion: `Consider using a structured logging library that provides better control over log levels, formatting, and output destinations.`
+        });
+      }
     }
 
     return issues;
@@ -332,6 +350,50 @@ class HaterBot extends BaseBot {
     report += `\nRemember: I'm not angry, I'm just disappointed. Actually, I'm both.\n`;
 
     return report;
+  }
+
+  /**
+   * Find console statements that aren't wrapped in environment checks
+   */
+  findUnwrappedConsoleStatements(content) {
+    const lines = content.split('\n');
+    const unwrapped = [];
+    
+    lines.forEach((line, index) => {
+      // Skip if line is commented out
+      if (line.trim().startsWith('//') || line.trim().startsWith('*')) {
+        return;
+      }
+      
+      // Check if line contains console statement
+      if (line.match(/console\.(log|error|warn|info)/)) {
+        // Look for environment check in surrounding lines (up to 5 lines above)
+        let isWrapped = false;
+        const startCheck = Math.max(0, index - 5);
+        
+        for (let i = startCheck; i <= index; i++) {
+          const checkLine = lines[i];
+          // Check for common environment wrapping patterns
+          if (checkLine.match(/process\.env\.NODE_ENV\s*!==?\s*['"]production['"]/) ||
+              checkLine.match(/process\.env\.DEBUG/) ||
+              checkLine.match(/if\s*\(\s*debug\s*\)/) ||
+              checkLine.match(/logger\.(log|debug|info|warn|error)/) ||
+              checkLine.match(/DEV|DEVELOPMENT|DEBUG/)) {
+            isWrapped = true;
+            break;
+          }
+        }
+        
+        if (!isWrapped) {
+          unwrapped.push({
+            line: index + 1,
+            content: line.trim()
+          });
+        }
+      }
+    });
+    
+    return unwrapped;
   }
 }
 
