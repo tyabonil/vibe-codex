@@ -26,7 +26,7 @@
   "author": "Ty Yabonil",
   "main": "lib/index.js",
   "bin": {
-    "vibe-codex": "./bin/vibe-codex.js"
+    "vibe-codex": "bin/vibe-codex.js"
   },
   "files": [
     "bin/",
@@ -99,5 +99,12 @@
       "prefer-const": "error",
       "no-var": "error"
     }
-  }
+  },
+  "directories": {
+    "doc": "docs",
+    "example": "examples",
+    "lib": "lib",
+    "test": "tests"
+  },
+  "type": "commonjs"
 }

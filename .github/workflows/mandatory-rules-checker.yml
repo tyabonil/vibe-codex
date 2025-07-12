@@ -1,10 +1,12 @@
-name: MANDATORY Rules Compliance Checker
+name: MANDATORY Rules Compliance Checker (DEPRECATED)
+
+# DEPRECATED: This workflow is obsolete and will be removed.
+# It relies on MANDATORY-RULES.md which has been replaced by the modular rule system.
+# Use vibe-codex CLI and registry.json instead.
+# See issue #276 for migration details.
 
 on:
-  pull_request:
-    types: [opened, synchronize, ready_for_review]
-  pull_request_review:
-    types: [submitted]
+  workflow_dispatch:  # Only run manually, no longer triggered automatically
 
 jobs:
   rule-compliance:
