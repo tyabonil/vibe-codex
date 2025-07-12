@@ -8,14 +8,15 @@
 const { program } = require('commander');
 const chalk = require('chalk');
 const packageJson = require('../package.json');
+const logger = require('../lib/utils/cli-logger');
 
 // Display banner
-console.log(chalk.blue(`
+logger.blue(`
 ╔═══════════════════════════════════════╗
 ║           vibe-codex v${packageJson.version}          ║
 ║   Interactive Development Workflow    ║
 ╚═══════════════════════════════════════╝
-`));
+`);
 
 // Set up the main program
 program
@@ -39,9 +40,9 @@ program
       const init = require('../lib/commands/init');
       await init(options);
     } catch (error) {
-      console.error(chalk.red('Error:'), error.message);
+      logger.danger(`Error: ${error.message}`);
       if (program.opts().debug) {
-        console.error(error.stack);
+        logger.debug(error.stack);
       }
       process.exit(1);
     }
@@ -62,9 +63,9 @@ program
       const config = require('../lib/commands/config-v3');
       await config(options);
     } catch (error) {
-      console.error(chalk.red('Error:'), error.message);
+      logger.danger(`Error: ${error.message}`);
       if (program.opts().debug) {
-        console.error(error.stack);
+        logger.debug(error.stack);
       }
       process.exit(1);
     }
@@ -84,9 +85,9 @@ program
       const validate = require('../lib/commands/validate');
       await validate(options);
     } catch (error) {
-      console.error(chalk.red('Error:'), error.message);
+      logger.danger(`Error: ${error.message}`);
       if (program.opts().debug) {
-        console.error(error.stack);
+        logger.debug(error.stack);
       }
       process.exit(1);
     }
@@ -103,9 +104,9 @@ program
       const doctor = require('../lib/commands/doctor');
       await doctor(options);
     } catch (error) {
-      console.error(chalk.red('Error:'), error.message);
+      logger.danger(`Error: ${error.message}`);
       if (program.opts().debug) {
-        console.error(error.stack);
+        logger.debug(error.stack);
       }
       process.exit(1);
     }
@@ -123,9 +124,9 @@ program
       const update = require('../lib/commands/update');
       await update(options);
     } catch (error) {
-      console.error(chalk.red('Error:'), error.message);
+      logger.danger(`Error: ${error.message}`);
       if (program.opts().debug) {
-        console.error(error.stack);
+        logger.debug(error.stack);
       }
       process.exit(1);
     }
@@ -143,9 +144,9 @@ program
       const status = require('../lib/commands/status');
       await status(options);
     } catch (error) {
-      console.error(chalk.red('Error:'), error.message);
+      logger.danger(`Error: ${error.message}`);
       if (program.opts().debug) {
-        console.error(error.stack);
+        logger.debug(error.stack);
       }
       process.exit(1);
     }
@@ -164,18 +165,18 @@ moduleCmd
       const moduleLoader = require('../lib/modules/loader');
       const modules = moduleLoader.getAvailableModules();
       
-      console.log(chalk.blue('\n📦 Available vibe-codex Modules:\n'));
+      logger.blue('\n📦 Available vibe-codex Modules:\n');
       
       modules.forEach(module => {
-        console.log(chalk.bold(`  ${module.name}`));
-        console.log(chalk.gray(`    ${module.description}`));
-        console.log(chalk.gray(`    Version: ${module.version}`));
-        console.log();
+        logger.bold(`  ${module.name}`);
+        logger.gray(`    ${module.description}`);
+        logger.gray(`    Version: ${module.version}`);
+        logger.log();
       });
     } catch (error) {
-      console.error(chalk.red('Error:'), error.message);
+      logger.danger(`Error: ${error.message}`);
       if (program.opts().debug) {
-        console.error(error.stack);
+        logger.debug(error.stack);
       }
       process.exit(1);
     }
@@ -186,12 +187,12 @@ moduleCmd
   .description('Enable a module')
   .action(async (moduleName) => {
     try {
-      console.log(chalk.green(`Enabling module: ${moduleName}`));
+      logger.success(`Enabling module: ${moduleName}`);
       // Implementation would modify config
     } catch (error) {
-      console.error(chalk.red('Error:'), error.message);
+      logger.danger(`Error: ${error.message}`);
       if (program.opts().debug) {
-        console.error(error.stack);
+        logger.debug(error.stack);
       }
       process.exit(1);
     }
@@ -202,12 +203,12 @@ moduleCmd
   .description('Disable a module')
   .action(async (moduleName) => {
     try {
-      console.log(chalk.yellow(`Disabling module: ${moduleName}`));
+      logger.warning(`Disabling module: ${moduleName}`);
       // Implementation would modify config
     } catch (error) {
-      console.error(chalk.red('Error:'), error.message);
+      logger.danger(`Error: ${error.message}`);
       if (program.opts().debug) {
-        console.error(error.stack);
+        logger.debug(error.stack);
       }
       process.exit(1);
     }
@@ -233,11 +234,11 @@ hookCmd
       }
       
       await gitHooks.installGitHooks(config);
-      console.log(chalk.green('✅ Git hooks installed'));
+      logger.success('✅ Git hooks installed');
     } catch (error) {
-      console.error(chalk.red('Error:'), error.message);
+      logger.danger(`Error: ${error.message}`);
       if (program.opts().debug) {
-        console.error(error.stack);
+        logger.debug(error.stack);
       }
       process.exit(1);
     }
@@ -250,11 +251,11 @@ hookCmd
     try {
       const gitHooks = require('../lib/installer/git-hooks');
       await gitHooks.uninstallGitHooks();
-      console.log(chalk.yellow('Git hooks uninstalled'));
+      logger.warning('Git hooks uninstalled');
     } catch (error) {
-      console.error(chalk.red('Error:'), error.message);
+      logger.danger(`Error: ${error.message}`);
       if (program.opts().debug) {
-        console.error(error.stack);
+        logger.debug(error.stack);
       }
       process.exit(1);
     }
@@ -270,9 +271,9 @@ program
       const updateIssues = require('../lib/commands/update-issues');
       await updateIssues(options);
     } catch (error) {
-      console.error(chalk.red('Error:'), error.message);
+      logger.danger(`Error: ${error.message}`);
       if (program.opts().debug) {
-        console.error(error.stack);
+        logger.debug(error.stack);
       }
       process.exit(1);
     }
@@ -290,15 +291,15 @@ program
     } catch (error) {
       // Don't output errors for hook commands
       if (program.opts().debug) {
-        console.error(error.stack);
+        logger.debug(error.stack);
       }
     }
   });
 
 // Handle unknown commands
 program.on('command:*', function () {
-  console.error(chalk.red('Invalid command:'), program.args.join(' '));
-  console.log('See --help for a list of available commands.');
+  logger.danger(`Invalid command: ${program.args.join(' ')}`);
+  logger.log('See --help for a list of available commands.');
   process.exit(1);
 });
 
@@ -317,9 +318,9 @@ program
       const checkDeps = require('../lib/commands/check-deps');
       await checkDeps(files, options);
     } catch (error) {
-      console.error(chalk.red('Error:'), error.message);
+      logger.danger(`Error: ${error.message}`);
       if (program.opts().debug) {
-        console.error(error.stack);
+        logger.debug(error.stack);
       }
       process.exit(1);
     }
