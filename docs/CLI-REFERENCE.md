@@ -220,6 +220,38 @@ npx vibe-codex migrate --dry-run
 npx vibe-codex migrate --backup
 ```
 
+### `check-deps`
+
+Check if files have dependencies before deletion.
+
+```bash
+npx vibe-codex check-deps <files...> [options]
+```
+
+**Arguments:**
+- `<files...>`: One or more files to check for dependencies
+
+**Options:**
+- `-v, --verbose`: Show detailed dependency information
+
+**Examples:**
+```bash
+# Check single file
+npx vibe-codex check-deps src/old-utils.js
+
+# Check multiple files
+npx vibe-codex check-deps legacy/module.js legacy/helper.js
+
+# Verbose output
+npx vibe-codex check-deps src/deprecated.js --verbose
+```
+
+This command helps prevent accidental deletion of files that are still being used by:
+- Checking for imports/requires in all project files
+- Scanning git branches (main, preview, current)
+- Checking configuration files
+- Verifying git hooks don't reference the files
+
 ### `doctor`
 
 Diagnose common issues with vibe-codex setup.

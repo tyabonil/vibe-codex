@@ -307,5 +307,23 @@ if (!process.argv.slice(2).length) {
   program.outputHelp();
 }
 
+// Check-deps command - Check file dependencies before deletion
+program
+  .command('check-deps <files...>')
+  .description('Check if files have dependencies before deletion')
+  .option('-v, --verbose', 'show detailed dependency information')
+  .action(async (files, options) => {
+    try {
+      const checkDeps = require('../lib/commands/check-deps');
+      await checkDeps(files, options);
+    } catch (error) {
+      console.error(chalk.red('Error:'), error.message);
+      if (program.opts().debug) {
+        console.error(error.stack);
+      }
+      process.exit(1);
+    }
+  });
+
 // Parse command line arguments
 program.parse(process.argv);
