@@ -59,7 +59,7 @@ program
   .option('-p, --preview', 'preview configuration impact')
   .action(async (options) => {
     try {
-      const config = require('../lib/commands/config');
+      const config = require('../lib/commands/config-v3');
       await config(options);
     } catch (error) {
       console.error(chalk.red('Error:'), error.message);
