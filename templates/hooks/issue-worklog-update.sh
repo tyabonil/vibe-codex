@@ -2,6 +2,8 @@
 # vibe-codex issue work log auto-update hook
 # Automatically appends commit info to work logs
 
+set -euo pipefail
+
 # Get current branch and extract issue number
 BRANCH=$(git branch --show-current)
 ISSUE_NUM=$(echo "$BRANCH" | grep -oE '[0-9]+' | head -1)
