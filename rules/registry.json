@@ -233,6 +233,17 @@
       "performance_impact": "low"
     },
     {
+      "id": "wfl-007",
+      "name": "Automatic Work Log Updates",
+      "category": "workflow",
+      "complexity": "basic",
+      "enabled_by_default": false,
+      "description": "Automatically update issue work logs with commit information",
+      "file": "/rules/workflow/auto-worklog-updates.md#rule-wfl-007-automatic-work-log-updates",
+      "implementation": "post-commit",
+      "performance_impact": "low"
+    },
+    {
       "id": "ai-001",
       "name": "Project Context Alignment",
       "category": "ai-development",
