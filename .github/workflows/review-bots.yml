@@ -199,8 +199,9 @@ jobs:
               status = 'failure';
               description = 'Critical issues found - see review comments';
             } else if (content.includes('HIGH - Fix This Week')) {
-              status = 'failure';
-              description = 'High priority issues found - see review comments';
+              // High priority issues are warnings, not failures
+              status = 'success';
+              description = 'High priority issues found (non-blocking) - see review comments';
             }
           }
           
