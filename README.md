@@ -2,7 +2,7 @@
 
 > Automated development rules and workflow enforcement for modern software teams
 
-> **Migration Notice**: This repository has been consolidated from the original `cursor_rules` project. If you were using the bash script installation method, please see the [migration guide](docs/getting-started/MIGRATION.md). The legacy cursor_rules implementation is preserved in the `legacy/` directory.
+> **Migration Notice**: This repository has evolved from the original `mandatory-rules-checker` project. If you were using the legacy system, please see the [migration guide](docs/LEGACY-MIGRATION.md). Legacy compatibility is maintained temporarily in the `legacy/` and `scripts/` directories.
 
 [![npm version](https://img.shields.io/npm/v/vibe-codex.svg)](https://www.npmjs.com/package/vibe-codex)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
