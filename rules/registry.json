@@ -244,6 +244,28 @@
       "performance_impact": "low"
     },
     {
+      "id": "wfl-008",
+      "name": "Issue Grooming and Dependency Check",
+      "category": "workflow",
+      "complexity": "advanced",
+      "enabled_by_default": false,
+      "description": "Review linked issues and verify project alignment before work",
+      "file": "/rules/workflow/issue-grooming.md#rule-wfl-008-issue-grooming-and-dependency-check",
+      "implementation": "pre-commit",
+      "performance_impact": "low"
+    },
+    {
+      "id": "wfl-009",
+      "name": "Dependency Safety Check",
+      "category": "workflow",
+      "complexity": "advanced",
+      "enabled_by_default": true,
+      "description": "Prevents deletion of files with active dependencies",
+      "file": "/rules/workflow/dependency-safety-check.md#rule-wfl-009-dependency-safety-check",
+      "implementation": "pre-commit",
+      "performance_impact": "low"
+    },
+    {
       "id": "ai-001",
       "name": "Project Context Alignment",
       "category": "ai-development",
@@ -272,7 +294,7 @@
       "complexity": "advanced",
       "enabled_by_default": true,
       "description": "Prevents AI from gaming metrics",
-      "file": "/rules/ai-development/context-preservation.md#rule-ai-003-reward-hacking-prevention",
+      "file": "/rules/ai-development/reward-hacking-prevention.md#rule-ai-003-reward-hacking-prevention",
       "implementation": "pre-commit",
       "performance_impact": "low"
     },
@@ -284,6 +306,17 @@
       "enabled_by_default": false,
       "description": "Optimizes code for AI context windows",
       "file": "/rules/ai-development/context-preservation.md#rule-ai-004-context-window-management",
+      "implementation": "pre-commit",
+      "performance_impact": "low"
+    },
+    {
+      "id": "ai-005",
+      "name": "Goal Alignment Verification",
+      "category": "ai-development",
+      "complexity": "advanced",
+      "enabled_by_default": true,
+      "description": "Ensures changes serve project goals, not just task completion",
+      "file": "/rules/ai-development/reward-hacking-prevention.md#rule-ai-005-goal-alignment-verification",
       "implementation": "pre-commit",
       "performance_impact": "low"
     },
@@ -374,6 +407,138 @@
       "file": "/rules/quality/engineering-principles.md#rule-eng-004-design-pattern-compliance",
       "implementation": "pre-commit",
       "performance_impact": "low"
+    },
+    {
+      "id": "llm-001",
+      "name": "Claude Safety Context",
+      "category": "llm-specific",
+      "complexity": "basic",
+      "enabled_by_default": true,
+      "description": "Prevent Claude from refusing legitimate security-related code work",
+      "file": "/rules/llm-specific/claude-rules.md#rule-llm-001-claude-safety-context",
+      "implementation": "pre-commit",
+      "performance_impact": "low"
+    },
+    {
+      "id": "llm-002",
+      "name": "Claude Conciseness Enforcement",
+      "category": "llm-specific",
+      "complexity": "basic",
+      "enabled_by_default": true,
+      "description": "Ensure prompts to Claude include conciseness directives",
+      "file": "/rules/llm-specific/claude-rules.md#rule-llm-002-claude-conciseness-enforcement",
+      "implementation": "pre-commit",
+      "performance_impact": "low"
+    },
+    {
+      "id": "llm-003",
+      "name": "Claude Thinking Mode Triggers",
+      "category": "llm-specific",
+      "complexity": "advanced",
+      "enabled_by_default": false,
+      "description": "Remind developers to use Claude's thinking mode triggers",
+      "file": "/rules/llm-specific/claude-rules.md#rule-llm-003-claude-thinking-mode-triggers",
+      "implementation": "pre-commit",
+      "performance_impact": "low"
+    },
+    {
+      "id": "llm-004",
+      "name": "Claude Context Window Management",
+      "category": "llm-specific",
+      "complexity": "advanced",
+      "enabled_by_default": true,
+      "description": "Prevent context window overflow in Claude conversations",
+      "file": "/rules/llm-specific/claude-rules.md#rule-llm-004-claude-context-window-management",
+      "implementation": "pre-commit",
+      "performance_impact": "low"
+    },
+    {
+      "id": "llm-005",
+      "name": "Claude Artifact Generation",
+      "category": "llm-specific",
+      "complexity": "basic",
+      "enabled_by_default": false,
+      "description": "Track when Claude generates artifacts and ensure proper integration",
+      "file": "/rules/llm-specific/claude-rules.md#rule-llm-005-claude-artifact-generation",
+      "implementation": "post-commit",
+      "performance_impact": "low"
+    },
+    {
+      "id": "llm-006",
+      "name": "GPT-4 Context Window Management",
+      "category": "llm-specific",
+      "complexity": "advanced",
+      "enabled_by_default": true,
+      "description": "Handle GPT-4's context window limitations and confusion",
+      "file": "/rules/llm-specific/gpt4-openai-rules.md",
+      "implementation": "pre-commit",
+      "performance_impact": "low"
+    },
+    {
+      "id": "llm-007",
+      "name": "GPT-4 Output Quality Monitoring",
+      "category": "llm-specific",
+      "complexity": "basic",
+      "enabled_by_default": true,
+      "description": "Detect and prevent GPT-4 quality degradation issues",
+      "file": "/rules/llm-specific/gpt4-openai-rules.md",
+      "implementation": "pre-commit",
+      "performance_impact": "low"
+    },
+    {
+      "id": "llm-008",
+      "name": "GitHub Copilot Security Scanning",
+      "category": "llm-specific",
+      "complexity": "advanced",
+      "enabled_by_default": true,
+      "description": "Enhanced security scanning for Copilot-generated code",
+      "file": "/rules/llm-specific/github-copilot-rules.md",
+      "implementation": "pre-commit",
+      "performance_impact": "medium"
+    },
+    {
+      "id": "llm-009",
+      "name": "Copilot Comment-Driven Development",
+      "category": "llm-specific",
+      "complexity": "basic",
+      "enabled_by_default": false,
+      "description": "Enforce proper comment structure for Copilot suggestions",
+      "file": "/rules/llm-specific/github-copilot-rules.md",
+      "implementation": "pre-commit",
+      "performance_impact": "low"
+    },
+    {
+      "id": "llm-010",
+      "name": "Cursor AI Context Management",
+      "category": "llm-specific",
+      "complexity": "basic",
+      "enabled_by_default": true,
+      "description": "Optimize Cursor AI context and performance",
+      "file": "/rules/llm-specific/cursor-ai-rules.md",
+      "implementation": "pre-commit",
+      "performance_impact": "low"
+    },
+    {
+      "id": "llm-011",
+      "name": "Cline Project Context",
+      "category": "llm-specific",
+      "complexity": "advanced",
+      "enabled_by_default": false,
+      "description": "Maintain project context for Cline AI assistant",
+      "file": "/rules/llm-specific/cline-rules.md",
+      "implementation": "pre-commit",
+      "performance_impact": "low"
+    },
+    {
+      "id": "llm-012",
+      "name": "General LLM Prompt Injection Prevention",
+      "category": "llm-specific",
+      "complexity": "advanced",
+      "enabled_by_default": true,
+      "description": "Prevent prompt injection attacks in LLM interactions",
+      "file": "/rules/llm-specific/README.md",
+      "implementation": "pre-commit",
+      "performance_impact": "low"
     }
   ],
   "categories": {
@@ -401,6 +566,11 @@
       "name": "AI Development",
       "description": "Rules for AI-assisted development",
       "icon": "🤖"
+    },
+    "llm-specific": {
+      "name": "LLM-Specific",
+      "description": "Rules for specific LLM providers and behaviors",
+      "icon": "🧠"
     }
   },
   "presets": {

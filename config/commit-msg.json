@@ -1,17 +1,5 @@
 {
-  "types": [
-    "feat",
-    "fix",
-    "docs",
-    "style",
-    "refactor",
-    "perf",
-    "test",
-    "build",
-    "ci",
-    "chore",
-    "revert"
-  ],
+  "types": ["feat", "fix", "docs", "style", "refactor", "test", "chore", "perf", "ci", "build", "revert"],
   "max_line_length": 72,
-  "require_issue_reference": true
+  "require_issue_reference": false
 }
