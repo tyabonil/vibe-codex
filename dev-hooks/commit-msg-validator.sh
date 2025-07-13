@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 # Validate commit message format
 
 # Get the commit message file path
@@ -8,7 +9,7 @@ COMMIT_MSG=$(cat "$COMMIT_MSG_FILE")
 # Load the configuration
 CONFIG_FILE="config/commit-msg.json"
 if [ ! -f "$CONFIG_FILE" ]; then
-  echo "❌ Configuration file not found: $CONFIG_FILE"
+  echo "❌ Configuration file not found: ${CONFIG_FILE}"
   exit 1
 fi
 
@@ -32,9 +33,9 @@ fi
 
 # Check first line length
 FIRST_LINE=$(echo "$COMMIT_MSG" | head -1)
-if [ ${#FIRST_LINE} -gt "$MAX_LINE_LENGTH" ]; then
+if [ "${#FIRST_LINE}" -gt "$MAX_LINE_LENGTH" ]; then
   echo ""
-  echo "⚠️  Warning: First line is ${#FIRST_LINE} characters (recommended: ≤$MAX_LINE_LENGTH)"
+  echo "⚠️  Warning: First line is ${#FIRST_LINE} characters (recommended: ≤${MAX_LINE_LENGTH})"
 fi
 
 # Check for issue reference
@@ -43,7 +44,7 @@ if [ "$REQUIRE_ISSUE_REFERENCE" = "true" ] && ! echo "$COMMIT_MSG" | grep -qE "(
 fi
 
 # Check for a body
-if [ $(echo "$COMMIT_MSG" | wc -l) -lt 2 ]; then
+if [ "$(echo "$COMMIT_MSG" | wc -l)" -lt 2 ]; then
   echo "💡 Tip: Consider adding a body to your commit message to explain the 'what' and 'why' of your changes."
 fi
 

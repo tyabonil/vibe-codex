@@ -45,7 +45,7 @@ The installation script sets up:
 ## Repository Structure
 
 ```
-cursor_rules/
+vibe-codex/
 ├── .claude/                  # AI-assisted development tools
 │   ├── hooks/               # Claude workflow hooks
 │   ├── config/              # Claude-specific configuration
@@ -243,14 +243,14 @@ For organizations managing multiple repositories:
 
 1. **Install centralized workflow**:
    ```bash
-   curl -sSL https://raw.githubusercontent.com/tyabonil/cursor_rules/main/install-rule-checker.sh | bash
+   curl -sSL https://raw.githubusercontent.com/tyabonil/vibe-codex/main/install-rule-checker.sh | bash
    ```
 
 2. **Configure repository permissions**:
    - Settings → Actions → General → Workflow permissions: "Read and write permissions"
 
 3. **Benefits**:
-   - Always uses latest rules from cursor_rules
+   - Always uses latest rules from vibe-codex
    - Centralized updates across all repositories
    - No local rule maintenance required
 

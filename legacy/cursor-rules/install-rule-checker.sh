@@ -6,7 +6,7 @@
 set -e
 
 echo "🚀 Installing MANDATORY Rules Compliance Checker..."
-echo "📋 Source: tyabonil/cursor_rules (centralized rules)"
+echo "📋 Source: tyabonil/vibe-codex (centralized rules)"
 echo ""
 
 # Colors for output
@@ -38,7 +38,7 @@ fi
 echo "📥 Downloading centralized rule checker workflow..."
 curl -sSL -H "Accept: application/vnd.github.raw" \
      -o .github/workflows/mandatory-rules-checker.yml \
-     "https://api.github.com/repos/tyabonil/cursor_rules/contents/.github/workflows/rule-checker.yml"
+     "https://api.github.com/repos/tyabonil/vibe-codex/contents/.github/workflows/rule-checker.yml"
 
 # Modify the workflow to use centralized approach
 echo "🔧 Configuring for centralized rule management..."
@@ -78,54 +78,54 @@ jobs:
           # Create directories
           mkdir -p scripts config
           
-          echo "📥 Downloading latest MANDATORY-RULES.md from tyabonil/cursor_rules..."
-          curl -H "Authorization: token $GITHUB_TOKEN" \
+          echo "📥 Downloading latest MANDATORY-RULES.md from tyabonil/vibe-codex..."
+          curl -H "Authorization: token ${GITHUB_TOKEN}" \
                -H "Accept: application/vnd.github.raw" \
                -o MANDATORY-RULES.md \
-               "https://api.github.com/repos/tyabonil/cursor_rules/contents/MANDATORY-RULES.md" || \
+               "https://api.github.com/repos/tyabonil/vibe-codex/contents/MANDATORY-RULES.md" || \
           curl -H "Accept: application/vnd.github.raw" \
                -o MANDATORY-RULES.md \
-               "https://api.github.com/repos/tyabonil/cursor_rules/contents/MANDATORY-RULES.md"
+               "https://api.github.com/repos/tyabonil/vibe-codex/contents/MANDATORY-RULES.md"
           
-          echo "📥 Downloading rule checker scripts from tyabonil/cursor_rules..."
+          echo "📥 Downloading rule checker scripts from tyabonil/vibe-codex..."
           
           # Download rule engine
-          curl -H "Authorization: token $GITHUB_TOKEN" \
+          curl -H "Authorization: token ${GITHUB_TOKEN}" \
                -H "Accept: application/vnd.github.raw" \
                -o scripts/rule-engine.js \
-               "https://api.github.com/repos/tyabonil/cursor_rules/contents/scripts/rule-engine.js" || \
+               "https://api.github.com/repos/tyabonil/vibe-codex/contents/scripts/rule-engine.js" || \
           curl -H "Accept: application/vnd.github.raw" \
                -o scripts/rule-engine.js \
-               "https://api.github.com/repos/tyabonil/cursor_rules/contents/scripts/rule-engine.js"
+               "https://api.github.com/repos/tyabonil/vibe-codex/contents/scripts/rule-engine.js"
                
           # Download GitHub client
-          curl -H "Authorization: token $GITHUB_TOKEN" \
+          curl -H "Authorization: token ${GITHUB_TOKEN}" \
                -H "Accept: application/vnd.github.raw" \
                -o scripts/github-client.js \
-               "https://api.github.com/repos/tyabonil/cursor_rules/contents/scripts/github-client.js" || \
+               "https://api.github.com/repos/tyabonil/vibe-codex/contents/scripts/github-client.js" || \
           curl -H "Accept: application/vnd.github.raw" \
                -o scripts/github-client.js \
-               "https://api.github.com/repos/tyabonil/cursor_rules/contents/scripts/github-client.js"
+               "https://api.github.com/repos/tyabonil/vibe-codex/contents/scripts/github-client.js"
                
           # Download reporter
-          curl -H "Authorization: token $GITHUB_TOKEN" \
+          curl -H "Authorization: token ${GITHUB_TOKEN}" \
                -H "Accept: application/vnd.github.raw" \
                -o scripts/reporter.js \
-               "https://api.github.com/repos/tyabonil/cursor_rules/contents/scripts/reporter.js" || \
+               "https://api.github.com/repos/tyabonil/vibe-codex/contents/scripts/reporter.js" || \
           curl -H "Accept: application/vnd.github.raw" \
                -o scripts/reporter.js \
-               "https://api.github.com/repos/tyabonil/cursor_rules/contents/scripts/reporter.js"
+               "https://api.github.com/repos/tyabonil/vibe-codex/contents/scripts/reporter.js"
                
           # Download configuration
-          curl -H "Authorization: token $GITHUB_TOKEN" \
+          curl -H "Authorization: token ${GITHUB_TOKEN}" \
                -H "Accept: application/vnd.github.raw" \
                -o config/rules.json \
-               "https://api.github.com/repos/tyabonil/cursor_rules/contents/config/rules.json" || \
+               "https://api.github.com/repos/tyabonil/vibe-codex/contents/config/rules.json" || \
           curl -H "Accept: application/vnd.github.raw" \
                -o config/rules.json \
-               "https://api.github.com/repos/tyabonil/cursor_rules/contents/config/rules.json"
+               "https://api.github.com/repos/tyabonil/vibe-codex/contents/config/rules.json"
                
-          echo "✅ All files downloaded successfully from tyabonil/cursor_rules"
+          echo "✅ All files downloaded successfully from tyabonil/vibe-codex"
           echo "📊 Rules version: $(date)"
           
       - name: Install dependencies
@@ -137,7 +137,7 @@ jobs:
         id: rule-check
         uses: actions/github-script@v7
         env:
-          RULES_SOURCE_REPO: 'tyabonil/cursor_rules'
+          RULES_SOURCE_REPO: 'tyabonil/vibe-codex'
           RULES_SOURCE_BRANCH: 'main'
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -145,9 +145,9 @@ jobs:
             const fs = require('fs');
             const path = require('path');
             
-            console.log('🚀 Starting MANDATORY Rules Compliance Check...');
-            console.log(`📋 Rules source: ${process.env.RULES_SOURCE_REPO}`);
-            console.log(`🌟 Repository: ${context.repo.owner}/${context.repo.repo}`);
+            // console.log('🚀 Starting MANDATORY Rules Compliance Check...');
+            // console.log(`📋 Rules source: ${process.env.RULES_SOURCE_REPO}`);
+            // console.log(`🌟 Repository: ${context.repo.owner}/${context.repo.repo}`);
             
             try {
               // Import rule checking modules
@@ -165,30 +165,30 @@ jobs:
               const files = await githubClient.getPRFiles();
               const commits = await githubClient.getPRCommits();
               
-              console.log(`📋 Analyzing PR #${prData.number}: ${prData.title}`);
-              console.log(`📁 Files changed: ${files.length}`);
-              console.log(`📝 Commits: ${commits.length}`);
+              // console.log(`📋 Analyzing PR #${prData.number}: ${prData.title}`);
+              // console.log(`📁 Files changed: ${files.length}`);
+              // console.log(`📝 Commits: ${commits.length}`);
               
               // Run all rule checks
               const violations = [];
               
               // Level 1: Security (BLOCKER)
-              console.log('🔐 Checking Level 1: Security & Safety...');
+              // console.log('🔐 Checking Level 1: Security & Safety...');
               const level1Violations = await ruleEngine.checkLevel1Security(files, prData);
               violations.push(...level1Violations);
               
               // Level 2: Workflow (MANDATORY)
-              console.log('🔄 Checking Level 2: Workflow Integrity...');
+              // console.log('🔄 Checking Level 2: Workflow Integrity...');
               const level2Violations = await ruleEngine.checkLevel2Workflow(prData, files, commits, githubClient);
               violations.push(...level2Violations);
               
               // Level 3: Quality (MANDATORY)
-              console.log('🎯 Checking Level 3: Quality Gates...');
+              // console.log('🎯 Checking Level 3: Quality Gates...');
               const level3Violations = await ruleEngine.checkLevel3Quality(prData, files, githubClient);
               violations.push(...level3Violations);
               
               // Level 4: Patterns (RECOMMENDED)
-              console.log('📐 Checking Level 4: Development Patterns...');
+              // console.log('📐 Checking Level 4: Development Patterns...');
               const level4Violations = await ruleEngine.checkLevel4Patterns(files, prData);
               violations.push(...level4Violations);
               
@@ -197,24 +197,24 @@ jobs:
               const isBlocking = criticalViolations.length > 0;
               const score = Math.max(0, 10 - violations.length);
               
-              console.log(`📊 Compliance Results:`);
-              console.log(`   Total violations: ${violations.length}`);
-              console.log(`   Critical (blocking): ${criticalViolations.length}`);
-              console.log(`   Score: ${score}/10`);
-              console.log(`   Status: ${isBlocking ? 'BLOCKED' : 'PASSED'}`);
+              // console.log(`📊 Compliance Results:`);
+              // console.log(`   Total violations: ${violations.length}`);
+              // console.log(`   Critical (blocking): ${criticalViolations.length}`);
+              // console.log(`   Score: ${score}/10`);
+              // console.log(`   Status: ${isBlocking ? 'BLOCKED' : 'PASSED'}`);
               
               // Generate and post compliance report
               const report = reporter.generateReport(violations, score, isBlocking, prData);
               
               // Add centralized rules footer
-              const centralizedFooter = `\n\n---\n\n*Rules validated against [tyabonil/cursor_rules](https://github.com/tyabonil/cursor_rules) • Updated: ${new Date().toISOString().split('T')[0]}*`;
+              const centralizedFooter = `\n\n---\n\n*Rules validated against [tyabonil/vibe-codex](https://github.com/tyabonil/vibe-codex) • Updated: ${new Date().toISOString().split('T')[0]}*`;
               
               if (violations.length > 0) {
                 await githubClient.postComplianceComment(report + centralizedFooter);
-                console.log('💬 Posted compliance report comment to PR');
+                // console.log('💬 Posted compliance report comment to PR');
               } else {
                 await githubClient.postComplianceComment(`## ✅ MANDATORY Rules Compliance - PASSED\n\nAll rules are compliant! Great work! 🎉${centralizedFooter}`);
-                console.log('✅ Posted success comment to PR');
+                // console.log('✅ Posted success comment to PR');
               }
               
               // Set status check
@@ -224,8 +224,8 @@ jobs:
                 violations.length
               );
               
-              console.log('🏁 MANDATORY Rules Compliance Check completed');
-              console.log(`📋 Rules enforced from: ${process.env.RULES_SOURCE_REPO}`);
+              // console.log('🏁 MANDATORY Rules Compliance Check completed');
+              // console.log(`📋 Rules enforced from: ${process.env.RULES_SOURCE_REPO}`);
               
               return {
                 violations: violations.length,
@@ -242,7 +242,7 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.issue.number,
-                body: `## ❌ MANDATORY Rules Checker Error\n\n\`\`\`\n${error.message}\n\`\`\`\n\nPlease check the [workflow logs](${context.payload.repository.html_url}/actions) for details.\n\n*Rules from [tyabonil/cursor_rules](https://github.com/tyabonil/cursor_rules)*`
+                body: `## ❌ MANDATORY Rules Checker Error\n\n\`\`\`\n${error.message}\n\`\`\`\n\nPlease check the [workflow logs](${context.payload.repository.html_url}/actions) for details.\n\n*Rules from [tyabonil/vibe-codex](https://github.com/tyabonil/vibe-codex)*`
               });
               
               throw error;
@@ -256,7 +256,7 @@ if [ ! -f ".cursorrules" ]; then
     echo "📝 Creating .cursorrules template for local rule overrides..."
     cat > .cursorrules << 'EOF'
 # Repository-specific MANDATORY Rules overrides
-# These settings override the central rules from tyabonil/cursor_rules
+# These settings override the central rules from tyabonil/vibe-codex
 # Remove this file to use central rules without modification
 
 # Example: Disable specific checks for this repository
@@ -279,7 +279,7 @@ if [ ! -f ".cursorrules" ]; then
 #     minimum_threshold: 80
 
 # For complete configuration options, see:
-# https://github.com/tyabonil/cursor_rules/blob/main/config/rules.json
+# https://github.com/tyabonil/vibe-codex/blob/main/config/rules.json
 EOF
     echo "✅ Created .cursorrules template"
 else
@@ -311,7 +311,7 @@ echo "  ✅ Local override template: .cursorrules (optional)"
 echo "  ✅ Updated .gitignore"
 echo ""
 echo -e "${BLUE}📊 Centralized Rule Management:${NC}"
-echo "  • Rules source: tyabonil/cursor_rules"
+echo "  • Rules source: tyabonil/vibe-codex"
 echo "  • Auto-updates: Latest rules downloaded on each run"
 echo "  • Local overrides: Customize via .cursorrules (optional)"
 echo ""
@@ -327,7 +327,7 @@ echo "  3. For private repositories:"
 echo "     Add RULES_ACCESS_TOKEN secret if needed for rule access"
 echo ""
 echo -e "${BLUE}📚 Documentation:${NC}"
-echo "  • Installation guide: https://github.com/tyabonil/cursor_rules/blob/main/INSTALLATION.md"
-echo "  • Rule documentation: https://github.com/tyabonil/cursor_rules/blob/main/MANDATORY-RULES.md"
+echo "  • Installation guide: https://github.com/tyabonil/vibe-codex/blob/main/INSTALLATION.md"
+echo "  • Rule documentation: https://github.com/tyabonil/vibe-codex/blob/main/MANDATORY-RULES.md"
 echo ""
 echo -e "${GREEN}🚀 Your repository now enforces MANDATORY rules with centralized management!${NC}"

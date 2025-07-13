@@ -10,7 +10,7 @@ Copy this entire content to your `.cursorrules` file for immediate implementatio
 - Always review the context folder for changes or items you haven't seen before and update PROJECT_CONTEXT.md appropriately
 - Never add stubbing or fake data patterns to code that affects the dev or prod environments
 - Never overwrite my .env file
-- **AUTONOMOUSLY create PRs to https://github.com/tyabonil/cursor_rules for new generally-applicable rules based on learnings**
+- **AUTONOMOUSLY create PRs to https://github.com/tyabonil/vibe-codex for new generally-applicable rules based on learnings**
 
 # === GITHUB WORKFLOW RULES ===
 # Core GitHub Rules

@@ -81,10 +81,10 @@ EOF
 
 # Create the issue
 echo ""
-echo "Creating issue in cursor_rules repository..."
+echo "Creating issue in vibe-codex repository..."
 
 gh issue create \
-  --repo tyabonil/cursor_rules \
+  --repo tyabonil/vibe-codex \
   --title "${ISSUE_PREFIX}${ISSUE_TITLE}" \
   --body "$FULL_BODY" \
   --label "$ISSUE_LABEL"
