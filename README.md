@@ -20,6 +20,7 @@ vibe-codex helps enforce code quality standards through automated git hooks:
 - 📚 **Documentation** - Checks for README.md and basic docs
 - 🎨 **Code Style** - Runs linting checks if configured
 - 🌿 **Branch Validation** - Enforces branch naming conventions
+- 🛡️ **Dependency Safety** - Checks for known vulnerabilities in dependencies
 
 Most teams start with Security + Commit Format - the rest are optional.
 
@@ -116,6 +117,16 @@ Valid types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`, `perf`
   - Issue-based: `feature/issue-123-description`
 - Customizable patterns via config
 - Suggests corrections for invalid names
+
+### 🛡️ Dependency Safety (Optional)
+- Scans for known vulnerabilities in dependencies
+- Supports multiple package managers:
+  - npm/yarn/pnpm (JavaScript)
+  - pip (Python) - requires pip-audit
+  - bundler (Ruby) - requires bundle-audit
+- Runs `npm audit` or equivalent automatically
+- Blocks commits with critical vulnerabilities
+- Shows summary of security issues
 
 ## Configuration
 

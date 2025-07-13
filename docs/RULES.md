@@ -38,6 +38,14 @@ Enforces consistent branch naming conventions.
 - Configurable via `.vibe-codex.json`
 - Max length: 50 characters
 
+## 🛡️ Dependency Safety (`dependency-safety`)
+Checks for known vulnerabilities in project dependencies.
+- Scans package-lock.json, yarn.lock, pnpm-lock.yaml
+- Supports npm audit, yarn audit, pnpm audit
+- Also checks Python (pip-audit) and Ruby (bundle-audit) if tools installed
+- Blocks commits when critical/high vulnerabilities found
+- Shows vulnerability count by severity
+
 ## Selecting Rules
 
 During setup, you can choose which rules to enable:
