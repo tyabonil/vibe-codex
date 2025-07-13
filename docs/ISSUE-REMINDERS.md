@@ -36,7 +36,7 @@ The issue reminder hooks are automatically included when you install cursor_rule
 
 ```bash
 # Standard installation includes issue reminders
-curl -sSL https://raw.githubusercontent.com/tyabonil/cursor_rules/main/install-rule-checker.sh | bash
+curl -sSL https://raw.githubusercontent.com/tyabonil/vibe-codex/main/install-rule-checker.sh | bash
 ```
 
 ### Manual Installation

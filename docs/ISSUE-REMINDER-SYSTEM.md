@@ -1,6 +1,6 @@
 # 📝 Issue Reminder System
 
-The cursor_rules repository includes a comprehensive system to ensure developers maintain proper issue documentation throughout the development lifecycle.
+The vibe-codex repository includes a comprehensive system to ensure developers maintain proper issue documentation throughout the development lifecycle.
 
 ## Overview
 

@@ -1,6 +1,6 @@
 {
-  "project": "cursor_rules",
-  "description": "Configuration for review bots specific to the cursor_rules repository",
+  "project": "vibe-codex",
+  "description": "Configuration for review bots specific to the vibe-codex repository",
   "rules": {
     "haterBot": {
       "extraChecks": {

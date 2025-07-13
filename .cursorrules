@@ -1,5 +1,5 @@
 # Repository-specific MANDATORY Rules overrides
-# These settings override the central rules from tyabonil/cursor_rules
+# These settings override the central rules from tyabonil/vibe-codex
 # Remove this file to use central rules without modification
 
 # Example: Disable specific checks for this repository
@@ -22,4 +22,4 @@
 #     minimum_threshold: 80
 
 # For complete configuration options, see:
-# https://github.com/tyabonil/cursor_rules/blob/main/config/rules.json
+# https://github.com/tyabonil/vibe-codex/blob/main/config/rules.json

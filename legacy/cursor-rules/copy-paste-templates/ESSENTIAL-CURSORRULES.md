@@ -21,7 +21,7 @@
 - ✅ UPDATE PROJECT_CONTEXT.md for any significant changes
 
 # 🔗 RULE RETRIEVAL (MANDATORY)
-- ✅ ALWAYS retrieve latest rules from https://github.com/tyabonil/cursor_rules
+- ✅ ALWAYS retrieve latest rules from https://github.com/tyabonil/vibe-codex
 - ✅ Compare with local rules - local specificity overrides general rules
 - ✅ AUTONOMOUSLY create PRs for new generally-applicable rules discovered
 

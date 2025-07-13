@@ -2,7 +2,7 @@
 
 ## Overview
 
-The cursor_rules repository enforces 100% test coverage for all new code. This guide helps you meet these requirements efficiently.
+The vibe-codex repository enforces 100% test coverage for all new code. This guide helps you meet these requirements efficiently.
 
 ## Quick Start
 
