@@ -26,9 +26,9 @@ if [ -f "$CONFIG_FILE" ] && command -v jq >/dev/null 2>&1; then
     CUSTOM_TOTAL_LINES=$(jq -r '.contextThresholds.maxTotalLines // empty' "$CONFIG_FILE" 2>/dev/null || echo "")
     CUSTOM_MAX_FILES=$(jq -r '.contextThresholds.maxFiles // empty' "$CONFIG_FILE" 2>/dev/null || echo "")
     
-    [ ! -z "$CUSTOM_MAX_LINES" ] && MAX_LINES_PER_FILE=$CUSTOM_MAX_LINES
-    [ ! -z "$CUSTOM_TOTAL_LINES" ] && MAX_TOTAL_LINES=$CUSTOM_TOTAL_LINES
-    [ ! -z "$CUSTOM_MAX_FILES" ] && MAX_FILES_CHANGED=$CUSTOM_MAX_FILES
+    [ -n "$CUSTOM_MAX_LINES" ] && MAX_LINES_PER_FILE="$CUSTOM_MAX_LINES"
+    [ -n "$CUSTOM_TOTAL_LINES" ] && MAX_TOTAL_LINES="$CUSTOM_TOTAL_LINES"
+    [ -n "$CUSTOM_MAX_FILES" ] && MAX_FILES_CHANGED="$CUSTOM_MAX_FILES"
 fi
 
 # Track warnings
@@ -71,7 +71,7 @@ for file in $STAGED_FILES; do
 done
 
 # Check large files
-if [ ! -z "$LARGE_FILES" ]; then
+if [ -n "$LARGE_FILES" ]; then
     WARNINGS="${WARNINGS}${YELLOW}⚠️  Large files that may exceed context limits:${NC}\n$LARGE_FILES"
 fi
 
@@ -81,7 +81,7 @@ if [ "$TOTAL_LINES" -gt "$MAX_TOTAL_LINES" ]; then
 fi
 
 # Report findings
-if [ ! -z "$WARNINGS" ]; then
+if [ -n "$WARNINGS" ]; then
     echo -e ""
     echo -e "${YELLOW}⚠️  Context size warnings:${NC}"
     echo -e "$WARNINGS"
