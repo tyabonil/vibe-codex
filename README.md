@@ -23,6 +23,7 @@ vibe-codex helps enforce code quality standards through automated git hooks:
 - 🛡️ **Dependency Safety** - Checks for known vulnerabilities in dependencies
 - ✨ **Test Quality** - Prevents common test anti-patterns (.only, .skip, etc.)
 - 📋 **Cursor Rules** - Checks for .cursorrules file and completeness
+- 📏 **Context Size Monitoring** - Warns about large changes that might exceed AI context windows
 
 Most teams start with Security + Commit Format - the rest are optional.
 
@@ -150,6 +151,26 @@ Valid types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`, `perf`
   - Testing guidelines
 - Warns if file is too old (>180 days)
 - Helps maintain consistent AI assistance
+
+### 📏 Context Size Monitoring (Optional)
+- Warns about large changes that might exceed AI context windows
+- Monitors:
+  - Files larger than 1000 lines
+  - Total changes exceeding 5000 lines
+  - More than 20 files changed in one commit
+- Provides tips for managing large changes
+- Configurable thresholds via `.vibe-codex.json`:
+  ```json
+  {
+    "contextThresholds": {
+      "maxLinesPerFile": 1000,
+      "maxTotalLines": 5000,
+      "maxFiles": 20
+    }
+  }
+  ```
+- Non-blocking (warnings only)
+- Helps maintain reviewable, AI-friendly commits
 
 ## Configuration
 
