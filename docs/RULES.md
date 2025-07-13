@@ -54,6 +54,14 @@ Prevents common test anti-patterns and maintains test suite reliability.
 - Helps catch focused tests before they reach CI
 - Ensures meaningful test descriptions
 
+## 📋 Cursor Rules (`cursor-rules`)
+Ensures .cursorrules file exists and is maintained.
+- Checks for .cursorrules file presence
+- Validates minimum file size (>50 bytes)
+- Checks for key sections: style, language, testing
+- Warns if file hasn't been updated in 6+ months
+- Non-blocking - only provides warnings
+
 ## Selecting Rules
 
 During setup, you can choose which rules to enable:

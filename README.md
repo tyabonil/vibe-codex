@@ -22,6 +22,7 @@ vibe-codex helps enforce code quality standards through automated git hooks:
 - 🌿 **Branch Validation** - Enforces branch naming conventions
 - 🛡️ **Dependency Safety** - Checks for known vulnerabilities in dependencies
 - ✨ **Test Quality** - Prevents common test anti-patterns (.only, .skip, etc.)
+- 📋 **Cursor Rules** - Checks for .cursorrules file and completeness
 
 Most teams start with Security + Commit Format - the rest are optional.
 
@@ -139,6 +140,16 @@ Valid types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`, `perf`
   - Test files in wrong locations (warning)
 - Supports JavaScript, TypeScript, Python, and Ruby tests
 - Helps maintain reliable test suites
+
+### 📋 Cursor Rules (Optional)
+- Checks for .cursorrules file existence
+- Validates file has meaningful content (not empty)
+- Checks for common sections:
+  - Coding style/conventions
+  - Language-specific rules
+  - Testing guidelines
+- Warns if file is too old (>180 days)
+- Helps maintain consistent AI assistance
 
 ## Configuration
 
