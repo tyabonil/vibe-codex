@@ -46,7 +46,7 @@ if ! grep -q -i "test\|spec\|jest\|pytest\|rspec" .cursorrules 2>/dev/null; then
 fi
 
 # Report findings
-if [ ! -z "$MISSING_SECTIONS" ]; then
+if [ -n "$MISSING_SECTIONS" ]; then
     echo -e "${YELLOW}⚠️  .cursorrules might be incomplete:${NC}"
     echo -e "$MISSING_SECTIONS"
     echo -e "${YELLOW}Consider adding more comprehensive rules${NC}"
@@ -66,7 +66,7 @@ if command -v stat >/dev/null 2>&1; then
     fi
     
     CURRENT_TIME=$(date +%s)
-    FILE_AGE_DAYS=$(( ($CURRENT_TIME - $FILE_MOD_TIME) / 86400 ))
+    FILE_AGE_DAYS=$(( (CURRENT_TIME - FILE_MOD_TIME) / 86400 ))
     
     if [ "$FILE_AGE_DAYS" -gt 180 ]; then
         echo -e "${YELLOW}⚠️  .cursorrules hasn't been updated in ${FILE_AGE_DAYS} days${NC}"
