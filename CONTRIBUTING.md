@@ -95,46 +95,6 @@ We follow the [Conventional Commits](https://www.conventionalcommits.org/) speci
 - `test:` - Adding missing tests or correcting existing tests
 - `chore:` - Changes to the build process or auxiliary tools
 
-## Creating New Modules
-
-If you're contributing a new module:
-
-1. Create a new directory under `vibe-codex/lib/modules/your-module-name/`
-2. Implement the module following the base module interface
-3. Add comprehensive tests
-4. Document all rules and configuration options
-5. Update the main documentation to include your module
-
-Example module structure:
-```javascript
-import { RuleModule } from '../base.js';
-
-export class YourModule extends RuleModule {
-  constructor() {
-    super({
-      name: 'your-module',
-      version: '1.0.0',
-      description: 'Description of what your module does',
-      dependencies: [],
-      options: {
-        // Default options
-      }
-    });
-  }
-
-  async loadRules() {
-    // Register your rules
-  }
-
-  async loadHooks() {
-    // Register your hooks
-  }
-
-  async loadValidators() {
-    // Register your validators
-  }
-}
-```
 
 ## Questions?
 
