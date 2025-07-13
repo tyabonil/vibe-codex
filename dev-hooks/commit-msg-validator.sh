@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 # Validate commit message format
 
 # Get the commit message file path

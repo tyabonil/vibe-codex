@@ -79,7 +79,7 @@ jobs:
           mkdir -p scripts config
           
           echo "📥 Downloading latest MANDATORY-RULES.md from tyabonil/vibe-codex..."
-          curl -H "Authorization: token $GITHUB_TOKEN" \
+          curl -H "Authorization: token ${GITHUB_TOKEN}" \
                -H "Accept: application/vnd.github.raw" \
                -o MANDATORY-RULES.md \
                "https://api.github.com/repos/tyabonil/vibe-codex/contents/MANDATORY-RULES.md" || \
@@ -90,7 +90,7 @@ jobs:
           echo "📥 Downloading rule checker scripts from tyabonil/vibe-codex..."
           
           # Download rule engine
-          curl -H "Authorization: token $GITHUB_TOKEN" \
+          curl -H "Authorization: token ${GITHUB_TOKEN}" \
                -H "Accept: application/vnd.github.raw" \
                -o scripts/rule-engine.js \
                "https://api.github.com/repos/tyabonil/vibe-codex/contents/scripts/rule-engine.js" || \
@@ -99,7 +99,7 @@ jobs:
                "https://api.github.com/repos/tyabonil/vibe-codex/contents/scripts/rule-engine.js"
                
           # Download GitHub client
-          curl -H "Authorization: token $GITHUB_TOKEN" \
+          curl -H "Authorization: token ${GITHUB_TOKEN}" \
                -H "Accept: application/vnd.github.raw" \
                -o scripts/github-client.js \
                "https://api.github.com/repos/tyabonil/vibe-codex/contents/scripts/github-client.js" || \
@@ -108,7 +108,7 @@ jobs:
                "https://api.github.com/repos/tyabonil/vibe-codex/contents/scripts/github-client.js"
                
           # Download reporter
-          curl -H "Authorization: token $GITHUB_TOKEN" \
+          curl -H "Authorization: token ${GITHUB_TOKEN}" \
                -H "Accept: application/vnd.github.raw" \
                -o scripts/reporter.js \
                "https://api.github.com/repos/tyabonil/vibe-codex/contents/scripts/reporter.js" || \
@@ -117,7 +117,7 @@ jobs:
                "https://api.github.com/repos/tyabonil/vibe-codex/contents/scripts/reporter.js"
                
           # Download configuration
-          curl -H "Authorization: token $GITHUB_TOKEN" \
+          curl -H "Authorization: token ${GITHUB_TOKEN}" \
                -H "Accept: application/vnd.github.raw" \
                -o config/rules.json \
                "https://api.github.com/repos/tyabonil/vibe-codex/contents/config/rules.json" || \
@@ -145,9 +145,9 @@ jobs:
             const fs = require('fs');
             const path = require('path');
             
-            console.log('🚀 Starting MANDATORY Rules Compliance Check...');
-            console.log(`📋 Rules source: ${process.env.RULES_SOURCE_REPO}`);
-            console.log(`🌟 Repository: ${context.repo.owner}/${context.repo.repo}`);
+            // console.log('🚀 Starting MANDATORY Rules Compliance Check...');
+            // console.log(`📋 Rules source: ${process.env.RULES_SOURCE_REPO}`);
+            // console.log(`🌟 Repository: ${context.repo.owner}/${context.repo.repo}`);
             
             try {
               // Import rule checking modules
@@ -165,30 +165,30 @@ jobs:
               const files = await githubClient.getPRFiles();
               const commits = await githubClient.getPRCommits();
               
-              console.log(`📋 Analyzing PR #${prData.number}: ${prData.title}`);
-              console.log(`📁 Files changed: ${files.length}`);
-              console.log(`📝 Commits: ${commits.length}`);
+              // console.log(`📋 Analyzing PR #${prData.number}: ${prData.title}`);
+              // console.log(`📁 Files changed: ${files.length}`);
+              // console.log(`📝 Commits: ${commits.length}`);
               
               // Run all rule checks
               const violations = [];
               
               // Level 1: Security (BLOCKER)
-              console.log('🔐 Checking Level 1: Security & Safety...');
+              // console.log('🔐 Checking Level 1: Security & Safety...');
               const level1Violations = await ruleEngine.checkLevel1Security(files, prData);
               violations.push(...level1Violations);
               
               // Level 2: Workflow (MANDATORY)
-              console.log('🔄 Checking Level 2: Workflow Integrity...');
+              // console.log('🔄 Checking Level 2: Workflow Integrity...');
               const level2Violations = await ruleEngine.checkLevel2Workflow(prData, files, commits, githubClient);
               violations.push(...level2Violations);
               
               // Level 3: Quality (MANDATORY)
-              console.log('🎯 Checking Level 3: Quality Gates...');
+              // console.log('🎯 Checking Level 3: Quality Gates...');
               const level3Violations = await ruleEngine.checkLevel3Quality(prData, files, githubClient);
               violations.push(...level3Violations);
               
               // Level 4: Patterns (RECOMMENDED)
-              console.log('📐 Checking Level 4: Development Patterns...');
+              // console.log('📐 Checking Level 4: Development Patterns...');
               const level4Violations = await ruleEngine.checkLevel4Patterns(files, prData);
               violations.push(...level4Violations);
               
@@ -197,11 +197,11 @@ jobs:
               const isBlocking = criticalViolations.length > 0;
               const score = Math.max(0, 10 - violations.length);
               
-              console.log(`📊 Compliance Results:`);
-              console.log(`   Total violations: ${violations.length}`);
-              console.log(`   Critical (blocking): ${criticalViolations.length}`);
-              console.log(`   Score: ${score}/10`);
-              console.log(`   Status: ${isBlocking ? 'BLOCKED' : 'PASSED'}`);
+              // console.log(`📊 Compliance Results:`);
+              // console.log(`   Total violations: ${violations.length}`);
+              // console.log(`   Critical (blocking): ${criticalViolations.length}`);
+              // console.log(`   Score: ${score}/10`);
+              // console.log(`   Status: ${isBlocking ? 'BLOCKED' : 'PASSED'}`);
               
               // Generate and post compliance report
               const report = reporter.generateReport(violations, score, isBlocking, prData);
@@ -211,10 +211,10 @@ jobs:
               
               if (violations.length > 0) {
                 await githubClient.postComplianceComment(report + centralizedFooter);
-                console.log('💬 Posted compliance report comment to PR');
+                // console.log('💬 Posted compliance report comment to PR');
               } else {
                 await githubClient.postComplianceComment(`## ✅ MANDATORY Rules Compliance - PASSED\n\nAll rules are compliant! Great work! 🎉${centralizedFooter}`);
-                console.log('✅ Posted success comment to PR');
+                // console.log('✅ Posted success comment to PR');
               }
               
               // Set status check
@@ -224,8 +224,8 @@ jobs:
                 violations.length
               );
               
-              console.log('🏁 MANDATORY Rules Compliance Check completed');
-              console.log(`📋 Rules enforced from: ${process.env.RULES_SOURCE_REPO}`);
+              // console.log('🏁 MANDATORY Rules Compliance Check completed');
+              // console.log(`📋 Rules enforced from: ${process.env.RULES_SOURCE_REPO}`);
               
               return {
                 violations: violations.length,

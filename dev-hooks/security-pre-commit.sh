@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 # Pre-commit hook to enforce security rules
 
 echo "🔍 Running security pre-commit checks..."
@@ -10,13 +11,19 @@ if [ ! -f "$CONFIG_FILE" ]; then
   exit 1
 fi
 
-# Read the configuration
-SECRET_PATTERNS=$(jq -r '.rules.level1_security.checks.secrets_detection.patterns[]' "$CONFIG_FILE")
+# Read the configuration - fallback to empty if not found
+SECRET_PATTERNS=$(jq -r '.rules.level1_security.checks.secrets_detection.patterns[]?' "$CONFIG_FILE" 2>/dev/null || echo "")
 
 FOUND_SECRETS=0
 FILES_TO_CHECK=$(git diff --cached --name-only --diff-filter=ACM)
 
-for file in $FILES_TO_CHECK; do
+# Skip if no files to check
+if [ -z "$FILES_TO_CHECK" ]; then
+  echo "✅ No files to check"
+  exit 0
+fi
+
+while IFS= read -r file; do
   is_test_file=false
   is_doc_file=false
   is_prisma_file=false
@@ -41,8 +48,9 @@ for file in $FILES_TO_CHECK; do
     continue
   fi
   
-  # Check each pattern
-  for pattern in $SECRET_PATTERNS; do
+  # Check each pattern - skip if no patterns defined
+  if [ -n "$SECRET_PATTERNS" ]; then
+    while IFS= read -r pattern; do
     matches=$(grep -inE "$pattern" "$file" 2>/dev/null || true)
     
     if [ -n "$matches" ]; then
@@ -54,8 +62,9 @@ for file in $FILES_TO_CHECK; do
         FOUND_SECRETS=1
       fi
     fi
-  done
-done
+    done <<< "$SECRET_PATTERNS"
+  fi
+done <<< "$FILES_TO_CHECK"
 
 if [ $FOUND_SECRETS -eq 1 ]; then
   echo ""

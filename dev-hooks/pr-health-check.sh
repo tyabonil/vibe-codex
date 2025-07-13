@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 # Check PR status and compliance
 
 echo "📊 Checking PR status and compliance..."
