@@ -27,7 +27,7 @@
     ]
   },
   "issueReporter": {
-    "targetRepo": "tyabonil/cursor_rules",
+    "targetRepo": "tyabonil/vibe-codex",
     "defaultLabels": ["feedback"],
     "includeContext": true
   },

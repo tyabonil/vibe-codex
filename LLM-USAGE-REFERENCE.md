@@ -10,7 +10,7 @@
 
 ### Core Architecture
 ```
-cursor_rules/
+vibe-codex/
 ├── MANDATORY-RULES.md          # Primary rule specification
 ├── config/
 │   ├── rules.json             # Rule engine configuration

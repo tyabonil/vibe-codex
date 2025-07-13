@@ -1,6 +1,6 @@
 # .claude Directory
 
-This directory contains AI-assisted development tools and configurations for the cursor_rules repository.
+This directory contains AI-assisted development tools and configurations for the vibe-codex repository.
 
 ## Structure
 
@@ -46,15 +46,15 @@ This directory contains AI-assisted development tools and configurations for the
 ./.claude/hooks/post-deploy.sh [BRANCH]
 ```
 
-## Integration with cursor_rules
+## Integration with vibe-codex
 
-This .claude directory extends the standard cursor_rules functionality with:
+This .claude directory extends the standard vibe-codex functionality with:
 - Context management for AI-assisted development
 - Intelligent PR check analysis
 - Issue reporting for rule improvements
 - Post-deployment verification
 
-All hooks are designed to work alongside the standard cursor_rules workflow and enhance the AI-assisted development experience.
+All hooks are designed to work alongside the standard vibe-codex workflow and enhance the AI-assisted development experience.
 
 ## Configuration
 
@@ -67,5 +67,5 @@ The hooks use standard Git and GitHub CLI commands. Ensure you have:
 
 These hooks are based on patterns from successful AI-assisted development workflows. To improve them:
 1. Test thoroughly before submitting changes
-2. Follow the cursor_rules workflow for contributions
+2. Follow the vibe-codex workflow for contributions
 3. Document any new features or changes

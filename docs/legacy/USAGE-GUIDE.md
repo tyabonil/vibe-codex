@@ -17,7 +17,7 @@
 ### 1. Install the Rule System
 ```bash
 # One-command installation
-curl -sSL https://raw.githubusercontent.com/tyabonil/cursor_rules/main/install-rule-checker.sh | bash
+curl -sSL https://raw.githubusercontent.com/tyabonil/vibe-codex/main/install-rule-checker.sh | bash
 ```
 
 ### 2. Test the Installation
@@ -87,7 +87,7 @@ A comprehensive rule enforcement system designed for AI-powered development that
 1. **Centralized Rule Management**:
    ```bash
    # Install in all repositories
-   curl -sSL https://raw.githubusercontent.com/tyabonil/cursor_rules/main/install-rule-checker.sh | bash
+   curl -sSL https://raw.githubusercontent.com/tyabonil/vibe-codex/main/install-rule-checker.sh | bash
    ```
 
 2. **Configure Organization Patterns**:
@@ -151,7 +151,7 @@ A comprehensive rule enforcement system designed for AI-powered development that
 1. **Community-Friendly Setup**:
    ```bash
    # Install with GitHub Actions
-   curl -sSL https://raw.githubusercontent.com/tyabonil/cursor_rules/main/install-rule-checker.sh | bash
+   curl -sSL https://raw.githubusercontent.com/tyabonil/vibe-codex/main/install-rule-checker.sh | bash
    ```
 
 2. **Configure for Contributors**:
@@ -417,7 +417,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Install Rules
         run: |
-          curl -sSL https://raw.githubusercontent.com/tyabonil/cursor_rules/main/install-rule-checker.sh | bash
+          curl -sSL https://raw.githubusercontent.com/tyabonil/vibe-codex/main/install-rule-checker.sh | bash
       - name: Validate Rules
         run: npm run validate
 ```
@@ -427,7 +427,7 @@ jobs:
 validate_rules:
   stage: test
   script:
-    - curl -sSL https://raw.githubusercontent.com/tyabonil/cursor_rules/main/install-rule-checker.sh | bash
+    - curl -sSL https://raw.githubusercontent.com/tyabonil/vibe-codex/main/install-rule-checker.sh | bash
     - npm run validate
   rules:
     - if: $CI_PIPELINE_SOURCE == "push"
@@ -567,8 +567,8 @@ git commit -m "test: debug mode" --verbose
 
 ### Support Resources
 - **Documentation**: This guide and component READMEs
-- **Issues**: [GitHub Issues](https://github.com/tyabonil/cursor_rules/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/tyabonil/cursor_rules/discussions)
+- **Issues**: [GitHub Issues](https://github.com/tyabonil/vibe-codex/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/tyabonil/vibe-codex/discussions)
 - **Contributing**: [PULL_REQUEST.md](./PULL_REQUEST.md)
 
 ---

@@ -66,7 +66,7 @@ Consolidated ~250+ rules from 13 different files into 30 well-organized, dedupli
 
 ## Migration Guide
 
-For users of the old cursor_rules system:
+For users of the old vibe-codex system:
 
 1. **Legacy MANDATORY-RULES.md** → See advanced workflow rules + AI development rules
 2. **Enhanced rules** → See OWASP compliance + engineering principles

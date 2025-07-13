@@ -36,7 +36,7 @@ A set of pre-commit and commit-msg hooks that validate every commit against the 
 The hooks are already included in this repository. To install them, run the following command:
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/tyabonil/cursor_rules/main/install-rule-checker.sh | bash
+curl -sSL https://raw.githubusercontent.com/tyabonil/vibe-codex/main/install-rule-checker.sh | bash
 ```
 
 ### For Other Repositories

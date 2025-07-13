@@ -111,7 +111,7 @@ PR #456 received review feedback.
 
 ## Automated Updates
 
-The cursor_rules system provides automatic updates for:
+The vibe-codex system provides automatic updates for:
 
 ### PR Creation
 ```markdown

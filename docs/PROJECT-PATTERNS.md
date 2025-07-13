@@ -2,7 +2,7 @@
 
 ## Overview
 
-The cursor_rules repository provides universal rules that apply to all projects, plus configurable project-specific patterns in `config/project-patterns.json`. This allows you to enable workflow patterns that fit your project's needs while maintaining the core mandatory rules.
+The vibe-codex repository provides universal rules that apply to all projects, plus configurable project-specific patterns in `config/project-patterns.json`. This allows you to enable workflow patterns that fit your project's needs while maintaining the core mandatory rules.
 
 ## Available Rulesets
 

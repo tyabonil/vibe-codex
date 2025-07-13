@@ -2,7 +2,7 @@
 
 ## Overview
 
-The cursor_rules repository includes an automated branch cleanup system that maintains a clean, organized repository by removing merged feature branches automatically.
+The vibe-codex repository includes an automated branch cleanup system that maintains a clean, organized repository by removing merged feature branches automatically.
 
 ## Quick Start
 

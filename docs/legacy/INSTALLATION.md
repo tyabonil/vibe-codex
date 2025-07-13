@@ -12,7 +12,7 @@ Run this script in your repository to automatically install the hooks:
 
 ```bash
 # Download and run the installation script
-curl -sSL https://raw.githubusercontent.com/tyabonil/cursor_rules/main/install-rule-checker.sh | bash
+curl -sSL https://raw.githubusercontent.com/tyabonil/vibe-codex/main/install-rule-checker.sh | bash
 ```
 
 This script will automatically:

@@ -24,7 +24,7 @@ The enhanced validation system is automatically included with cursor_rules insta
 
 ```bash
 # Standard installation includes enhanced validation
-curl -sSL https://raw.githubusercontent.com/tyabonil/cursor_rules/main/install-rule-checker.sh | bash
+curl -sSL https://raw.githubusercontent.com/tyabonil/vibe-codex/main/install-rule-checker.sh | bash
 ```
 
 ### Manual Installation
