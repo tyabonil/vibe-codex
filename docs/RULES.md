@@ -54,6 +54,14 @@ Prevents common test anti-patterns and maintains test suite reliability.
 - Helps catch focused tests before they reach CI
 - Ensures meaningful test descriptions
 
+## 📋 Cursor Rules (`cursor-rules`)
+Ensures .cursorrules file exists and is maintained.
+- Checks for .cursorrules file presence
+- Validates minimum file size (>50 bytes)
+- Checks for key sections: style, language, testing
+- Warns if file hasn't been updated in 6+ months
+- Non-blocking - only provides warnings
+
 ## 📏 Context Size Monitoring (`context-size`)
 Warns about large changes that might exceed AI context windows.
 - Monitors file sizes (default: >1000 lines per file)
