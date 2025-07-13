@@ -54,6 +54,15 @@ Prevents common test anti-patterns and maintains test suite reliability.
 - Helps catch focused tests before they reach CI
 - Ensures meaningful test descriptions
 
+## 📏 Context Size Monitoring (`context-size`)
+Warns about large changes that might exceed AI context windows.
+- Monitors file sizes (default: >1000 lines per file)
+- Tracks total changes (default: >5000 lines total)
+- Counts files changed (default: >20 files)
+- Configurable thresholds via .vibe-codex.json
+- Non-blocking warnings with helpful tips
+- Helps maintain AI-friendly, reviewable commits
+
 ## Selecting Rules
 
 During setup, you can choose which rules to enable:
