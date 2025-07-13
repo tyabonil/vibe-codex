@@ -46,6 +46,14 @@ Checks for known vulnerabilities in project dependencies.
 - Blocks commits when critical/high vulnerabilities found
 - Shows vulnerability count by severity
 
+## ✨ Test Quality (`test-quality`)
+Prevents common test anti-patterns and maintains test suite reliability.
+- Blocks: `.only()`, `.skip()`, empty test descriptions
+- Warns: console statements, commented tests, misplaced test files
+- Supports: *.test.js, *.spec.js, *.test.ts, *.spec.ts, test_*.py, *_spec.rb
+- Helps catch focused tests before they reach CI
+- Ensures meaningful test descriptions
+
 ## Selecting Rules
 
 During setup, you can choose which rules to enable:

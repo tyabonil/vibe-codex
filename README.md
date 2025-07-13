@@ -21,6 +21,7 @@ vibe-codex helps enforce code quality standards through automated git hooks:
 - 🎨 **Code Style** - Runs linting checks if configured
 - 🌿 **Branch Validation** - Enforces branch naming conventions
 - 🛡️ **Dependency Safety** - Checks for known vulnerabilities in dependencies
+- ✨ **Test Quality** - Prevents common test anti-patterns (.only, .skip, etc.)
 
 Most teams start with Security + Commit Format - the rest are optional.
 
@@ -127,6 +128,17 @@ Valid types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`, `perf`
 - Runs `npm audit` or equivalent automatically
 - Blocks commits with critical vulnerabilities
 - Shows summary of security issues
+
+### ✨ Test Quality (Optional)
+- Prevents common test anti-patterns
+- Checks for:
+  - `.only()` or `.skip()` in tests (blocks commit)
+  - Empty test descriptions (blocks commit)
+  - Console statements in tests (warning)
+  - Commented out tests (warning)
+  - Test files in wrong locations (warning)
+- Supports JavaScript, TypeScript, Python, and Ruby tests
+- Helps maintain reliable test suites
 
 ## Configuration
 
