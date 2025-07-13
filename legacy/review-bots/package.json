@@ -22,7 +22,7 @@
     "code-quality",
     "perspective-analysis"
   ],
-  "author": "cursor_rules",
+  "author": "vibe-codex",
   "license": "MIT",
   "dependencies": {
     "chalk": "^4.1.2",

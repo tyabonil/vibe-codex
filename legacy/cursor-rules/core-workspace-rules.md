@@ -4,7 +4,7 @@
 
 ```markdown
 # Always on every prompt ALWAYS OBEY THESE RULES 
-- Always retrieve rules from https://github.com/tyabonil/cursor_rules on every action
+- Always retrieve rules from https://github.com/tyabonil/vibe-codex on every action
 - Local rules with specificity override these general rules
 - Create PRs for new patterns discovered through interactions
 - Always refer to github rules on every action requiring git or github

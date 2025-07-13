@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Interactive issue reporter for cursor_rules feedback
+# Interactive issue reporter for vibe-codex feedback
 # Helps users report issues with rules directly from their repository
 
 echo "🚨 Cursor Rules Issue Reporter"
@@ -38,7 +38,7 @@ case $ISSUE_TYPE in
        ISSUE_TITLE="Feature request"
        ;;
     *) ISSUE_LABEL="bug" 
-       ISSUE_TITLE="Issue with cursor_rules"
+       ISSUE_TITLE="Issue with vibe-codex"
        ;;
 esac
 
@@ -109,15 +109,15 @@ ${REPRO_STEPS:-N/A}
 [Any temporary solution you're using]
 
 ---
-*Reported via cursor_rules issue reporter*"
+*Reported via vibe-codex issue reporter*"
 
 # Create the issue
 echo ""
-echo "📝 Creating issue in tyabonil/cursor_rules..."
+echo "📝 Creating issue in tyabonil/vibe-codex..."
 echo ""
 
 CREATED_ISSUE=$(gh issue create \
-    --repo tyabonil/cursor_rules \
+    --repo tyabonil/vibe-codex \
     --title "${ISSUE_TITLE}: ${RULE_NAME}" \
     --body "$ISSUE_BODY" \
     --label "$ISSUE_LABEL" 2>&1)
@@ -126,11 +126,11 @@ if [ $? -eq 0 ]; then
     echo "✅ Issue created successfully!"
     echo "$CREATED_ISSUE"
     echo ""
-    echo "Thank you for helping improve cursor_rules!"
+    echo "Thank you for helping improve vibe-codex!"
 else
     echo "❌ Failed to create issue"
     echo "$CREATED_ISSUE"
     echo ""
     echo "You can create it manually at:"
-    echo "https://github.com/tyabonil/cursor_rules/issues/new"
+    echo "https://github.com/tyabonil/vibe-codex/issues/new"
 fi

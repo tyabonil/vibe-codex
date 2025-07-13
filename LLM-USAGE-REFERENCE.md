@@ -10,7 +10,7 @@
 
 ### Core Architecture
 ```
-cursor_rules/
+vibe-codex/
 ├── MANDATORY-RULES.md          # Primary rule specification
 ├── config/
 │   ├── rules.json             # Rule engine configuration
@@ -135,7 +135,7 @@ if (project_patterns.preview_workflow.enabled) {
 # Analyze PR check failures
 ./.claude/hooks/pr-check-handler.sh [PR_NUMBER]
 
-# Report cursor_rules issues
+# Report vibe-codex issues
 ./.claude/hooks/report-issue.sh
 ```
 

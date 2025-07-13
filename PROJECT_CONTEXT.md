@@ -2,7 +2,7 @@
 
 ## Repository Overview
 
-**cursor_rules** - A comprehensive rule enforcement system for AI-powered development, designed to maintain code quality, security, and workflow consistency across projects.
+**vibe-codex** - A comprehensive rule enforcement system for AI-powered development, designed to maintain code quality, security, and workflow consistency across projects.
 
 ## Project Purpose
 
