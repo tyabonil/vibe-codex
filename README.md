@@ -19,6 +19,7 @@ vibe-codex helps enforce code quality standards through automated git hooks:
 - 🧪 **Test Requirements** - Runs tests before commits (optional)
 - 📚 **Documentation** - Checks for README.md and basic docs
 - 🎨 **Code Style** - Runs linting checks if configured
+- 🌿 **Branch Validation** - Enforces branch naming conventions
 
 Most teams start with Security + Commit Format - the rest are optional.
 
@@ -107,6 +108,15 @@ Valid types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`, `perf`
 - Shows linting errors but doesn't block commits
 - Helps maintain consistent code style
 
+### 🌿 Branch Validation (Optional)
+- Enforces branch naming conventions on push
+- Default patterns:
+  - `feature/*`, `fix/*`, `bugfix/*`, `hotfix/*`
+  - `docs/*`, `refactor/*`, `test/*`, `chore/*`
+  - Issue-based: `feature/issue-123-description`
+- Customizable patterns via config
+- Suggests corrections for invalid names
+
 ## Configuration
 
 Settings are stored in `.vibe-codex.json`:
@@ -116,7 +126,25 @@ Settings are stored in `.vibe-codex.json`:
   "version": "3.0.0",
   "gitHooks": true,
   "githubActions": false,
-  "rules": ["security", "commit-format"]
+  "rules": ["security", "commit-format", "branch-validation"]
+}
+```
+
+### Advanced Configuration
+
+```json
+{
+  "version": "3.0.0",
+  "gitHooks": true,
+  "rules": ["security", "commit-format", "branch-validation"],
+  "branchPatterns": [
+    "^feature/.+$",
+    "^bugfix/.+$",
+    "^JIRA-[0-9]+-.+$"
+  ],
+  "advanced": {
+    "branchValidation": true
+  }
 }
 ```
 

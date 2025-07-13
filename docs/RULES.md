@@ -30,6 +30,14 @@ Runs linting checks (if configured).
 - Only runs if `package.json` has a `lint` script
 - Shows warnings but doesn't block commits
 
+## 🌿 Branch Name Validation (`branch-validation`)
+Enforces consistent branch naming conventions.
+- Validates branch names before push
+- Default patterns: `feature/*`, `fix/*`, `bugfix/*`, `docs/*`, etc.
+- Supports issue-based naming: `feature/issue-123-description`
+- Configurable via `.vibe-codex.json`
+- Max length: 50 characters
+
 ## Selecting Rules
 
 During setup, you can choose which rules to enable:
