@@ -6,7 +6,7 @@ class GitHubClient {
   constructor(github, context) {
     this.github = github;
     this.context = context;
-    console.log('⚠️  Legacy GitHub client - please migrate to vibe-codex');
+    // Legacy stub - migration notice will be shown in PR comment
   }
   
   async getPRData() { 
@@ -29,11 +29,11 @@ class GitHubClient {
         await this.github.rest.issues.createComment({
           owner: this.context.repo.owner,
           repo: this.context.repo.repo,
-          issue_number: this.context.issue.number,
+          issue_number: this.context.issue.number, // GitHub API requires snake_case
           body: '## ⚠️ Legacy Mandatory Rules System\n\nThis repository is using the deprecated mandatory rules system. Please migrate to vibe-codex:\n\n```bash\nnpx vibe-codex init\n```\n\nFor more information, see the [vibe-codex documentation](https://github.com/tyabonil/vibe-codex).'
         });
       } catch (e) {
-        console.error('Failed to post migration notice:', e);
+        // Silently fail - not critical for legacy stub
       }
     }
   }

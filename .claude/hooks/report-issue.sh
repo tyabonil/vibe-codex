@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 # Interactive issue reporter for vibe-codex feedback
 # Helps users report issues with rules directly from their repository
@@ -24,7 +25,7 @@ echo "5) Other"
 echo ""
 read -p "Enter choice (1-5): " ISSUE_TYPE
 
-case $ISSUE_TYPE in
+case "$ISSUE_TYPE" in
     1) ISSUE_LABEL="false-positive" 
        ISSUE_TITLE="False positive in rule detection"
        ;;
@@ -54,7 +55,7 @@ echo "6) Other/Multiple"
 echo ""
 read -p "Enter choice (1-6): " RULE_AFFECTED
 
-case $RULE_AFFECTED in
+case "$RULE_AFFECTED" in
     1) RULE_NAME="Secret detection" ;;
     2) RULE_NAME="Workflow compliance" ;;
     3) RULE_NAME="Test coverage" ;;

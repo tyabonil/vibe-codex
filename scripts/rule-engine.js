@@ -4,35 +4,63 @@
 
 class RuleEngine {
   constructor() {
-    console.log('⚠️  Legacy rule engine - please migrate to vibe-codex');
+    // Legacy stub - intentionally empty
   }
   
   async checkLevel1Security() { 
-    return []; // No violations - system is deprecated
+    try {
+      return []; // No violations - system is deprecated
+    } catch (e) {
+      return [];
+    }
   }
   
   async checkLevel2Workflow() { 
-    return []; // No violations - system is deprecated
+    try {
+      return []; // No violations - system is deprecated
+    } catch (e) {
+      return [];
+    }
   }
   
   async checkLevel3Quality() { 
-    return []; // No violations - system is deprecated
+    try {
+      return []; // No violations - system is deprecated
+    } catch (e) {
+      return [];
+    }
   }
   
   async checkLevel4Patterns() { 
-    return []; // No violations - system is deprecated
+    try {
+      return []; // No violations - system is deprecated
+    } catch (e) {
+      return [];
+    }
   }
   
   async runAllChecks() {
-    return {
-      violations: [],
-      level1: [],
-      level2: [],
-      level3: [],
-      level4: [],
-      criticalCount: 0,
-      score: 10
-    };
+    try {
+      return {
+        violations: [],
+        level1: [],
+        level2: [],
+        level3: [],
+        level4: [],
+        criticalCount: 0,
+        score: 10
+      };
+    } catch (e) {
+      return {
+        violations: [],
+        level1: [],
+        level2: [],
+        level3: [],
+        level4: [],
+        criticalCount: 0,
+        score: 10
+      };
+    }
   }
 }
 

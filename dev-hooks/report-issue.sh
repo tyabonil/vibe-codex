@@ -1,4 +1,6 @@
 #!/bin/bash
+set -euo pipefail
+
 # Report issues with vibe-codex to the repository
 
 echo "📝 Cursor Rules Issue Reporter"
@@ -22,7 +24,7 @@ echo ""
 
 read -p "Enter choice (1-5): " ISSUE_TYPE
 
-case $ISSUE_TYPE in
+case "$ISSUE_TYPE" in
   1) ISSUE_LABEL="false-positive" 
      ISSUE_PREFIX="False Positive: "
      ;;
