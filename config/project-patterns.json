@@ -19,12 +19,12 @@
       "description": "References to specific repositories that should be configurable",
       "enabled": false,
       "rules": [
-        "To do so, open an issue in the `tyabonil/cursor_rules` repository",
-        "IMMEDIATELY CREATE a new issue in the `cursor_rules` repository documenting this finding"
+        "To do so, open an issue in the `tyabonil/vibe-codex` repository",
+        "IMMEDIATELY CREATE a new issue in the `vibe-codex` repository documenting this finding"
       ],
       "variables": {
-        "rules_repository": "tyabonil/cursor_rules",
-        "rules_repository_short": "cursor_rules"
+        "rules_repository": "tyabonil/vibe-codex",
+        "rules_repository_short": "vibe-codex"
       }
     },
     "platform_preferences": {
