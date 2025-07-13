@@ -1,6 +1,0 @@
-#!/bin/bash
-
-echo "Running commit-msg hooks..."
-
-# Run the commit-msg-validator.sh script
-bash hooks/commit-msg-validator.sh "$1"
