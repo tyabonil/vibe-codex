@@ -2,64 +2,64 @@
  * Tests for project detection utilities
  */
 
-const fs = require('fs-extra');
+const fs = require("fs-extra");
 const {
   detectProjectType,
   detectTestFramework,
   detectDeploymentPlatform,
-  detectPackageManager
-} = require('../../../lib/utils/detector');
+  detectPackageManager,
+} = require("../../../lib/utils/detector");
 
-jest.mock('fs-extra');
+jest.mock("fs-extra");
 
-describe('detector utilities', () => {
+describe("detector utilities", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  describe('detectProjectType', () => {
-    test('should detect React web project', async () => {
+  describe("detectProjectType", () => {
+    test("should detect React web project", async () => {
       fs.pathExists.mockResolvedValue(true);
       fs.readJSON.mockResolvedValue({
-        dependencies: { react: '^18.0.0', 'react-dom': '^18.0.0' }
+        dependencies: { react: "^18.0.0", "react-dom": "^18.0.0" },
       });
 
       const result = await detectProjectType();
-      expect(result).toBe('web');
+      expect(result).toBe("web");
     });
 
-    test('should detect Express API project', async () => {
+    test("should detect Express API project", async () => {
       fs.pathExists.mockResolvedValue(true);
       fs.readJSON.mockResolvedValue({
-        dependencies: { express: '^4.18.0' }
+        dependencies: { express: "^4.18.0" },
       });
 
       const result = await detectProjectType();
-      expect(result).toBe('api');
+      expect(result).toBe("api");
     });
 
-    test('should detect Next.js fullstack project', async () => {
+    test("should detect Next.js fullstack project", async () => {
       fs.pathExists.mockResolvedValue(true);
       fs.readJSON.mockResolvedValue({
-        dependencies: { next: '^13.0.0' }
+        dependencies: { next: "^13.0.0" },
       });
 
       const result = await detectProjectType();
-      expect(result).toBe('fullstack');
+      expect(result).toBe("fullstack");
     });
 
-    test('should detect npm library', async () => {
+    test("should detect npm library", async () => {
       fs.pathExists.mockResolvedValue(true);
       fs.readJSON.mockResolvedValue({
-        main: 'index.js',
-        private: false
+        main: "index.js",
+        private: false,
       });
 
       const result = await detectProjectType();
-      expect(result).toBe('library');
+      expect(result).toBe("library");
     });
 
-    test('should return null for unknown project type', async () => {
+    test("should return null for unknown project type", async () => {
       fs.pathExists.mockResolvedValue(true);
       fs.readJSON.mockResolvedValue({});
 
@@ -67,7 +67,7 @@ describe('detector utilities', () => {
       expect(result).toBeNull();
     });
 
-    test('should handle missing package.json', async () => {
+    test("should handle missing package.json", async () => {
       fs.pathExists.mockResolvedValue(false);
 
       const result = await detectProjectType();
@@ -75,38 +75,38 @@ describe('detector utilities', () => {
     });
   });
 
-  describe('detectTestFramework', () => {
-    test('should detect Jest', async () => {
+  describe("detectTestFramework", () => {
+    test("should detect Jest", async () => {
       fs.pathExists.mockResolvedValue(true);
       fs.readJSON.mockResolvedValue({
-        devDependencies: { jest: '^29.0.0' }
+        devDependencies: { jest: "^29.0.0" },
       });
 
       const result = await detectTestFramework();
-      expect(result).toBe('jest');
+      expect(result).toBe("jest");
     });
 
-    test('should detect Vitest', async () => {
+    test("should detect Vitest", async () => {
       fs.pathExists.mockResolvedValue(true);
       fs.readJSON.mockResolvedValue({
-        devDependencies: { vitest: '^0.34.0' }
+        devDependencies: { vitest: "^0.34.0" },
       });
 
       const result = await detectTestFramework();
-      expect(result).toBe('vitest');
+      expect(result).toBe("vitest");
     });
 
-    test('should detect from test script', async () => {
+    test("should detect from test script", async () => {
       fs.pathExists.mockResolvedValue(true);
       fs.readJSON.mockResolvedValue({
-        scripts: { test: 'mocha tests/**/*.js' }
+        scripts: { test: "mocha tests/**/*.js" },
       });
 
       const result = await detectTestFramework();
-      expect(result).toBe('mocha');
+      expect(result).toBe("mocha");
     });
 
-    test('should return null if no test framework found', async () => {
+    test("should return null if no test framework found", async () => {
       fs.pathExists.mockResolvedValue(true);
       fs.readJSON.mockResolvedValue({});
 
@@ -115,35 +115,35 @@ describe('detector utilities', () => {
     });
   });
 
-  describe('detectDeploymentPlatform', () => {
-    test('should detect Vercel', async () => {
+  describe("detectDeploymentPlatform", () => {
+    test("should detect Vercel", async () => {
       fs.pathExists.mockImplementation(async (file) => {
-        return file === 'vercel.json';
+        return file === "vercel.json";
       });
 
       const result = await detectDeploymentPlatform();
-      expect(result).toBe('vercel');
+      expect(result).toBe("vercel");
     });
 
-    test('should detect Netlify', async () => {
+    test("should detect Netlify", async () => {
       fs.pathExists.mockImplementation(async (file) => {
-        return file === 'netlify.toml';
+        return file === "netlify.toml";
       });
 
       const result = await detectDeploymentPlatform();
-      expect(result).toBe('netlify');
+      expect(result).toBe("netlify");
     });
 
-    test('should detect Docker', async () => {
+    test("should detect Docker", async () => {
       fs.pathExists.mockImplementation(async (file) => {
-        return file === 'Dockerfile';
+        return file === "Dockerfile";
       });
 
       const result = await detectDeploymentPlatform();
-      expect(result).toBe('docker');
+      expect(result).toBe("docker");
     });
 
-    test('should return null if no platform detected', async () => {
+    test("should return null if no platform detected", async () => {
       fs.pathExists.mockResolvedValue(false);
 
       const result = await detectDeploymentPlatform();
@@ -151,39 +151,39 @@ describe('detector utilities', () => {
     });
   });
 
-  describe('detectPackageManager', () => {
-    test('should detect pnpm', async () => {
+  describe("detectPackageManager", () => {
+    test("should detect pnpm", async () => {
       fs.pathExists.mockImplementation(async (file) => {
-        return file === 'pnpm-lock.yaml';
+        return file === "pnpm-lock.yaml";
       });
 
       const result = await detectPackageManager();
-      expect(result).toBe('pnpm');
+      expect(result).toBe("pnpm");
     });
 
-    test('should detect yarn', async () => {
+    test("should detect yarn", async () => {
       fs.pathExists.mockImplementation(async (file) => {
-        return file === 'yarn.lock';
+        return file === "yarn.lock";
       });
 
       const result = await detectPackageManager();
-      expect(result).toBe('yarn');
+      expect(result).toBe("yarn");
     });
 
-    test('should detect npm', async () => {
+    test("should detect npm", async () => {
       fs.pathExists.mockImplementation(async (file) => {
-        return file === 'package-lock.json';
+        return file === "package-lock.json";
       });
 
       const result = await detectPackageManager();
-      expect(result).toBe('npm');
+      expect(result).toBe("npm");
     });
 
-    test('should default to npm', async () => {
+    test("should default to npm", async () => {
       fs.pathExists.mockResolvedValue(false);
 
       const result = await detectPackageManager();
-      expect(result).toBe('npm');
+      expect(result).toBe("npm");
     });
   });
 });

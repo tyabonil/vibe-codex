@@ -4,3 +4,4 @@ package-lock.json
 # Repository-specific rule overrides (optional)
 .cursorrules
 coverage/
+test-vibe-codex-install/

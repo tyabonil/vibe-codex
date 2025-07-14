@@ -1,5 +1,0 @@
-{
-  "types": ["feat", "fix", "docs", "style", "refactor", "test", "chore", "perf", "ci", "build", "revert"],
-  "max_line_length": 72,
-  "require_issue_reference": false
-}
