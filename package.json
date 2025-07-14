@@ -41,11 +41,9 @@
     "test": "jest --coverage --verbose",
     "test:watch": "jest --watch",
     "test:ci": "jest --coverage --ci --watchAll=false",
-    "lint": "eslint lib/ tests/ scripts/",
-    "lint:fix": "eslint lib/ tests/ scripts/ --fix",
+    "lint": "eslint lib/ tests/",
+    "lint:fix": "eslint lib/ tests/ --fix",
     "format": "prettier --write \"lib/**/*.js\" \"tests/**/*.js\"",
-    "validate": "node scripts/validate-config.js",
-    "docs": "node scripts/generate-docs.js",
     "prepublishOnly": "echo 'Skipping tests for now'",
     "version": "npm run format && git add -A",
     "postversion": "git push && git push --tags"

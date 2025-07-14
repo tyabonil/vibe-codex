@@ -377,6 +377,54 @@ export class CustomModule extends RuleModule {
 - Caching is used for expensive operations
 - File system access is minimized
 
+## Advanced Hooks (Optional)
+
+Advanced hooks provide additional automation for development workflows. These are opt-in features that can be installed during initialization or added later.
+
+### Available Hook Categories
+
+#### Issue Tracking
+Automates issue management throughout development:
+- **issue-progress-tracker.sh**: Automatically tracks and updates issue progress
+- **issue-reminder-pre-commit.sh**: Reminds to update issues before commits
+- **issue-reminder-post-commit.sh**: Prompts for issue updates after commits
+- **issue-reminder-pre-push.sh**: Validates issue status before pushing
+
+#### PR Management
+Enforces pull request best practices:
+- **pr-health-check.sh**: Validates PR health before push
+- **pr-review-check.sh**: Ensures required reviews are present
+- **pre-issue-close.sh**: Validates issue closure requirements
+
+#### Quality Gates
+Enforces code quality standards:
+- **test-coverage-validator.sh**: Ensures test coverage meets thresholds
+- **security-pre-commit.sh**: Runs security checks before commits
+
+#### Context Management
+Keeps project documentation current:
+- **monitor-context.sh**: Updates PROJECT_CONTEXT.md automatically
+
+### Installing Advanced Hooks
+
+```bash
+# During initialization
+npx vibe-codex init --with-advanced-hooks "issue-tracking,quality-gates"
+
+# Interactive selection
+npx vibe-codex init  # Choose when prompted
+
+# All categories
+npx vibe-codex init --with-advanced-hooks "issue-tracking,pr-management,quality-gates,context-management"
+```
+
+### Configuration
+
+Advanced hooks respect the same configuration patterns as regular hooks:
+- Can be skipped with `SKIP_VIBE_CODEX=1`
+- Configuration via `.vibe-codex.json`
+- Compatible with existing git hooks
+
 ## Troubleshooting Modules
 
 ### Module Not Loading

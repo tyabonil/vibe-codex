@@ -33,6 +33,8 @@ npx vibe-codex init [options]
 - `--no-hooks`: Skip Git hooks installation
 - `--config <path>`: Custom configuration file path
 - `--preset <name>`: Use a configuration preset (basic, strict, enterprise)
+- `--minimal`: Create minimal configuration without prompts
+- `--with-advanced-hooks <categories>`: Install advanced hooks (comma-separated: issue-tracking, pr-management, quality-gates, context-management)
 
 **Examples:**
 ```bash
@@ -47,6 +49,12 @@ npx vibe-codex init --force
 
 # Use enterprise preset
 npx vibe-codex init --preset enterprise
+
+# Initialize with advanced hooks
+npx vibe-codex init --with-advanced-hooks "issue-tracking,pr-management"
+
+# Minimal installation with quality gates
+npx vibe-codex init --minimal --with-advanced-hooks "quality-gates"
 ```
 
 ### `validate`
