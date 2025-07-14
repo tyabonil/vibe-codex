@@ -2,28 +2,28 @@
  * Tests for simplified installer
  */
 
-const { installHooks, uninstallHooks } = require('../../lib/installer');
-const fs = require('fs').promises;
-const path = require('path');
+const { installHooks, uninstallHooks } = require("../../lib/installer");
+const fs = require("fs").promises;
+const path = require("path");
 
-jest.mock('fs').promises;
+jest.mock("fs").promises;
 
-describe('Installer', () => {
+describe("Installer", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(console, 'log').mockImplementation(() => {});
-    jest.spyOn(console, 'error').mockImplementation(() => {});
+    jest.spyOn(console, "log").mockImplementation(() => {});
+    jest.spyOn(console, "error").mockImplementation(() => {});
   });
 
   afterEach(() => {
     jest.restoreAllMocks();
   });
 
-  describe('installHooks', () => {
-    it('should install git hooks with correct permissions', async () => {
+  describe("installHooks", () => {
+    it("should install git hooks with correct permissions", async () => {
       const config = {
         gitHooks: true,
-        rules: ['security', 'commit-format']
+        rules: ["security", "commit-format"],
       };
 
       // Mock git directory exists
@@ -35,40 +35,40 @@ describe('Installer', () => {
 
       // Verify hooks directory was created
       expect(fs.mkdir).toHaveBeenCalledWith(
-        expect.stringContaining('.git/hooks'),
-        { recursive: true }
+        expect.stringContaining(".git/hooks"),
+        { recursive: true },
       );
 
       // Verify pre-commit hook was written
       expect(fs.writeFile).toHaveBeenCalledWith(
-        expect.stringContaining('pre-commit'),
-        expect.stringContaining('Security check'),
-        { mode: 0o755 }
+        expect.stringContaining("pre-commit"),
+        expect.stringContaining("Security check"),
+        { mode: 0o755 },
       );
 
       // Verify commit-msg hook was written
       expect(fs.writeFile).toHaveBeenCalledWith(
-        expect.stringContaining('commit-msg'),
-        expect.stringContaining('commit message format'),
-        { mode: 0o755 }
+        expect.stringContaining("commit-msg"),
+        expect.stringContaining("commit message format"),
+        { mode: 0o755 },
       );
     });
 
-    it('should skip installation if not a git repository', async () => {
+    it("should skip installation if not a git repository", async () => {
       const config = { gitHooks: true };
 
       // Mock git directory doesn't exist
-      fs.access.mockRejectedValue(new Error('Not found'));
+      fs.access.mockRejectedValue(new Error("Not found"));
 
       await installHooks(config);
 
       expect(console.log).toHaveBeenCalledWith(
-        expect.stringContaining('Not a git repository')
+        expect.stringContaining("Not a git repository"),
       );
       expect(fs.writeFile).not.toHaveBeenCalled();
     });
 
-    it('should backup existing hooks', async () => {
+    it("should backup existing hooks", async () => {
       const config = { gitHooks: true, rules: [] };
 
       fs.access.mockResolvedValue();
@@ -80,15 +80,15 @@ describe('Installer', () => {
 
       // Verify backup was created
       expect(fs.copyFile).toHaveBeenCalledWith(
-        expect.stringContaining('pre-commit'),
-        expect.stringContaining('.vibe-codex-backup')
+        expect.stringContaining("pre-commit"),
+        expect.stringContaining(".vibe-codex-backup"),
       );
     });
 
-    it('should generate hooks based on selected rules', async () => {
+    it("should generate hooks based on selected rules", async () => {
       const config = {
         gitHooks: true,
-        rules: ['testing', 'documentation']
+        rules: ["testing", "documentation"],
       };
 
       fs.access.mockResolvedValue();
@@ -99,34 +99,34 @@ describe('Installer', () => {
 
       // Verify testing check is included
       expect(fs.writeFile).toHaveBeenCalledWith(
-        expect.stringContaining('pre-commit'),
-        expect.stringContaining('Running tests'),
-        expect.any(Object)
+        expect.stringContaining("pre-commit"),
+        expect.stringContaining("Running tests"),
+        expect.any(Object),
       );
     });
   });
 
-  describe('uninstallHooks', () => {
-    it('should remove vibe-codex hooks', async () => {
+  describe("uninstallHooks", () => {
+    it("should remove vibe-codex hooks", async () => {
       // Mock hook exists with vibe-codex content
       fs.access.mockResolvedValue();
-      fs.readFile.mockResolvedValue('#!/bin/sh\n# vibe-codex pre-commit hook');
+      fs.readFile.mockResolvedValue("#!/bin/sh\n# vibe-codex pre-commit hook");
       fs.unlink.mockResolvedValue();
 
       await uninstallHooks();
 
       expect(fs.unlink).toHaveBeenCalledWith(
-        expect.stringContaining('pre-commit')
+        expect.stringContaining("pre-commit"),
       );
       expect(fs.unlink).toHaveBeenCalledWith(
-        expect.stringContaining('commit-msg')
+        expect.stringContaining("commit-msg"),
       );
     });
 
-    it('should restore backed up hooks', async () => {
+    it("should restore backed up hooks", async () => {
       // Mock hook and backup exist
       fs.access.mockResolvedValue();
-      fs.readFile.mockResolvedValue('# vibe-codex hook');
+      fs.readFile.mockResolvedValue("# vibe-codex hook");
       fs.copyFile.mockResolvedValue();
       fs.unlink.mockResolvedValue();
 
@@ -134,19 +134,19 @@ describe('Installer', () => {
 
       // Verify backup was restored
       expect(fs.copyFile).toHaveBeenCalledWith(
-        expect.stringContaining('.vibe-codex-backup'),
-        expect.not.stringContaining('.vibe-codex-backup')
+        expect.stringContaining(".vibe-codex-backup"),
+        expect.not.stringContaining(".vibe-codex-backup"),
       );
 
       // Verify backup was removed
       expect(fs.unlink).toHaveBeenCalledWith(
-        expect.stringContaining('.vibe-codex-backup')
+        expect.stringContaining(".vibe-codex-backup"),
       );
     });
 
-    it('should handle missing hooks gracefully', async () => {
+    it("should handle missing hooks gracefully", async () => {
       // Mock hooks don't exist
-      fs.access.mockRejectedValue(new Error('Not found'));
+      fs.access.mockRejectedValue(new Error("Not found"));
 
       await expect(uninstallHooks()).resolves.not.toThrow();
     });

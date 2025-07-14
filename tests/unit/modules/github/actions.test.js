@@ -18,12 +18,10 @@ jest.mock("../../../../lib/platforms", () => ({
       createPullRequest: jest
         .fn()
         .mockResolvedValue({ number: 123, url: "https://github.com/pr/123" }),
-      createIssue: jest
-        .fn()
-        .mockResolvedValue({
-          number: 456,
-          url: "https://github.com/issue/456",
-        }),
+      createIssue: jest.fn().mockResolvedValue({
+        number: 456,
+        url: "https://github.com/issue/456",
+      }),
       listPullRequests: jest.fn().mockResolvedValue([]),
       listIssues: jest.fn().mockResolvedValue([]),
       updatePullRequest: jest.fn().mockResolvedValue({}),
