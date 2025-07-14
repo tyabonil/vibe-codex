@@ -5,3 +5,27 @@ package-lock.json
 .cursorrules
 coverage/
 test-vibe-codex-install/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+*.swp
+*.swo
+*.tmp
+*.bak
+*~
+
+# Test coverage in any location
+test/coverage/
+tests/coverage/
+
+# Local test files
+test-*.js
+test-*.sh
+
+# Temporary directories
+.vibe-codex-backup/
+tmp/
+temp/
