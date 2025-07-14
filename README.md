@@ -49,7 +49,10 @@ cd your-project
 npx vibe-codex init
 
 # With options
-npx vibe-codex init --type fullstack --github-actions
+npx vibe-codex init --type fullstack --minimal
+
+# With advanced hooks
+npx vibe-codex init --with-advanced-hooks "issue-tracking,pr-management"
 ```
 
 ### Configure modules
@@ -94,6 +97,17 @@ See [Configuration Guide](./docs/CONFIGURATION.md) for all options.
 - **GitHub** - PR/Issue automation
 - **Deployment** - Platform-specific checks
 - **Documentation** - README and docs standards
+
+### 🔧 Advanced Hooks (Optional)
+
+Additional development workflow automation:
+
+- **Issue Tracking** - Automatic issue updates and progress tracking
+- **PR Management** - PR health checks and review enforcement
+- **Quality Gates** - Test coverage and security validations
+- **Context Management** - Keep project documentation up to date
+
+Install during init or with: `npx vibe-codex init --with-advanced-hooks "issue-tracking,quality-gates"`
 
 See [Modules Guide](./docs/MODULES.md) for details.
 
