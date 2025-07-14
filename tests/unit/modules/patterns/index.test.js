@@ -2,19 +2,19 @@
  * Tests for patterns module
  */
 
-const fs = require('fs-extra');
-const logger = require('../../../../lib/utils/logger');
+const fs = require("fs-extra");
+const logger = require("../../../../lib/utils/logger");
 
 // Mock dependencies
-jest.mock('fs-extra');
-jest.mock('../../../../lib/utils/logger', () => ({
+jest.mock("fs-extra");
+jest.mock("../../../../lib/utils/logger", () => ({
   log: jest.fn(),
   debug: jest.fn(),
-  error: jest.fn()
+  error: jest.fn(),
 }));
 
 // Mock base module
-jest.mock('../../../../lib/modules/base', () => {
+jest.mock("../../../../lib/modules/base", () => {
   return class BaseModule {
     constructor(name) {
       this.name = name;
@@ -31,9 +31,9 @@ jest.mock('../../../../lib/modules/base', () => {
   };
 });
 
-const PatternsModule = require('../../../../lib/modules/patterns');
+const PatternsModule = require("../../../../lib/modules/patterns");
 
-describe('Patterns Module', () => {
+describe("Patterns Module", () => {
   let module;
 
   beforeEach(() => {
@@ -41,25 +41,25 @@ describe('Patterns Module', () => {
     module = new PatternsModule();
   });
 
-  test('should extend BaseModule', () => {
-    expect(module.name).toBe('patterns');
+  test("should extend BaseModule", () => {
+    expect(module.name).toBe("patterns");
     expect(module.initialize).toBeDefined();
   });
 
-  test('should check file naming conventions', async () => {
+  test("should check file naming conventions", async () => {
     const files = [
-      { path: 'src/components/MyComponent.js' },
-      { path: 'src/utils/helper-functions.js' }
+      { path: "src/components/MyComponent.js" },
+      { path: "src/utils/helper-functions.js" },
     ];
 
     const result = await module.checkNamingConventions(files);
     expect(result.valid).toBe(true);
   });
 
-  test('should detect invalid file names', async () => {
+  test("should detect invalid file names", async () => {
     const files = [
-      { path: 'src/components/my component.js' }, // space in filename
-      { path: 'src/utils/Helper-Functions.js' } // inconsistent casing
+      { path: "src/components/my component.js" }, // space in filename
+      { path: "src/utils/Helper-Functions.js" }, // inconsistent casing
     ];
 
     const result = await module.checkNamingConventions(files);
@@ -67,7 +67,7 @@ describe('Patterns Module', () => {
     expect(result.errors).toHaveLength(2);
   });
 
-  test('should check import organization', async () => {
+  test("should check import organization", async () => {
     const fileContent = `
 import React from 'react';
 import { useState } from 'react';
@@ -82,7 +82,7 @@ import { Component } from './Component';
     expect(result.valid).toBe(true);
   });
 
-  test('should detect disorganized imports', async () => {
+  test("should detect disorganized imports", async () => {
     const fileContent = `
 import { Component } from './Component';
 import React from 'react';
@@ -93,30 +93,39 @@ import { helper } from '../utils';
 
     const result = await module.checkImportOrganization(fileContent);
     expect(result.valid).toBe(false);
-    expect(result.suggestions).toContain('Group and sort imports');
+    expect(result.suggestions).toContain("Group and sort imports");
   });
 
-  test('should check code consistency', async () => {
+  test("should check code consistency", async () => {
     const files = [
-      { path: 'src/a.js', content: 'const foo = () => {};\nexport default foo;' },
-      { path: 'src/b.js', content: 'const bar = () => {};\nexport default bar;' }
+      {
+        path: "src/a.js",
+        content: "const foo = () => {};\nexport default foo;",
+      },
+      {
+        path: "src/b.js",
+        content: "const bar = () => {};\nexport default bar;",
+      },
     ];
 
     const result = await module.checkCodeConsistency(files);
     expect(result.valid).toBe(true);
   });
 
-  test('should detect inconsistent patterns', async () => {
+  test("should detect inconsistent patterns", async () => {
     const files = [
-      { path: 'src/a.js', content: 'export default function foo() {}' },
-      { path: 'src/b.js', content: 'const bar = () => {};\nexport default bar;' }
+      { path: "src/a.js", content: "export default function foo() {}" },
+      {
+        path: "src/b.js",
+        content: "const bar = () => {};\nexport default bar;",
+      },
     ];
 
     const result = await module.checkCodeConsistency(files);
-    expect(result.warnings).toContain('Inconsistent export patterns detected');
+    expect(result.warnings).toContain("Inconsistent export patterns detected");
   });
 
-  test('should check documentation patterns', async () => {
+  test("should check documentation patterns", async () => {
     const fileContent = `
 /**
  * Calculates the sum of two numbers
@@ -133,7 +142,7 @@ function add(a, b) {
     expect(result.valid).toBe(true);
   });
 
-  test('should detect missing documentation', async () => {
+  test("should detect missing documentation", async () => {
     const fileContent = `
 function complexCalculation(data, options) {
   // Complex logic here
@@ -143,27 +152,31 @@ function complexCalculation(data, options) {
 
     const result = await module.checkDocumentation(fileContent);
     expect(result.valid).toBe(false);
-    expect(result.errors).toContain('Missing documentation for public function');
+    expect(result.errors).toContain(
+      "Missing documentation for public function",
+    );
   });
 
-  test('should validate folder structure', async () => {
+  test("should validate folder structure", async () => {
     const files = [
-      { path: 'src/components/Button/Button.js' },
-      { path: 'src/components/Button/Button.test.js' },
-      { path: 'src/components/Button/index.js' }
+      { path: "src/components/Button/Button.js" },
+      { path: "src/components/Button/Button.test.js" },
+      { path: "src/components/Button/index.js" },
     ];
 
     const result = await module.checkFolderStructure(files);
     expect(result.valid).toBe(true);
   });
 
-  test('should detect structure violations', async () => {
+  test("should detect structure violations", async () => {
     const files = [
-      { path: 'components/Button.js' }, // missing src
-      { path: 'src/Button.test.js' } // test not co-located
+      { path: "components/Button.js" }, // missing src
+      { path: "src/Button.test.js" }, // test not co-located
     ];
 
     const result = await module.checkFolderStructure(files);
-    expect(result.suggestions).toContain('Consider organizing components in dedicated folders');
+    expect(result.suggestions).toContain(
+      "Consider organizing components in dedicated folders",
+    );
   });
 });
