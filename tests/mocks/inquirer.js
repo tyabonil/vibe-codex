@@ -3,7 +3,7 @@
  */
 
 const inquirer = {
-  prompt: jest.fn()
+  prompt: jest.fn(),
 };
 
 module.exports = inquirer;
