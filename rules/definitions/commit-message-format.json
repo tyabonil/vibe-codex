@@ -1,0 +1,40 @@
+{
+  "version": "1.0",
+  "id": "commit-message-format",
+  "type": "hook",
+  "platforms": ["git"],
+  "compatibility": {
+    "os": ["windows", "linux", "macos"],
+    "shells": ["bash", "powershell", "cmd"],
+    "requirements": ["git>=2.0"]
+  },
+  "metadata": {
+    "name": "Conventional Commit Messages",
+    "description": "Enforces conventional commit message format for better changelog generation",
+    "category": "workflow",
+    "severity": "medium",
+    "tags": ["git", "commits", "conventions"],
+    "enabled_by_default": true
+  },
+  "implementation": {
+    "git": {
+      "hooks": ["commit-msg"],
+      "script": "commit-msg-validator.js",
+      "config": {
+        "pattern": "^(feat|fix|docs|style|refactor|test|chore|perf|ci|build|revert)(\\(.+\\))?: .{1,50}",
+        "examples": [
+          "feat: add new JSON configuration support",
+          "fix(api): resolve authentication issue",
+          "docs: update installation guide"
+        ]
+      }
+    }
+  },
+  "options": {
+    "types": ["feat", "fix", "docs", "style", "refactor", "test", "chore", "perf", "ci", "build", "revert"],
+    "maxLineLength": 72,
+    "requireScope": false,
+    "allowBreakingChanges": ["feat", "fix"],
+    "customTypes": []
+  }
+}

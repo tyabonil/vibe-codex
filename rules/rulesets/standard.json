@@ -1,0 +1,26 @@
+{
+  "version": "1.0",
+  "id": "standard",
+  "name": "Standard Development Rules",
+  "description": "A balanced set of rules for modern development workflows",
+  "rules": [
+    "no-secrets",
+    "commit-message-format"
+  ],
+  "hooks": [
+    "commit-message-format"
+  ],
+  "config": {
+    "failFast": false,
+    "parallel": true,
+    "timeout": 30000
+  },
+  "overrides": {
+    "no-secrets": {
+      "severity": "error"
+    },
+    "commit-message-format": {
+      "requireScope": false
+    }
+  }
+}
