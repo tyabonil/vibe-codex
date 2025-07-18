@@ -9,8 +9,94 @@ const init = require("../../../lib/commands/init");
 // Mock dependencies
 jest.mock("fs-extra");
 jest.mock("inquirer");
-jest.mock("ora");
 jest.mock("simple-git");
+
+// Mock SimpleLogger
+const mockTask = {
+  succeed: jest.fn(),
+  fail: jest.fn(),
+};
+
+const mockLogger = {
+  startTask: jest.fn(() => mockTask),
+  info: jest.fn(),
+  success: jest.fn(),
+  error: jest.fn(),
+  warning: jest.fn(),
+  verbose: jest.fn(),
+  section: jest.fn(),
+};
+
+jest.mock("../../../lib/utils/simple-logger", () => ({
+  getLogger: jest.fn(() => mockLogger),
+}));
+
+// Mock other dependencies
+jest.mock("../../../lib/utils/detector", () => ({
+  detectProjectType: jest.fn().mockResolvedValue("web"),
+  detectTestFramework: jest.fn(),
+}));
+
+jest.mock("../../../lib/utils/preflight", () => ({
+  preflightChecks: jest.fn().mockResolvedValue({ packageManager: "npm" }),
+}));
+
+jest.mock("../../../lib/installer/git-hooks", () => ({
+  installGitHooks: jest.fn().mockResolvedValue(),
+}));
+
+jest.mock("../../../lib/installer/github-actions", () => ({
+  installGitHubActions: jest.fn().mockResolvedValue(),
+}));
+
+jest.mock("../../../lib/installer/local-rules", () => ({
+  installLocalRules: jest.fn().mockResolvedValue(),
+}));
+
+jest.mock("../../../lib/utils/config-creator", () => ({
+  createConfiguration: jest.fn(),
+  createIgnoreFile: jest.fn().mockResolvedValue(),
+  createProjectContext: jest.fn().mockResolvedValue(),
+  applyProjectDefaults: jest.fn(),
+}));
+
+jest.mock("../../../lib/modules/loader-wrapper", () => ({
+  initialize: jest.fn().mockResolvedValue(),
+}));
+
+jest.mock("../../../lib/modules/config-schema-commonjs", () => ({
+  configExamples: {
+    minimal: { modules: {} },
+    fullStack: { modules: {} },
+    frontend: { modules: {} },
+  },
+}));
+
+jest.mock("../../../lib/utils/package-manager", () => ({
+  validateSetup: jest.fn().mockResolvedValue({
+    errors: [],
+    warnings: [],
+    npxAvailable: true,
+    packageManager: "npm",
+  }),
+  getInstallInstructions: jest.fn(),
+  getRunCommand: jest.fn().mockReturnValue("npm run"),
+}));
+
+jest.mock("../../../lib/utils/logger", () => ({
+  output: jest.fn(),
+  error: jest.fn(),
+  warn: jest.fn(),
+}));
+
+jest.mock("../../../lib/utils/rollback", () => ({
+  createRollbackPoint: jest.fn().mockResolvedValue("/tmp/rollback"),
+  rollback: jest.fn().mockResolvedValue(),
+}));
+
+jest.mock("../../../lib/commands/validate", () =>
+  jest.fn().mockResolvedValue(),
+);
 
 describe("init command", () => {
   beforeEach(() => {
@@ -95,10 +181,12 @@ describe("init command", () => {
       await init({ type: "auto" });
 
       // Should detect as web project
-      const configCall = fs.writeJSON.mock.calls.find(
-        (call) => call[0] === ".vibe-codex.json",
+      const configCall = fs.writeFile.mock.calls.find(
+        (call) => call[0].endsWith(".vibe-codex.json"),
       );
-      expect(configCall[1].projectType).toBe("web");
+      expect(configCall).toBeDefined();
+      const config = JSON.parse(configCall[1]);
+      expect(config.projectType).toBe("web");
     });
   });
 
@@ -128,12 +216,13 @@ describe("init command", () => {
       await init({});
 
       // Check configuration was created
-      const configCall = fs.writeJSON.mock.calls.find(
-        (call) => call[0] === ".vibe-codex.json",
+      const configCall = fs.writeFile.mock.calls.find(
+        (call) => call[0].endsWith(".vibe-codex.json"),
       );
 
       expect(configCall).toBeDefined();
-      expect(configCall[1]).toMatchObject({
+      const config = JSON.parse(configCall[1]);
+      expect(config).toMatchObject({
         projectType: "fullstack",
         modules: {
           core: { enabled: true },
