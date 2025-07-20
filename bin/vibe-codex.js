@@ -298,6 +298,29 @@ program
     }
   });
 
+// Phone-a-Friend command - AI code review
+program
+  .command('phone-a-friend')
+  .description('Configure AI-powered code reviews')
+  .option('-m, --model <model>', 'AI model to use (default: claude-3-5-sonnet)')
+  .option('--list', 'list available models')
+  .option('--test', 'test the configuration')
+  .option('--disable', 'disable AI reviews')
+  .option('--trigger <trigger>', 'hook trigger: pre-push or pre-commit (default: pre-push)')
+  .option('--allow-force', 'allow force push even with critical issues')
+  .action(async (options) => {
+    try {
+      const phoneAFriend = require('../lib/commands/phone-a-friend');
+      await phoneAFriend(options);
+    } catch (error) {
+      console.error(chalk.red('Error:'), error.message);
+      if (program.opts().debug) {
+        console.error(error.stack);
+      }
+      process.exit(1);
+    }
+  });
+
 // Handle unknown commands
 program.on('command:*', function () {
   console.error(chalk.red('Invalid command:'), program.args.join(' '));
