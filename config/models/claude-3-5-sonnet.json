@@ -1,0 +1,27 @@
+{
+  "name": "Claude 3.5 Sonnet",
+  "provider": "anthropic",
+  "model": "claude-3-5-sonnet-20241022",
+  "endpoint": "https://api.anthropic.com/v1/messages",
+  "apiKeyEnv": "ANTHROPIC_API_KEY",
+  "headers": {
+    "anthropic-version": "2023-06-01",
+    "content-type": "application/json"
+  },
+  "maxTokens": 4096,
+  "temperature": 0.3,
+  "systemPrompt": "You are an expert code reviewer. Review the provided code changes for:\n- Bugs and potential issues\n- Security vulnerabilities\n- Performance concerns\n- Code style and best practices\n- Suggestions for improvement\n\nProvide concise, actionable feedback.",
+  "requestFormat": {
+    "model": "${model}",
+    "max_tokens": "${maxTokens}",
+    "temperature": "${temperature}",
+    "system": "${systemPrompt}",
+    "messages": [
+      {
+        "role": "user",
+        "content": "${content}"
+      }
+    ]
+  },
+  "responseParser": "content[0].text"
+}
