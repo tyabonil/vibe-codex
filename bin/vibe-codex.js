@@ -34,6 +34,8 @@ program
   .option('--no-git-hooks', 'skip git hook installation')
   .option('-f, --force', 'overwrite existing configuration')
   .option('-m, --minimal', 'create minimal configuration')
+  .option('--modules <list>', 'comma-separated list of modules to install, or "all"')
+  .option('--preset', 'use default modules for project type')
   .option('--with-advanced-hooks <categories>', 'install advanced hooks (comma-separated categories)', '')
   .action(async (options) => {
     try {
