@@ -27,8 +27,7 @@ module.exports = {
     '^@/(.*)$': '<rootDir>/lib/$1',
     // Mock ESM modules
     chalk: '<rootDir>/tests/mocks/chalk.js',
-    ora: '<rootDir>/tests/mocks/ora.js',
-    inquirer: '<rootDir>/tests/mocks/inquirer.js'
+    ora: '<rootDir>/tests/mocks/ora.js'
   },
   transformIgnorePatterns: [
     'node_modules/(?!(chalk|ora|node-fetch)/)'
