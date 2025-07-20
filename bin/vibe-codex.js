@@ -34,7 +34,10 @@ program
   .option('--no-git-hooks', 'skip git hook installation')
   .option('-f, --force', 'overwrite existing configuration')
   .option('-m, --minimal', 'create minimal configuration')
+  .option('--modules <list>', 'comma-separated list of modules to install, or "all"')
+  .option('--preset <type>', 'use default modules for project type')
   .option('--with-advanced-hooks <categories>', 'install advanced hooks (comma-separated categories)', '')
+  .option('-i, --interactive', 'run in interactive mode (default when no args provided)')
   .action(async (options) => {
     try {
       const init = require('../lib/commands/init');
