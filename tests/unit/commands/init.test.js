@@ -8,144 +8,239 @@ const init = require("../../../lib/commands/init");
 
 // Mock dependencies
 jest.mock("fs-extra");
-jest.mock("inquirer");
 jest.mock("ora");
 jest.mock("simple-git");
+
+// Mock ora spinner
+const mockSpinner = {
+  start: jest.fn().mockReturnThis(),
+  succeed: jest.fn().mockReturnThis(),
+  fail: jest.fn().mockReturnThis(),
+  warn: jest.fn().mockReturnThis(),
+  stop: jest.fn().mockReturnThis(),
+  text: ''
+};
+
+jest.mock("ora", () => jest.fn(() => mockSpinner));
+
+// Mock validate command
+jest.mock("../../../lib/commands/validate", () => jest.fn().mockResolvedValue(undefined));
+
+// Mock module loader
+jest.mock("../../../lib/modules/loader-wrapper", () => ({
+  initialize: jest.fn().mockResolvedValue(undefined)
+}));
+
+// Mock installers
+jest.mock("../../../lib/installer/git-hooks", () => ({
+  installGitHooks: jest.fn().mockResolvedValue(undefined)
+}));
+
+jest.mock("../../../lib/installer/github-actions", () => ({
+  installGitHubActions: jest.fn().mockResolvedValue(undefined)
+}));
+
+jest.mock("../../../lib/installer/local-rules", () => ({
+  installLocalRules: jest.fn().mockResolvedValue(undefined)
+}));
+
+// Mock logger
+jest.mock("../../../lib/utils/logger", () => ({
+  output: jest.fn(),
+  warn: jest.fn(),
+  error: jest.fn(),
+  debug: jest.fn()
+}));
+
+// Mock config creator utilities
+jest.mock("../../../lib/utils/config-creator", () => ({
+  createConfiguration: jest.fn().mockResolvedValue({}),
+  applyProjectDefaults: jest.fn(),
+  createIgnoreFile: jest.fn().mockResolvedValue(undefined),
+  createProjectContext: jest.fn().mockResolvedValue(undefined)
+}));
+
+// Mock preflight checks
+jest.mock("../../../lib/utils/preflight", () => ({
+  preflightChecks: jest.fn().mockResolvedValue({ packageManager: 'npm' })
+}));
+
+// Mock package manager utilities
+jest.mock("../../../lib/utils/package-manager", () => ({
+  validateSetup: jest.fn().mockResolvedValue({ 
+    errors: [], 
+    warnings: [], 
+    npxAvailable: true,
+    packageManager: 'npm' 
+  }),
+  getInstallInstructions: jest.fn().mockReturnValue({ local: 'npm install vibe-codex' }),
+  getRunCommand: jest.fn().mockReturnValue('npm run')
+}));
 
 describe("init command", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-  });
-
-  describe("pre-flight checks", () => {
-    test("should fail if Node.js version is too old", async () => {
-      // Mock old Node version
-      const originalVersion = process.version;
-      Object.defineProperty(process, "version", {
-        value: "v12.0.0",
-        configurable: true,
-      });
-
-      await expect(init({})).rejects.toThrow("Node.js 14 or higher required");
-
-      Object.defineProperty(process, "version", {
-        value: originalVersion,
-        configurable: true,
-      });
+    
+    // Mock process.exit to prevent test runner from exiting
+    jest.spyOn(process, 'exit').mockImplementation(() => {
+      throw new Error('process.exit called');
+    });
+    
+    // Setup common mocks
+    const simpleGit = require("simple-git");
+    simpleGit.mockReturnValue({
+      checkIsRepo: jest.fn().mockResolvedValue(true),
     });
 
-    test("should initialize git repo if not present", async () => {
-      const simpleGit = require("simple-git");
-      const git = {
-        checkIsRepo: jest.fn().mockResolvedValue(false),
-        init: jest.fn().mockResolvedValue(),
-        add: jest.fn().mockResolvedValue(),
-        commit: jest.fn().mockResolvedValue(),
-      };
-      simpleGit.mockReturnValue(git);
-
-      const inquirer = require("inquirer");
-      inquirer.prompt = jest
-        .fn()
-        .mockResolvedValueOnce({ initGit: true })
-        .mockResolvedValueOnce({ projectType: "web" })
-        .mockResolvedValueOnce({ selectedModules: ["testing"] })
-        .mockResolvedValueOnce({ coverage: 80 });
-
-      fs.pathExists.mockResolvedValue(false);
-      fs.writeJSON.mockResolvedValue();
-
-      await init({});
-
-      expect(git.init).toHaveBeenCalled();
-      expect(git.add).toHaveBeenCalledWith(".");
-      expect(git.commit).toHaveBeenCalledWith("Initial commit");
-    });
+    fs.pathExists.mockResolvedValue(false);
+    fs.writeFile.mockResolvedValue();
+    fs.writeJSON.mockResolvedValue();
+    fs.readJSON.mockResolvedValue({});
+    fs.chmod.mockResolvedValue();
+    fs.ensureDir.mockResolvedValue();
   });
 
-  describe("project type detection", () => {
-    test("should detect web project from React dependency", async () => {
-      fs.pathExists.mockImplementation(async (file) => {
-        if (file === "package.json") return true;
-        if (file === ".vibe-codex.json") return false;
-        return false;
-      });
+  afterEach(() => {
+    process.exit.mockRestore();
+  });
 
-      fs.readJSON.mockImplementation(async (file) => {
-        if (file === "package.json") {
-          return {
-            dependencies: { react: "^18.0.0" },
-          };
-        }
-        return {};
-      });
+  describe("command-line argument handling", () => {
+    test("should use type from command line", async () => {
+      await init({ type: "fullstack", modules: "all" });
 
-      const simpleGit = require("simple-git");
-      simpleGit.mockReturnValue({
-        checkIsRepo: jest.fn().mockResolvedValue(true),
-      });
-
-      const inquirer = require("inquirer");
-      inquirer.prompt = jest
-        .fn()
-        .mockResolvedValueOnce({ selectedModules: [] });
-
-      fs.writeJSON.mockResolvedValue();
-
-      await init({ type: "auto" });
-
-      // Should detect as web project
-      const configCall = fs.writeJSON.mock.calls.find(
-        (call) => call[0] === ".vibe-codex.json",
+      expect(fs.writeFile).toHaveBeenCalled();
+      const configCall = fs.writeFile.mock.calls.find(
+        (call) => call[0].endsWith(".vibe-codex.json"),
       );
-      expect(configCall[1].projectType).toBe("web");
+      expect(configCall).toBeDefined();
+      const config = JSON.parse(configCall[1]);
+      expect(config.projectType).toBe("fullstack");
+    });
+
+    test("should use modules from command line", async () => {
+      await init({ type: "web", modules: "testing,deployment" });
+
+      const configCall = fs.writeFile.mock.calls.find(
+        (call) => call[0].endsWith(".vibe-codex.json"),
+      );
+      const config = JSON.parse(configCall[1]);
+      expect(config.modules).toMatchObject({
+        core: { enabled: true },
+        testing: { enabled: true },
+        deployment: { enabled: true },
+      });
+    });
+
+    test("should install all modules when modules=all", async () => {
+      await init({ type: "api", modules: "all" });
+
+      const configCall = fs.writeFile.mock.calls.find(
+        (call) => call[0].endsWith(".vibe-codex.json"),
+      );
+      const config = JSON.parse(configCall[1]);
+      expect(config.modules).toMatchObject({
+        core: { enabled: true },
+        "github-workflow": { enabled: true },
+        testing: { enabled: true },
+        deployment: { enabled: true },
+        documentation: { enabled: true },
+        patterns: { enabled: true },
+      });
+    });
+
+    test("should respect minimal flag", async () => {
+      await init({ type: "library", minimal: true });
+
+      const configCall = fs.writeFile.mock.calls.find(
+        (call) => call[0].endsWith(".vibe-codex.json"),
+      );
+      const config = JSON.parse(configCall[1]);
+      expect(Object.keys(config.modules).filter(
+        m => config.modules[m].enabled
+      ).length).toBe(1);
+      expect(config.modules.core.enabled).toBe(true);
+    });
+
+    test("should use advanced hooks from command line", async () => {
+      await init({ type: "web", modules: "all", withAdvancedHooks: "pr-health,issue-tracking" });
+
+      const configCall = fs.writeFile.mock.calls.find(
+        (call) => call[0].endsWith(".vibe-codex.json"),
+      );
+      const config = JSON.parse(configCall[1]);
+      expect(config.advancedHooks).toMatchObject({
+        enabled: true,
+        categories: ["pr-health", "issue-tracking"],
+      });
+    });
+
+    test("should use project defaults with preset flag", async () => {
+      await init({ type: "library", preset: true });
+
+      const configCall = fs.writeFile.mock.calls.find(
+        (call) => call[0].endsWith(".vibe-codex.json"),
+      );
+      const config = JSON.parse(configCall[1]);
+      
+      // Library defaults should include core, github-workflow, and documentation
+      expect(config.modules).toMatchObject({
+        core: { enabled: true },
+        "github-workflow": { enabled: true },
+        documentation: { enabled: true },
+      });
+      expect(config.modules.testing).toBeUndefined();
+    });
+
+    test("should fail when no modules specified", async () => {
+      let exitCalled = false;
+      process.exit.mockImplementation(() => {
+        exitCalled = true;
+        throw new Error('process.exit called');
+      });
+
+      try {
+        await init({ type: "web" });
+      } catch (e) {
+        // Expected to throw
+      }
+
+      expect(exitCalled).toBe(true);
+      expect(process.exit).toHaveBeenCalledWith(1);
+    });
+
+    test("should use default project type when detection fails", async () => {
+      await init({ modules: "all" });
+
+      const configCall = fs.writeFile.mock.calls.find(
+        (call) => call[0].endsWith(".vibe-codex.json"),
+      );
+      const config = JSON.parse(configCall[1]);
+      // Should default to "custom" when detection fails
+      expect(config.projectType).toBe("custom");
     });
   });
 
   describe("configuration creation", () => {
     test("should create valid configuration file", async () => {
-      const simpleGit = require("simple-git");
-      simpleGit.mockReturnValue({
-        checkIsRepo: jest.fn().mockResolvedValue(true),
+      await init({ 
+        type: "fullstack",
+        modules: "testing,github-workflow,deployment"
       });
 
-      const inquirer = require("inquirer");
-      inquirer.prompt = jest
-        .fn()
-        .mockResolvedValueOnce({ projectType: "fullstack" })
-        .mockResolvedValueOnce({
-          selectedModules: ["testing", "github", "deployment"],
-        })
-        .mockResolvedValueOnce({ coverage: 85 })
-        .mockResolvedValueOnce({ platform: "vercel" });
-
-      fs.pathExists.mockResolvedValue(false);
-      fs.writeJSON.mockResolvedValue();
-      fs.writeFile.mockResolvedValue();
-      fs.chmod.mockResolvedValue();
-      fs.ensureDir.mockResolvedValue();
-
-      await init({});
-
       // Check configuration was created
-      const configCall = fs.writeJSON.mock.calls.find(
-        (call) => call[0] === ".vibe-codex.json",
+      const configCall = fs.writeFile.mock.calls.find(
+        (call) => call[0].endsWith(".vibe-codex.json"),
       );
 
       expect(configCall).toBeDefined();
-      expect(configCall[1]).toMatchObject({
+      const config = JSON.parse(configCall[1]);
+      expect(config).toMatchObject({
         projectType: "fullstack",
         modules: {
           core: { enabled: true },
-          testing: {
-            enabled: true,
-            coverage: { threshold: 85 },
-          },
-          github: { enabled: true },
-          deployment: {
-            enabled: true,
-            platform: "vercel",
-          },
+          testing: { enabled: true },
+          "github-workflow": { enabled: true },
+          deployment: { enabled: true },
         },
       });
     });

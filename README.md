@@ -1,8 +1,8 @@
 # vibe-codex
 
-> Automated development rules and workflow enforcement for modern software teams
+> Command-line tool to install and manage development rules, git hooks, and workflow automation
 
-> **Migration Notice**: This repository has evolved from the original `mandatory-rules-checker` project. If you were using the legacy system, please see the [migration guide](docs/LEGACY-MIGRATION.md). Legacy compatibility is maintained temporarily in the `legacy/` and `scripts/` directories.
+> **Version 0.8.0** - Major breaking changes: Removed interactive mode. All commands now require explicit CLI arguments.
 
 [![npm version](https://img.shields.io/npm/v/vibe-codex.svg)](https://www.npmjs.com/package/vibe-codex)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -11,7 +11,11 @@
 ## 🚀 Quick Start
 
 ```bash
-npx vibe-codex init
+# Initialize with default modules for your project type
+npx vibe-codex init --type=web --preset
+
+# Or specify modules explicitly
+npx vibe-codex init --type=fullstack --modules=core,testing,github-workflow,deployment
 ```
 
 ## 📋 What is vibe-codex?
@@ -27,13 +31,13 @@ vibe-codex automatically enforces development best practices through:
 
 ### One-time use (recommended)
 ```bash
-npx vibe-codex init
+npx vibe-codex init --type=<project-type> --modules=<module-list>
 ```
 
 ### Global installation
 ```bash
 npm install -g vibe-codex
-vibe-codex init
+vibe-codex init --type=<project-type> --modules=<module-list>
 ```
 
 ### As project dependency
@@ -41,33 +45,80 @@ vibe-codex init
 npm install --save-dev vibe-codex
 ```
 
-## 🎯 Basic Usage
+## 🎯 Command-Line Usage
 
 ### Initialize in your project
-```bash
-cd your-project
-npx vibe-codex init
 
-# With options
-npx vibe-codex init --type fullstack --minimal
+vibe-codex now requires explicit configuration via command-line arguments:
+
+```bash
+# Minimal setup (core module only)
+npx vibe-codex init --type=web --minimal
+
+# Use preset modules for project type
+npx vibe-codex init --type=fullstack --preset
+
+# Specify exact modules
+npx vibe-codex init --type=api --modules=core,testing,github-workflow
+
+# Install all available modules
+npx vibe-codex init --type=library --modules=all
 
 # With advanced hooks
-npx vibe-codex init --with-advanced-hooks "issue-tracking,pr-management"
+npx vibe-codex init --type=web --modules=all --with-advanced-hooks=issue-tracking,pr-health
 ```
 
-### Configure modules
-```bash
-npx vibe-codex config
-```
+#### Required Arguments
+
+One of the following module configurations is required:
+- `--modules=<list>` - Comma-separated list of modules to install
+- `--modules=all` - Install all available modules
+- `--minimal` - Install only the core module
+- `--preset` - Use default modules for the project type
+
+#### Available Options
+
+- `-t, --type <type>` - Project type: `web`, `api`, `fullstack`, `library` (default: auto-detect)
+- `-m, --minimal` - Create minimal configuration (core module only)
+- `--modules <list>` - Comma-separated list of modules or "all"
+- `--preset` - Use default modules for project type
+- `--with-advanced-hooks <list>` - Comma-separated list of advanced hook categories
+- `--no-git-hooks` - Skip git hook installation
+- `-f, --force` - Overwrite existing configuration
+
+#### Available Modules
+
+- `core` - Essential security & workflow rules (always included)
+- `github-workflow` - PR templates, issue tracking
+- `testing` - Test coverage, framework rules  
+- `deployment` - Platform-specific deployment checks
+- `documentation` - README, architecture docs standards
+- `patterns` - Code organization patterns
 
 ### Validate your project
 ```bash
+# Run validation
 npx vibe-codex validate
+
+# With auto-fix
+npx vibe-codex validate --fix
+
+# Check specific modules
+npx vibe-codex validate --module testing --module github-workflow
 ```
 
 ### Update to latest rules
 ```bash
 npx vibe-codex update
+```
+
+### Configure modules
+```bash
+# View current configuration
+npx vibe-codex config --list
+
+# Set configuration value
+npx vibe-codex config --set testing.coverage.threshold 90
 ```
 
 ## ⚙️ Configuration
@@ -76,55 +127,64 @@ vibe-codex uses a `.vibe-codex.json` file for configuration:
 
 ```json
 {
+  "version": "2.0.0",
+  "projectType": "fullstack",
   "modules": {
+    "core": { "enabled": true },
     "testing": {
+      "enabled": true,
       "framework": "jest",
       "coverage": { "threshold": 80 }
     },
-    "github": {
+    "github-workflow": {
+      "enabled": true,
       "features": ["pr-checks", "issue-tracking"]
     }
   }
 }
 ```
 
-See [Configuration Guide](./docs/CONFIGURATION.md) for all options.
+## 📦 Module Presets by Project Type
 
-## 📦 Available Modules
+### Web Projects
+- core, github-workflow, testing, documentation
 
-- **Core** - Basic git workflow and security
-- **Testing** - Test frameworks and coverage
-- **GitHub** - PR/Issue automation
-- **Deployment** - Platform-specific checks
-- **Documentation** - README and docs standards
+### API Projects  
+- core, github-workflow, testing, documentation
 
-### 🔧 Advanced Hooks (Optional)
+### Fullstack Projects
+- core, github-workflow, testing, deployment, documentation
 
-Additional development workflow automation:
+### Library Projects
+- core, github-workflow, documentation
 
-- **Issue Tracking** - Automatic issue updates and progress tracking
-- **PR Management** - PR health checks and review enforcement
-- **Quality Gates** - Test coverage and security validations
-- **Context Management** - Keep project documentation up to date
+## 🔧 Advanced Hooks
 
-Install during init or with: `npx vibe-codex init --with-advanced-hooks "issue-tracking,quality-gates"`
+Advanced hooks provide additional automation:
 
-See [Modules Guide](./docs/MODULES.md) for details.
+- `pr-health` - PR health checks and auto-labeling
+- `issue-tracking` - Issue update reminders and tracking
+- `commit-analysis` - Commit message analysis
+- `dependency-tracking` - Dependency update tracking
+
+## 🚫 Breaking Changes in v0.8.0
+
+- **Removed all interactive prompts** - All configuration must be provided via CLI arguments
+- **Removed inquirer dependency** - No more interactive mode
+- **Required explicit module configuration** - Must specify modules via CLI flags
+- **Command structure changes** - Some commands now require different arguments
 
 ## 📚 Documentation
 
-- [Getting Started](./docs/GETTING-STARTED.md) - Installation and setup guide
-- [Configuration](./docs/CONFIGURATION.md) - Configuration options
-- [CLI Reference](./docs/CLI-REFERENCE.md) - Command line usage
-- [API Reference](./docs/API.md) - Programmatic usage
-- [Modules](./docs/MODULES.md) - Available modules
-- [Migration Guide](./docs/MIGRATION.md) - Upgrading from v1.x
-- [Troubleshooting](./docs/TROUBLESHOOTING.md) - Common issues
+- [Configuration Guide](./docs/CONFIGURATION.md)
+- [Available Rules](./docs/RULES.md)
+- [Custom Rules](./docs/CUSTOM-RULES.md)
+- [CI/CD Integration](./docs/CI-CD.md)
 
 ## 🤝 Contributing
 
-See [CONTRIBUTING.md](https://github.com/tyabonil/vibe-codex/blob/main/CONTRIBUTING.md)
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for development setup and guidelines.
 
 ## 📄 License
 
-MIT © vibe-codex contributors
+MIT © Ty Yabonil

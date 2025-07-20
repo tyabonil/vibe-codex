@@ -1,7 +1,7 @@
 {
   "name": "vibe-codex",
-  "version": "0.6.2",
-  "description": "CLI tool to install development rules and git hooks with interactive configuration",
+  "version": "0.8.0",
+  "description": "Command-line tool to install and manage development rules, git hooks, and workflow automation",
   "keywords": [
     "vibe-codex",
     "git-hooks",
@@ -55,7 +55,6 @@
     "commander": "^11.1.0",
     "conf": "^12.0.0",
     "fs-extra": "^11.2.0",
-    "inquirer": "^9.2.12",
     "joi": "^17.11.0",
     "js-yaml": "^4.1.0",
     "marked": "^16.0.0",
