@@ -4,7 +4,7 @@ Welcome to vibe-codex! This guide will help you get up and running with automate
 
 ## Prerequisites
 
-- Node.js 14.0.0 or higher
+- Node.js 16.0.0 or higher
 - Git repository initialized in your project
 - npm or yarn package manager
 
@@ -12,29 +12,38 @@ Welcome to vibe-codex! This guide will help you get up and running with automate
 
 ### 1. Initialize vibe-codex in your project
 
-Navigate to your project directory and run:
+Navigate to your project directory and run one of these commands:
 
 ```bash
-npx vibe-codex init
+# Minimal setup (core module only)
+npx vibe-codex init --type=web --minimal
+
+# Use preset modules for your project type
+npx vibe-codex init --type=fullstack --preset
+
+# Specify exact modules
+npx vibe-codex init --type=api --modules=core,testing,github-workflow
+
+# Install all available modules
+npx vibe-codex init --type=library --modules=all
 ```
 
-This interactive command will:
-- Detect your project type
-- Ask which modules you want to enable
+This command will:
 - Create a `.vibe-codex.json` configuration file
 - Set up Git hooks for automated enforcement
+- Install the specified modules for your project
 
 ### 2. Understanding the Module System
 
-vibe-codex uses a modular architecture. During initialization, you'll be asked to select from these modules:
+vibe-codex uses a modular architecture. Available modules include:
 
-- **Core** (Always enabled) - Essential security and workflow rules
-- **Testing** - Test coverage and quality rules
-- **GitHub** - GitHub-specific features and templates
-- **GitHub Workflow** - GitHub Actions validation
-- **Deployment** - Deployment configuration checks
-- **Documentation** - Documentation standards
-- **Patterns** - Code organization best practices
+- **core** - Essential security and workflow rules (always included)
+- **testing** - Test coverage and quality rules
+- **github-workflow** - GitHub-specific features and templates
+- **deployment** - Deployment configuration checks
+- **documentation** - Documentation standards
+- **patterns** - Code organization best practices
+- **quality** - Code quality and linting rules
 
 ### 3. Your First Validation
 
@@ -44,26 +53,64 @@ After initialization, run a validation to see how your project measures up:
 npx vibe-codex validate
 ```
 
-This will check your project against all enabled modules and report any violations.
+To automatically fix violations where possible:
 
-## Configuration Basics
+```bash
+npx vibe-codex validate --fix
+```
+
+## Command-Line Usage
+
+All vibe-codex commands require explicit configuration via CLI arguments:
+
+### Initialization Examples
+
+```bash
+# Web project with common modules
+npx vibe-codex init --type=web --modules=core,testing,github-workflow,documentation
+
+# API project with preset
+npx vibe-codex init --type=api --preset
+
+# Full-stack project with all modules and advanced hooks
+npx vibe-codex init --type=fullstack --modules=all --with-advanced-hooks=pr-health,issue-tracking
+```
+
+### Configuration Management
+
+```bash
+# View current configuration
+npx vibe-codex config --list
+
+# Get specific setting
+npx vibe-codex config --get testing.coverage.threshold
+
+# Update setting
+npx vibe-codex config --set testing.coverage.threshold 90
+```
+
+## Configuration File
 
 Your `.vibe-codex.json` file controls which modules are enabled and their settings:
 
 ```json
 {
-  "version": "1.0.0",
+  "version": "2.0.0",
+  "projectType": "fullstack",
   "modules": {
     "core": {
       "enabled": true
     },
     "testing": {
       "enabled": true,
-      "coverageThreshold": 80
+      "framework": "jest",
+      "coverage": {
+        "threshold": 80
+      }
     },
-    "github": {
+    "github-workflow": {
       "enabled": true,
-      "requirePRTemplate": true
+      "features": ["pr-checks", "issue-tracking"]
     }
   }
 }
@@ -81,91 +128,106 @@ If a hook fails, you'll see clear error messages explaining what needs to be fix
 
 ## Common Workflows
 
-### Adding a New Module
-
-To add a module after initialization:
-
-```bash
-npx vibe-codex config add-module testing
-```
-
 ### Checking Project Status
 
-See which modules are enabled and their current status:
+```bash
+npx vibe-codex validate
+```
+
+### Validating Specific Modules
 
 ```bash
-npx vibe-codex status
+npx vibe-codex validate --module testing --module documentation
 ```
 
 ### Updating vibe-codex
 
-To update to the latest version:
-
 ```bash
-npm update vibe-codex
-# or globally
-npm update -g vibe-codex
+# Update to latest rules and hooks
+npx vibe-codex update
+
+# Check for updates without applying
+npx vibe-codex update --check
 ```
 
-## Customizing Rules
+## Module Presets by Project Type
 
-Each module can be customized in `.vibe-codex.json`. For example, to change the test coverage threshold:
+When using `--preset`, these modules are installed:
 
-```json
-{
-  "modules": {
-    "testing": {
-      "enabled": true,
-      "coverageThreshold": 90,
-      "requireTestFiles": true
-    }
-  }
-}
+- **Web Projects**: core, github-workflow, testing, documentation
+- **API Projects**: core, github-workflow, testing, documentation
+- **Fullstack Projects**: core, github-workflow, testing, deployment, documentation
+- **Library Projects**: core, github-workflow, documentation
+
+## Advanced Hooks
+
+Add advanced automation with `--with-advanced-hooks`:
+
+- `pr-health` - PR health monitoring and auto-labeling
+- `issue-tracking` - Issue update reminders and work logging
+- `commit-analysis` - Commit message standards
+- `dependency-tracking` - Dependency updates and security
+
+Example:
+```bash
+npx vibe-codex init --type=web --preset --with-advanced-hooks=pr-health,issue-tracking
 ```
 
 ## Integration with CI/CD
 
-vibe-codex works great in CI/CD pipelines. Add this to your workflow:
+vibe-codex works seamlessly in CI/CD pipelines:
 
 ```yaml
-# GitHub Actions example
+# GitHub Actions
 - name: Validate with vibe-codex
   run: npx vibe-codex validate --ci
+
+# GitLab CI
+validate:
+  script:
+    - npx vibe-codex validate --ci --format json
 ```
 
 ## Troubleshooting
 
-### Hook Installation Failed
+### Common Issues
 
-If Git hooks weren't installed automatically:
+1. **"Module configuration required"** 
+   - Solution: Use `--modules`, `--minimal`, or `--preset` flag
 
-```bash
-npx vibe-codex init --reinstall-hooks
-```
+2. **Git hooks not working**
+   - Solution: `npx vibe-codex update --hooks`
 
-### Validation Takes Too Long
-
-For large projects, you can validate specific modules:
-
-```bash
-npx vibe-codex validate --modules core,testing
-```
+3. **Validation failures in CI**
+   - Solution: Run `npx vibe-codex validate --fix` locally first
 
 ### Temporarily Disable Hooks
 
 If you need to bypass hooks temporarily:
 
 ```bash
-git commit --no-verify
+SKIP_VIBE_CODEX=1 git commit -m "Emergency fix"
 ```
 
 ⚠️ Use sparingly! Hooks exist to maintain code quality.
 
+### Debug Mode
+
+For detailed logging:
+
+```bash
+DEBUG=vibe-codex:* npx vibe-codex validate
+```
+
+## Migration from v0.6
+
+If you're upgrading from v0.6 (interactive mode), see the [Migration Guide](./MIGRATION-v0.8.md).
+
 ## Next Steps
 
-- Read the [Module Documentation](./MODULES.md) to understand each module's rules
-- Check out [Configuration Guide](./CONFIGURATION.md) for advanced settings
-- See [CLI Reference](./CLI-REFERENCE.md) for all available commands
+- Read the [CLI Reference](./CLI-REFERENCE.md) for all available commands
+- Check out [Module Documentation](./MODULES.md) to understand each module's rules
+- See [Configuration Guide](./CONFIGURATION.md) for advanced settings
 
 ## Getting Help
 
