@@ -1,7 +1,10 @@
 # Development files
 test/
+tests/
+*.test.js
+*.spec.js
 examples/
-docs/
+docs/legacy/
 .github/
 .vscode/
 .idea/
@@ -20,6 +23,14 @@ appveyor.yml
 .prettierrc*
 jest.config.js
 tsconfig.json
+
+# Project specific
+legacy/
+test-vibe-codex-install/
+.vibe-codex/
+.vibe-codex-backup/
+PROJECT-CONTEXT.md
+CONTRIBUTING.md
 
 # Misc
 *.log

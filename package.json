@@ -33,9 +33,10 @@
     "lib/",
     "templates/",
     "hooks/",
-    "config/",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "CONFIGURATION.md",
+    "MANDATORY-RULES.md"
   ],
   "scripts": {
     "test": "jest --coverage --verbose",
@@ -44,7 +45,7 @@
     "lint": "eslint lib/ tests/",
     "lint:fix": "eslint lib/ tests/ --fix",
     "format": "prettier --write \"lib/**/*.js\" \"tests/**/*.js\"",
-    "prepublishOnly": "echo 'Skipping tests for now'",
+    "prepublishOnly": "npm test",
     "version": "npm run format && git add -A",
     "postversion": "git push && git push --tags"
   },
