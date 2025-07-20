@@ -2,7 +2,7 @@
 
 ## Core Purpose (WHY)
 
-vibe-codex exists to help development teams - especially those using AI assistants - maintain code quality, security, and workflow consistency through automated git hooks and development rules. It evolved from cursor_rules, recognizing that AI coding assistants need guardrails to prevent reward hacking, context loss, and deviation from project goals.
+vibe-codex exists to help development teams - especially those using AI assistants - maintain code quality, security, and workflow consistency through automated git hooks and development rules. It recognizes that AI coding assistants need guardrails to prevent reward hacking, context loss, and deviation from project goals.
 
 The project aims to be a comprehensive, menu-driven tool that allows teams to select and configure rules and hooks appropriate to their needs - from simple security checks to complex AI development workflows.
 

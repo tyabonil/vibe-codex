@@ -1,7 +1,7 @@
 #!/bin/bash
-# Report issues with cursor_rules to the repository
+# Report issues with vibe-codex to the repository
 
-echo "📝 Cursor Rules Issue Reporter"
+echo "📝 Vibe Codex Issue Reporter"
 echo "=============================" 
 
 # Check for GitHub CLI
@@ -75,7 +75,7 @@ ${ISSUE_BODY}
 <!-- Any ideas on how to improve the rule? -->
 
 ---
-*Reported via cursor-rules issue reporter*
+*Reported via vibe-codex issue reporter*
 EOF
 )
 
@@ -83,8 +83,11 @@ EOF
 echo ""
 echo "Creating issue in vibe-codex repository..."
 
+# Get repository from environment or default
+REPO="${VIBE_CODEX_REPO:-your-org/vibe-codex}"
+
 gh issue create \
-  --repo tyabonil/vibe-codex \
+  --repo "$REPO" \
   --title "${ISSUE_PREFIX}${ISSUE_TITLE}" \
   --body "$FULL_BODY" \
   --label "$ISSUE_LABEL"

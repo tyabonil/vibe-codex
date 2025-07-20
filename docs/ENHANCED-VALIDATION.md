@@ -20,7 +20,7 @@ The Enhanced Pre-commit Validation System provides comprehensive validation to e
 
 ## Installation
 
-The enhanced validation system is automatically included with cursor_rules installation:
+The enhanced validation system is automatically included with vibe-codex installation:
 
 ```bash
 # Standard installation includes enhanced validation
