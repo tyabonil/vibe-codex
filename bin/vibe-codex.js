@@ -50,19 +50,20 @@ program
     }
   });
 
-// Config command - Interactive configuration management
+// Config command - CLI-only configuration management
 program
   .command('config')
-  .description('Interactive configuration management')
+  .description('Manage vibe-codex configuration')
   .option('-l, --list', 'list current configuration')
-  .option('-s, --set <key> <value>', 'set a configuration value')
+  .option('-s, --set <key=value>', 'set a configuration value')
   .option('-r, --reset', 'reset to default configuration')
-  .option('-e, --export <path>', 'export configuration to file')
+  .option('--force', 'force reset without prompting')
+  .option('-e, --export [path]', 'export configuration to file or stdout')
   .option('-i, --import <path>', 'import configuration from file')
   .option('-p, --preview', 'preview configuration impact')
   .action(async (options) => {
     try {
-      const config = require('../lib/commands/config-v3');
+      const config = require('../lib/commands/config-cli');
       await config(options);
     } catch (error) {
       console.error(chalk.red('Error:'), error.message);
@@ -263,14 +264,19 @@ hookCmd
     }
   });
 
-// Update issues command - Interactive issue update interface
+// Update issues command - CLI-only issue update interface
 program
   .command('update-issues')
-  .description('Interactively update related GitHub issues')
+  .description('Update related GitHub issues')
+  .option('-l, --list', 'list related issues from recent commits')
+  .option('-c, --check <issue>', 'check status of specific issue')
+  .option('-u, --update <issue>', 'update specific issue')
+  .option('-m, --message <text>', 'update message (required with --update)')
+  .option('-b, --bulk <file>', 'bulk update from JSON file')
   .option('--dry-run', 'show what would be updated without making changes')
   .action(async (options) => {
     try {
-      const updateIssues = require('../lib/commands/update-issues');
+      const updateIssues = require('../lib/commands/update-issues-cli');
       await updateIssues(options);
     } catch (error) {
       console.error(chalk.red('Error:'), error.message);
@@ -288,7 +294,7 @@ program
   .option('--hook <hook>', 'specify which hook is calling (post-commit, pre-push)')
   .action(async (options) => {
     try {
-      const checkIssueUpdates = require('../lib/commands/check-issue-updates');
+      const checkIssueUpdates = require('../lib/commands/check-issue-updates-cli');
       await checkIssueUpdates(options);
     } catch (error) {
       // Don't output errors for hook commands
