@@ -31,18 +31,25 @@ jobs:
     
     - name: Install Review Bots
       run: |
-        cd legacy/review-bots
-        npm install
-        chmod +x bin/*.js
-        # The 'npm link' command is not suitable for CI/CD environments as it creates global symlinks.
-        # Instead, we'll rely on the 'npm install' in the 'review-bots' directory to make the binaries available
-        # within the local 'node_modules/.bin' which is typically in the PATH for npm scripts.
-        # For direct execution in the workflow, we'll use the full path or ensure it's in the PATH.
-        
-        # Verify installation by checking if the binaries exist in node_modules/.bin
-        ls -l node_modules/.bin/hater-bot || echo "hater-bot not found in node_modules/.bin"
-        ls -l node_modules/.bin/white-knight-bot || echo "white-knight-bot not found in node_modules/.bin"
-        ls -l node_modules/.bin/balance-bot || echo "balance-bot not found in node_modules/.bin"
+        # Check if legacy directory exists
+        if [ -d "legacy/review-bots" ]; then
+          cd legacy/review-bots
+          npm install
+          chmod +x bin/*.js
+          # The 'npm link' command is not suitable for CI/CD environments as it creates global symlinks.
+          # Instead, we'll rely on the 'npm install' in the 'review-bots' directory to make the binaries available
+          # within the local 'node_modules/.bin' which is typically in the PATH for npm scripts.
+          # For direct execution in the workflow, we'll use the full path or ensure it's in the PATH.
+          
+          # Verify installation by checking if the binaries exist in node_modules/.bin
+          ls -l node_modules/.bin/hater-bot || echo "hater-bot not found in node_modules/.bin"
+          ls -l node_modules/.bin/white-knight-bot || echo "white-knight-bot not found in node_modules/.bin"
+          ls -l node_modules/.bin/balance-bot || echo "balance-bot not found in node_modules/.bin"
+        else
+          echo "⚠️ legacy/review-bots directory not found - skipping review bots"
+          echo "This is expected for branches removing legacy code"
+          exit 0
+        fi
     
     - name: Get Changed Files
       id: changed-files
@@ -74,18 +81,29 @@ jobs:
             PREFIXED_FILES="$PREFIXED_FILES ../../$file"
           done
           
-          # Run all three bots and save outputs
-          echo "Running hater-bot..."
-          cd legacy/review-bots && node bin/hater-bot.js $PREFIXED_FILES --output ../../hater-report.md --no-color || echo "Hater bot failed"
-          cd ../..
-          
-          echo "Running white-knight-bot..."
-          cd legacy/review-bots && node bin/white-knight-bot.js $PREFIXED_FILES --output ../../knight-report.md --no-color || echo "White knight bot failed"
-          cd ../..
-          
-          echo "Running balance-bot..."
-          cd legacy/review-bots && node bin/balance-bot.js $PREFIXED_FILES --output ../../balance-report.md --no-color || echo "Balance bot failed"
-          cd ../..
+          # Check if we can run bots
+          if [ -d "legacy/review-bots" ]; then
+            # Run all three bots and save outputs
+            echo "Running hater-bot..."
+            cd legacy/review-bots && node bin/hater-bot.js $PREFIXED_FILES --output ../../hater-report.md --no-color || echo "Hater bot failed"
+            cd ../..
+            
+            echo "Running white-knight-bot..."
+            cd legacy/review-bots && node bin/white-knight-bot.js $PREFIXED_FILES --output ../../knight-report.md --no-color || echo "White knight bot failed"
+            cd ../..
+            
+            echo "Running balance-bot..."
+            cd legacy/review-bots && node bin/balance-bot.js $PREFIXED_FILES --output ../../balance-report.md --no-color || echo "Balance bot failed"
+            cd ../..
+          else
+            echo "Review bots not available - creating placeholder report"
+            echo "# Review Bots Not Available" > combined-report.md
+            echo "" >> combined-report.md
+            echo "The review bots are not available in this branch." >> combined-report.md
+            echo "This is expected for branches that remove legacy code." >> combined-report.md
+            cp combined-report.md /tmp/review-report.md
+            exit 0
+          fi
           
           # Combine reports
           echo "# 🤖 Review Bots Analysis" > combined-report.md
