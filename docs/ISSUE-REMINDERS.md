@@ -32,7 +32,7 @@ The system enforces these MANDATORY-RULES.md requirements:
 
 ## Installation
 
-The issue reminder hooks are automatically included when you install cursor_rules:
+The issue reminder hooks are automatically included when you install vibe-codex:
 
 ```bash
 # Standard installation includes issue reminders

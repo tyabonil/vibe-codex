@@ -308,7 +308,7 @@ A comprehensive rule enforcement system designed for AI-powered development that
 # Analyze PR check failures
 ./.claude/hooks/pr-check-handler.sh [PR_NUMBER]
 
-# Report cursor_rules issues
+# Report vibe-codex issues
 ./.claude/hooks/report-issue.sh
 ```
 
@@ -576,7 +576,7 @@ git commit -m "test: debug mode" --verbose
 ## LLM Integration
 
 ### For AI Assistants
-This section provides guidance for AI assistants working with cursor_rules.
+This section provides guidance for AI assistants working with vibe-codex.
 
 #### Primary Reference Documents
 1. **MANDATORY-RULES.md**: Complete rule reference (LLM-optimized)

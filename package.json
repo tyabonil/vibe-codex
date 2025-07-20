@@ -14,16 +14,16 @@
     "cli",
     "npx"
   ],
-  "homepage": "https://github.com/tyabonil/vibe-codex",
+  "homepage": "https://github.com/your-org/vibe-codex",
   "bugs": {
-    "url": "https://github.com/tyabonil/vibe-codex/issues"
+    "url": "https://github.com/your-org/vibe-codex/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tyabonil/vibe-codex.git"
+    "url": "git+https://github.com/your-org/vibe-codex.git"
   },
   "license": "MIT",
-  "author": "Ty Yabonil",
+  "author": "",
   "main": "lib/index.js",
   "bin": {
     "vibe-codex": "bin/vibe-codex.js"
