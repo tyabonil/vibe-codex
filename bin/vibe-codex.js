@@ -50,19 +50,20 @@ program
     }
   });
 
-// Config command - Interactive configuration management
+// Config command - CLI-only configuration management
 program
   .command('config')
-  .description('Interactive configuration management')
+  .description('Manage vibe-codex configuration')
   .option('-l, --list', 'list current configuration')
-  .option('-s, --set <key> <value>', 'set a configuration value')
+  .option('-s, --set <key=value>', 'set a configuration value')
   .option('-r, --reset', 'reset to default configuration')
-  .option('-e, --export <path>', 'export configuration to file')
+  .option('--force', 'force reset without prompting')
+  .option('-e, --export [path]', 'export configuration to file or stdout')
   .option('-i, --import <path>', 'import configuration from file')
   .option('-p, --preview', 'preview configuration impact')
   .action(async (options) => {
     try {
-      const config = require('../lib/commands/config-v3');
+      const config = require('../lib/commands/config-cli');
       await config(options);
     } catch (error) {
       console.error(chalk.red('Error:'), error.message);
