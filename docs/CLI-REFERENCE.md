@@ -21,40 +21,37 @@ npx vibe-codex <command>
 
 ### `init`
 
-Initialize vibe-codex in your project.
+Initialize vibe-codex in your project with the specified modules and configuration.
 
 ```bash
-npx vibe-codex init [options]
+npx vibe-codex init --type=<type> [options]
 ```
 
+**Required (one of):**
+- `--modules=<list>` - Comma-separated list of modules to install
+- `--modules=all` - Install all available modules
+- `--minimal` - Install only the core module
+- `--preset` - Use default modules for the project type
+
 **Options:**
-- `--force`: Overwrite existing configuration
-- `--modules <modules>`: Comma-separated list of modules to enable
-- `--no-hooks`: Skip Git hooks installation
-- `--config <path>`: Custom configuration file path
-- `--preset <name>`: Use a configuration preset (basic, strict, enterprise)
-- `--minimal`: Create minimal configuration without prompts
-- `--with-advanced-hooks <categories>`: Install advanced hooks (comma-separated: issue-tracking, pr-management, quality-gates, context-management)
+- `-t, --type <type>` - Project type: `web`, `api`, `fullstack`, `library` (default: auto-detect)
+- `--with-advanced-hooks <list>` - Comma-separated list of advanced hook categories
+- `--no-git-hooks` - Skip git hook installation
+- `-f, --force` - Overwrite existing configuration
 
 **Examples:**
 ```bash
-# Interactive initialization
-npx vibe-codex init
+# Minimal setup
+npx vibe-codex init --type=web --minimal
 
-# Initialize with specific modules
-npx vibe-codex init --modules core,testing,github
+# Use preset for fullstack project
+npx vibe-codex init --type=fullstack --preset
 
-# Force reinitialize
-npx vibe-codex init --force
+# Specify exact modules
+npx vibe-codex init --type=api --modules=core,testing,github-workflow
 
-# Use enterprise preset
-npx vibe-codex init --preset enterprise
-
-# Initialize with advanced hooks
-npx vibe-codex init --with-advanced-hooks "issue-tracking,pr-management"
-
-# Minimal installation with quality gates
-npx vibe-codex init --minimal --with-advanced-hooks "quality-gates"
+# Install all modules with advanced hooks
+npx vibe-codex init --type=library --modules=all --with-advanced-hooks=pr-health,issue-tracking
 ```
 
 ### `validate`
@@ -66,166 +63,95 @@ npx vibe-codex validate [options]
 ```
 
 **Options:**
-- `--modules <modules>`: Validate specific modules only
-- `--level <number>`: Maximum rule level to enforce (1-5)
-- `--fix`: Automatically fix fixable violations
-- `--format <format>`: Output format (pretty, json, junit)
-- `--output <file>`: Write results to file
-- `--ci`: CI mode (fail on warnings)
-- `--quiet`: Only show errors
-- `--verbose`: Show detailed information
+- `--fix` - Automatically fix violations where possible
+- `--module <name>` - Validate specific module only (can be used multiple times)
+- `--verbose` - Show detailed validation output
+- `--format <format>` - Output format (pretty, json, junit)
+- `--output <file>` - Write results to file
+- `--ci` - CI mode (fail on warnings)
 
 **Examples:**
 ```bash
-# Validate all modules
+# Run all validations
 npx vibe-codex validate
-
-# Validate specific modules
-npx vibe-codex validate --modules core,testing
 
 # Auto-fix violations
 npx vibe-codex validate --fix
 
+# Check specific modules
+npx vibe-codex validate --module testing --module github-workflow
+
 # CI mode with JSON output
 npx vibe-codex validate --ci --format json --output results.json
-
-# Validate only high-priority rules
-npx vibe-codex validate --level 3
-```
-
-### `status`
-
-Show current configuration and module status.
-
-```bash
-npx vibe-codex status [options]
-```
-
-**Options:**
-- `--json`: Output in JSON format
-- `--modules`: Show detailed module information
-- `--rules`: List all available rules
-
-**Examples:**
-```bash
-# Show status
-npx vibe-codex status
-
-# Detailed module information
-npx vibe-codex status --modules
-
-# JSON output for scripts
-npx vibe-codex status --json
-```
-
-### `config`
-
-Manage vibe-codex configuration.
-
-```bash
-npx vibe-codex config <subcommand> [options]
-```
-
-**Subcommands:**
-
-#### `config show`
-Display current configuration.
-
-```bash
-npx vibe-codex config show [--json]
-```
-
-#### `config validate`
-Validate configuration file.
-
-```bash
-npx vibe-codex config validate [--file <path>]
-```
-
-#### `config add-module`
-Add a module to configuration.
-
-```bash
-npx vibe-codex config add-module <module-name> [--options <json>]
-```
-
-#### `config remove-module`
-Remove a module from configuration.
-
-```bash
-npx vibe-codex config remove-module <module-name>
-```
-
-#### `config set`
-Set a configuration value.
-
-```bash
-npx vibe-codex config set <path> <value>
-```
-
-**Examples:**
-```bash
-# Show configuration
-npx vibe-codex config show
-
-# Add testing module
-npx vibe-codex config add-module testing
-
-# Set coverage threshold
-npx vibe-codex config set modules.testing.coverageThreshold 90
-
-# Remove a module
-npx vibe-codex config remove-module patterns
 ```
 
 ### `update`
 
-Update vibe-codex hooks and configuration.
+Update to the latest rule definitions and hook templates.
 
 ```bash
 npx vibe-codex update [options]
 ```
 
 **Options:**
-- `--hooks`: Update Git hooks only
-- `--check`: Check for updates without applying
-- `--force`: Force update even if up to date
+- `--check` - Check for updates without applying them
+- `--force` - Force update even if no changes detected
+
+### `config`
+
+View and modify configuration settings.
+
+```bash
+npx vibe-codex config <command> [options]
+```
+
+**Commands:**
+- `--list` - List all configuration
+- `--get <key>` - Get configuration value
+- `--set <key> <value>` - Set configuration value
+- `--reset` - Reset to default configuration
 
 **Examples:**
 ```bash
-# Update everything
-npx vibe-codex update
+# View all configuration
+npx vibe-codex config --list
 
-# Update hooks only
-npx vibe-codex update --hooks
+# Get specific value
+npx vibe-codex config --get testing.coverage.threshold
 
-# Check for updates
-npx vibe-codex update --check
+# Set configuration value
+npx vibe-codex config --set testing.coverage.threshold 90
+
+# Reset configuration
+npx vibe-codex config --reset
 ```
 
-### `migrate`
+### `update-issue`
 
-Migrate from older vibe-codex versions.
+Update GitHub issue with work summary.
 
 ```bash
-npx vibe-codex migrate [options]
+npx vibe-codex update-issue --issue=<number> --message=<message> [options]
 ```
+
+**Required:**
+- `--issue <number>` - GitHub issue number to update
+- `--message <message>` - Update message (or use --file)
 
 **Options:**
-- `--from <version>`: Source version (auto-detected if not specified)
-- `--dry-run`: Show what would be changed
-- `--backup`: Create backup of old configuration
+- `--file <path>` - Read update message from file
+- `--close` - Close the issue after updating
 
 **Examples:**
 ```bash
-# Auto-detect and migrate
-npx vibe-codex migrate
+# Simple update
+npx vibe-codex update-issue --issue=123 --message="Completed initial implementation"
 
-# Dry run
-npx vibe-codex migrate --dry-run
+# Update from file
+npx vibe-codex update-issue --issue=123 --file=./update.md
 
-# Migrate with backup
-npx vibe-codex migrate --backup
+# Update and close
+npx vibe-codex update-issue --issue=123 --message="Fixed and tested" --close
 ```
 
 ### `doctor`
@@ -237,117 +163,108 @@ npx vibe-codex doctor [options]
 ```
 
 **Options:**
-- `--fix`: Attempt to fix issues automatically
-- `--verbose`: Show detailed diagnostic information
+- `--fix` - Attempt to fix issues automatically
+- `--verbose` - Show detailed diagnostic information
 
-**Examples:**
+### `version`
+
+Display vibe-codex version information.
+
 ```bash
-# Run diagnostics
-npx vibe-codex doctor
-
-# Fix issues automatically
-npx vibe-codex doctor --fix
+npx vibe-codex version
 ```
 
-## Global Options
+## Available Modules
 
-These options work with all commands:
+- `core` - Essential security & workflow rules (always included)
+- `github-workflow` - PR templates, issue tracking, GitHub Actions
+- `testing` - Test coverage requirements, testing frameworks
+- `deployment` - Platform-specific deployment checks
+- `documentation` - README standards, architecture docs
+- `patterns` - Code organization patterns
+- `quality` - Code quality checks, linting
 
-- `--help, -h`: Show help information
-- `--version, -v`: Show version number
-- `--config, -c <path>`: Use custom configuration file
-- `--cwd <path>`: Run in different directory
-- `--no-color`: Disable colored output
-- `--debug`: Enable debug logging
+## Advanced Hook Categories
+
+When using `--with-advanced-hooks`, you can specify:
+
+- `pr-health` - PR health monitoring and auto-labeling
+- `issue-tracking` - Issue update reminders and work logging
+- `commit-analysis` - Commit message standards and analysis
+- `dependency-tracking` - Dependency updates and security scanning
+- `test-quality` - Test quality and anti-pattern detection
+- `doc-updates` - Documentation update requirements
+
+## Configuration File
+
+vibe-codex uses `.vibe-codex.json` for configuration:
+
+```json
+{
+  "version": "2.0.0",
+  "projectType": "fullstack",
+  "modules": {
+    "core": { "enabled": true },
+    "testing": {
+      "enabled": true,
+      "framework": "jest",
+      "coverage": { "threshold": 80 }
+    },
+    "github-workflow": {
+      "enabled": true,
+      "features": ["pr-checks", "issue-tracking"]
+    }
+  }
+}
+```
 
 ## Environment Variables
 
-- `VIBE_CODEX_CONFIG`: Default configuration file path
-- `VIBE_CODEX_MODULES`: Default modules to enable
-- `VIBE_CODEX_LEVEL`: Default enforcement level
-- `VIBE_CODEX_CI`: Enable CI mode
-- `NO_COLOR`: Disable colored output
-- `DEBUG`: Enable debug output (set to `vibe-codex:*`)
+- `VIBE_CODEX_CONFIG` - Custom configuration file path
+- `VIBE_CODEX_CI` - Enable CI mode
+- `SKIP_VIBE_CODEX` - Skip all vibe-codex hooks
+- `NO_COLOR` - Disable colored output
+- `DEBUG` - Enable debug output (set to `vibe-codex:*`)
 
 ## Exit Codes
 
-- `0`: Success
-- `1`: Validation failed or general error
-- `2`: Configuration error
-- `3`: Module loading error
-- `4`: Hook installation error
-- `5`: Invalid command or options
+- `0` - Success
+- `1` - Validation failed or general error
+- `2` - Configuration error
+- `3` - Module loading error
+- `4` - Hook installation error
+- `5` - Invalid command or options
 
-## Configuration File Formats
+## CI/CD Integration
 
-vibe-codex looks for configuration in this order:
+### GitHub Actions
 
-1. `.vibe-codex.json`
-2. `.vibe-codex.js`
-3. `.vibe-codex.yml`
-4. `vibe-codex` property in `package.json`
-5. `.vibe-codexrc`
-
-## Hook Commands
-
-Git hooks installed by vibe-codex use these commands internally:
-
-```bash
-# Pre-commit hook
-npx vibe-codex validate --hook pre-commit
-
-# Commit-msg hook
-npx vibe-codex validate --hook commit-msg --message <file>
-
-# Pre-push hook
-npx vibe-codex validate --hook pre-push
+```yaml
+- name: Validate with vibe-codex
+  run: npx vibe-codex validate --ci --format json --output results.json
 ```
 
-## Advanced Usage
+### GitLab CI
 
-### Custom Module Paths
-
-Load custom modules from specific paths:
-
-```bash
-npx vibe-codex validate --module-path ./custom-modules
+```yaml
+validate:
+  script:
+    - npx vibe-codex validate --ci
 ```
 
-### Parallel Execution
+### Jenkins
 
-Run validations in parallel:
-
-```bash
-npx vibe-codex validate --parallel --jobs 4
-```
-
-### Incremental Validation
-
-Only validate changed files:
-
-```bash
-npx vibe-codex validate --staged  # Only staged files
-npx vibe-codex validate --changed # All changed files
-```
-
-### Integration with Other Tools
-
-```bash
-# With lint-staged
-npx vibe-codex validate --staged --fix
-
-# With husky
-npx vibe-codex validate --hook pre-commit
-
-# In Docker
-docker run -v $(pwd):/app node:18 npx vibe-codex validate
+```groovy
+stage('Validate') {
+  steps {
+    sh 'npx vibe-codex validate --ci'
+  }
+}
 ```
 
 ## Troubleshooting
 
 ### Debug Mode
-
-Enable detailed logging:
 
 ```bash
 DEBUG=vibe-codex:* npx vibe-codex validate
@@ -355,66 +272,12 @@ DEBUG=vibe-codex:* npx vibe-codex validate
 
 ### Bypass Hooks
 
-Skip vibe-codex hooks temporarily:
-
 ```bash
 SKIP_VIBE_CODEX=1 git commit -m "Emergency fix"
 ```
 
-### Reset Configuration
+### Common Issues
 
-Start fresh with configuration:
-
-```bash
-npx vibe-codex init --force
-```
-
-### Check Installation
-
-Verify vibe-codex is properly installed:
-
-```bash
-npx vibe-codex doctor
-```
-
-## Examples
-
-### Basic Workflow
-
-```bash
-# Initialize in a new project
-cd my-project
-npx vibe-codex init
-
-# Run validation
-npx vibe-codex validate
-
-# Fix issues
-npx vibe-codex validate --fix
-
-# Check status
-npx vibe-codex status
-```
-
-### CI/CD Integration
-
-```yaml
-# GitHub Actions
-- name: Validate with vibe-codex
-  run: npx vibe-codex validate --ci --format json --output results.json
-
-# GitLab CI
-validate:
-  script:
-    - npx vibe-codex validate --ci
-```
-
-### Custom Configuration
-
-```bash
-# Use different config for production
-npx vibe-codex validate --config .vibe-codex.prod.json
-
-# Validate with strict settings
-npx vibe-codex validate --level 5 --ci
-```
+1. **"Module configuration required"** - Use `--modules`, `--minimal`, or `--preset` flag
+2. **"Git hooks not installed"** - Run `npx vibe-codex update --hooks`
+3. **"Configuration version mismatch"** - Run `npx vibe-codex migrate`

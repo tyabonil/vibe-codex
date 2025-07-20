@@ -10,7 +10,8 @@ vibe-codex uses a `.vibe-codex.json` file in your project root for configuration
 
 ```json
 {
-  "version": "1.0.0",
+  "version": "2.0.0",
+  "projectType": "web",
   "modules": {
     "module-name": {
       "enabled": true,
@@ -19,6 +20,32 @@ vibe-codex uses a `.vibe-codex.json` file in your project root for configuration
     }
   }
 }
+```
+
+## Managing Configuration
+
+### Using the CLI
+
+```bash
+# View all configuration
+npx vibe-codex config --list
+
+# Get specific value
+npx vibe-codex config --get testing.coverage.threshold
+
+# Set configuration value
+npx vibe-codex config --set testing.coverage.threshold 90
+
+# Reset to defaults
+npx vibe-codex config --reset
+```
+
+### Direct File Editing
+
+You can also edit the `.vibe-codex.json` file directly. After editing, run validation to ensure your configuration is valid:
+
+```bash
+npx vibe-codex validate
 ```
 
 ## Module Configuration
@@ -58,12 +85,20 @@ Configure test coverage requirements and testing standards.
   "modules": {
     "testing": {
       "enabled": true,
-      "coverageThreshold": 80,
+      "framework": "jest",
+      "coverage": {
+        "threshold": 80,
+        "lines": 80,
+        "functions": 80,
+        "branches": 70,
+        "statements": 80
+      },
       "testFilePattern": "**/*.{test,spec}.{js,ts,jsx,tsx}",
       "requireTestFiles": true,
       "excludePatterns": [
         "**/node_modules/**",
-        "**/vendor/**"
+        "**/vendor/**",
+        "**/*.config.js"
       ]
     }
   }
@@ -71,26 +106,31 @@ Configure test coverage requirements and testing standards.
 ```
 
 **Options:**
-- `coverageThreshold`: Minimum code coverage percentage (0-100)
+- `framework`: Testing framework (jest, mocha, vitest, etc.)
+- `coverage.threshold`: Global minimum coverage percentage
+- `coverage.lines/functions/branches/statements`: Specific coverage thresholds
 - `testFilePattern`: Glob pattern for identifying test files
 - `requireTestFiles`: Whether every source file needs a test
 - `excludePatterns`: Files/directories to exclude from checks
 
-### GitHub Module
+### GitHub Workflow Module
 
 GitHub-specific features and requirements.
 
 ```json
 {
   "modules": {
-    "github": {
+    "github-workflow": {
       "enabled": true,
+      "features": ["pr-checks", "issue-tracking", "auto-labeling"],
       "requirePRTemplate": true,
       "requireIssueTemplates": true,
       "requireCodeOwners": false,
       "requireContributing": true,
-      "templates": {
-        "customPRTemplate": ".github/PULL_REQUEST_TEMPLATE/custom.md"
+      "prLabels": {
+        "size/small": { "maxChanges": 50 },
+        "size/medium": { "maxChanges": 250 },
+        "size/large": { "maxChanges": 1000 }
       }
     }
   }
@@ -98,6 +138,12 @@ GitHub-specific features and requirements.
 ```
 
 **Options:**
+- `features`: Array of GitHub features to enable
+- `requirePRTemplate`: Enforce pull request template
+- `requireIssueTemplates`: Enforce issue templates
+- `requireCodeOwners`: Require CODEOWNERS file
+- `requireContributing`: Require CONTRIBUTING.md
+- `prLabels`: Auto-labeling configuration
 - `requirePRTemplate`: Enforce pull request templates
 - `requireIssueTemplates`: Enforce issue templates
 - `requireCodeOwners`: Require CODEOWNERS file
