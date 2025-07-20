@@ -1,0 +1,30 @@
+{
+  "name": "GPT-4",
+  "provider": "openai",
+  "model": "gpt-4-turbo-preview",
+  "endpoint": "https://api.openai.com/v1/chat/completions",
+  "apiKeyEnv": "OPENAI_API_KEY",
+  "headers": {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer ${apiKey}"
+  },
+  "maxTokens": 4096,
+  "temperature": 0.3,
+  "systemPrompt": "You are an expert code reviewer. Review the provided code changes for:\n- Bugs and potential issues\n- Security vulnerabilities\n- Performance concerns\n- Code style and best practices\n- Suggestions for improvement\n\nProvide concise, actionable feedback.",
+  "requestFormat": {
+    "model": "${model}",
+    "max_tokens": "${maxTokens}",
+    "temperature": "${temperature}",
+    "messages": [
+      {
+        "role": "system",
+        "content": "${systemPrompt}"
+      },
+      {
+        "role": "user",
+        "content": "${content}"
+      }
+    ]
+  },
+  "responseParser": "choices[0].message.content"
+}
