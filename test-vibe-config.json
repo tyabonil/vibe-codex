@@ -1,0 +1,15 @@
+{
+  "version": "2.0.0",
+  "projectType": "library",
+  "modules": {
+    "core": { "enabled": true }
+  },
+  "hooks": {
+    "phoneAFriend": {
+      "enabled": true,
+      "model": "claude-3-5-sonnet",
+      "trigger": "pre-push",
+      "allowForcePush": false
+    }
+  }
+}
